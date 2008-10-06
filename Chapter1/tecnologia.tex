@@ -4,12 +4,12 @@
 
 Se ha decidido realizar una web con una serie de funcionalidades, pero incluso en ese entorno existen múltiples lenguajes y plataformas para todo tipo de desarrollos. Este documento pretende considerar las posibilidades existentes, y escoger la más adecuada para este proyecto a partir de una serie de criterios.
 
-En un primer acercamiento se pueden diferenciar dos partes claras que forman este proyecto. Primero, el desarrollo de la pizarra, implementando el máximo de funcion:alidades establecidas en la especificación, y segundo, el desarrollo del sistema, con su gestión de usuarios, grupos y pizarras.
+En un primer acercamiento se pueden diferenciar dos partes claras que forman este proyecto. Primero, el desarrollo de la pizarra, implementando el máximo de funcionalidades establecidas en la especificación, y segundo, el desarrollo del sistema, con su gestión de usuarios, grupos y pizarras.
 
 \subsection{Pizarra}
 A la hora de considerar las posibles tecnologías que permitan implementar una pizarra de este tipo, aparecen múltiples opciones que, en mayor o menor medida, podrían funcionar. Sin embargo, en la especificación se ha definido que la solución debe ser accesible desde una página web, a través de firewalls rigurosos, y con el mínimo de \emph{software extra} posible. Ésto nos deja básicamente con tres posibles opciones, descartando muchos de los lenguajes más clásicos de programación, como podría ser C++.
 
-Dichas opciones son \texttt{JavaScript}, \texttt{Flash/Shockwave} o \texttt{Java}. Otro tipo de aplicaciones como podría ser un \texttt{Control ActiveX} queda descartado desde el principio por su dificultad de ejecutar en exploradores que no sean Internet Explorer, y por estar aún más limitados que entornos restrictivos como son los ordenadores de las empresas. Los tres considerados son suficientemente conocidos, y están soportados por la gran mayoría de los ordenadores de hoy día.
+Dichas opciones son \texttt{JavaScript}, \texttt{Flash} o \texttt{Java}. Otro tipo de aplicaciones como podría ser \texttt{ActiveX} queda descartado desde el principio por su dificultad de ejecutar en exploradores que no sean Internet Explorer, y por estar aún más limitados en entornos restrictivos como son los ordenadores de las empresas. Los tres considerados son suficientemente conocidos, y están soportados por la gran mayoría de los ordenadores de hoy día.
 
 Para poder hacer una comparativa objetiva entre ellos, los criterios a seguir serán los siguientes:
 
@@ -98,17 +98,17 @@ Simplificando, JSP funciona de forma muy similar a PHP, pero con todo el soporte
 	\item[Facilidad de implementación] JSP es tan simple como Java, y tiene todas las características necesarias para hacer cualquier sitio web. Sin embargo, Java no está tan enfocado a páginas webs como podría ser PHP. Se tiene una gran ventaja en el hecho de que se puede usar cualquier código Java, por tanto, cualquier librería ya hecha, pero también es cierto que al no ser enfocado principalmente a páginas web, pueda hacer tareas comunes (contactar con la base de datos), mucho más engorrosas.
 	\item[Calidad del resultado] JSP tiene todo lo necesario para realizar una web de calidad.
 	\item[Disponibilidad en servidores comunes] La instalación y configuración de un servidor típico apache para funcionar con JSP's suele requerir más trabajo que con PHP, pues no suele instalarse de forma automática, y requiere de trabajo extra por parte del administrador. Apache Tomcat\footnote{Apache Tomcat - \url{http://tomcat.apache.org}} es implementación oficial de JSP y Java Servlets, y suele ser bastante fácil de encontrar para las respectivas distribuciones. 
-	\item[Otras motivaciones] El autor ya ha realizado un proyecto utiliazndo JSP y Java Servlet, si bien no en profundidad, ya conoce las características principales. Sería interesante (o casi imprescindible) si se hubiera decidido usar un Applet Java para el desarrollo de la Pizarra.
+	\item[Otras motivaciones] El autor ya ha realizado un proyecto utilizando JSP y Java Servlet, si bien no en profundidad, ya conoce las características principales. Sería interesante (o casi imprescindible) si se hubiera decidido usar un Applet Java para el desarrollo de la Pizarra.
 	\item[Viabilidad] Este proyecto sería totalmente viable utilizando JSP y Servlets Java, incluso si se utiliza Javascript o Flash para la implementación de las Pizarras.
 \end{description}
 
 \subsubsection{Ruby}
-Ruby es un lenguaje que está en auje desde hace relatiamente poco, por numerosas razones. La más importante de ellas sea probablemente la plataforma Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} (de ahí el conocido Ruby on Rails), que simplifica el proceso de generación de código de forma drástica. Existen numerosos ejemplos en forma de screencasts demostrando la implementación de aplicaciones simples en tiempos menores a 15 minutos\footnote{Screencasts of Ruby on Rails, Creating a weblog in 15 minutes - \url{http://www.rubyonrails.org/screencasts}}.
+Ruby es un lenguaje que está en auge desde hace relatiamente poco, por numerosas razones. La más importante de ellas sea probablemente la plataforma Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} (de ahí el conocido Ruby on Rails), que simplifica el proceso de generación de código de forma drástica. Existen numerosos ejemplos en forma de screencasts demostrando la implementación de aplicaciones simples en tiempos menores a 15 minutos\footnote{Screencasts of Ruby on Rails, Creating a weblog in 15 minutes - \url{http://www.rubyonrails.org/screencasts}}.
 
 \begin{description}
 	\item[Facilidad de implementación] Ésta es la característica estrella de Ruby on Rails. Simplifica todas las tareas repetitivas a la hora de desarrollar aplicaciones web con un fondo de base de datos, es decir, la mayoría. Lo único que puede dificultar la implementación es la falta de experiencia del autor con esta plataforma.
 	\item[Calidad del resultado] El resultado tendrá la misma calidad que el realizado por cualquier otro lenguaje de scripting. Hay argumentos que defienden la mayor calidad de las webs realizadas en ruby por su grandísima simplicidad, lo cual ayuda a una futura expansión mucho más sencilla.
-	\item[Disponibilidad en servidores comunes] Ruby se encuentra cada vez más fácilmente en las distribuciones típicas de linux. La forma de configurar un servidor Apache para soportar Ruby es similar a la de cualquier otro lenguaje de scripts, como podría ser Perl. Hace falta tener los paquetes necesarios en el servidor (ruby y rails) y a partir de ahí hay varias formas de hacer que Apache pueda soportar proyectos en rails. Una de las soluciones, por ejemplo, necesita que tenga los módulos rewrite y fcgi activados. Otra solución es más sencilla, pero requiere compilar el módulo.
+	\item[Disponibilidad en servidores comunes] Ruby on Rails se puede considerar hoy día como uno de los standards del desarrollo web, y por tanto cada vez más y más hostings ofrecen soporte para el mismo. Existen múltiples formas de tener una aplicación Ruby on Rails funcionando en un servidor, apareciendo cada vez opciones más sencillas y completas. Por ejemplo, \footnote{Phusion Passenger - \url{http://www.modrails.com/}}, también llamado \texttt{mod\_rails} es un módulo para Apache que promete simplificar el proceso puesta online de aplicaciones a algo tan sencillo como el de cualquier aplicación en \texttt{PHP}.
 	\item[Otras motivaciones] Hoy por hoy existe una gran expectación en cuanto a Ruby on Rails. Cada vez más webs se desarrollan con esta tecnología, y eso se demuestra en que cada vez más se pueden encontrar empresas de hosting con soporte para Rails. No hay ninguna razón objetiva para apoyar todas estas consideraciones, es posible que Rails no deje de ser una plataforma minoritaria, pero a día de hoy, tiene un crecimiento muy marcado que lo convierte en una plataforma muy atractiva a la hora de profundizar los conocimientos del autor en temas de desarrollo web.
 	\item[Viabilidad] No hay ninguna razón para que este proyecto no sea viable bajo Ruby.
 \end{description}
@@ -126,28 +126,16 @@ En cuanto al desarrollo del sistema de la web, se seguirán los procesos típico
 \subsubsection{Javascript}
 Las características básicas se han descrito anteriormente, pero es necesario entender más profundamente como funciona, y cual es el proceso típico de desarrollo de un javascript, para poder planear el desarrollo de la Pizarra. Se quiere evitar empezar a escribir código ciegamente sin tener un entendimiento previo de qué se está manejando.
 
-\textbf{Orientado a Objetos}
-El primer detalle importante sobre Javascript, es que es orientado a objetos. Cada elemento de una página se considera un objeto, y siempre existe una manera de acceder a él. Por ejemplo, si se tuviera una imagen definida así:
-\begin{verbatim}
-<img src="foo.jpg0" name="imagen1">
-\end{verbatim}
-
-Se podría acceder a su atributo \texttt{src} mediante:
-
-\begin{verbatim}
-document.images['imagen1'].src
-\end{verbatim}
-
-Es decir, existe el objeto \texttt{document}, que simboliza toda la página web, mediante el cual se accede al atributo \texttt{images}, que engloba todas las imágenes, el cual es un vector, y es posible acceder al que tiene de nombre ``imagen1'', y de ahí se accede al atributo \texttt{src}.
 
 Mozilla Developer Center contiene un artículo\footnote{Introduction to Object-Oriented JavaScript - \url{http://developer.mozilla.org/en/docs/Introduction_to_Object-Oriented_JavaScript}} donde se explican todas las características de orientación a objetos en javascript, y como implementarlas con un ejemplo muy claro. Tiene una forma un tanto peculiar de crear y heredar elementos, pero es posible trabajar sin problemas, teniendo en cuenta que javascript no soporta herencias múltiples.
 
+\textbf{Document Object Model}
+o DOM, como es conocido más habitualmente, son una serie de objetos que ofrecen los navegadores cuando se está ejecutando código javascript. Aquí es donde residen la mayoría de problemas de compatibilidad entre navegadores, puesto que el lenguaje en si es interpretado de igual manera por todos ellos, pero el DOM que ofrecen no es siempre equivalente, lo cual produce situaciones problemáticas.
+
+Con dichos objetos se puede acceder a todos los aspectos del navegador y de la web que se está mostrando, tanto para consultarlos como para modificarlos. Así, por ejemplo, el objeto \texttt{document} permite cambiar el código web que se está mostrando, para por ejemplo, mostrar u ocultar partes, consultar el texto escrito en un formulario, etc; o el objeto \texttt{window} permite consultar las cosas referentes con el navegador, de forma que podemos cambiar el comportamiento de distintos eventos relacionados con el ratón o el teclado, o mostrar avisos en forma de ventanas de confirmación.
+
 \textbf{Librería gráfica}
-Es importante recordar que Javascript es un lenguaje de scripting sin ningún tipo de soporte para gráficos incorporado. Entendiéndolo de una forma lo más abstracta posible, lo que permite es tomar la página web como un documento de texto con formato (generalmente) XML, y realizar acciones sobre este texto (modificándolo por ejemplo), apoyándose en otras funciones del explorador. Dichas funciones podrían ser, consultar lo que el usuario ha introducido en formularios, acceder a variables del explorador (para saber la IP del usuario o el navegador que usa, por ejemplo), o lanzar pequeños avisos en forma de ventana de aviso. La mencionada anteriormebte técnica Ajax permite acciones un poco más elaboradas, como por ejemplo,consultar otras páginas (que contiene una lista los usuarios de una base de datos), y actuar acordemente (mostrando esa lista de usuarios en la página actual, sin haber tenido que recargar la página entera).
-
-Así pues, si se quiere tratar con gráficos, hay que buscar una solución en la que Javascript pueda realizarlos modificando texto. La librería que se ha encontrado, jsgraphics\footnote{High Performance JavaScript Vector Graphics Library - \url{http://www.walterzorn.com/jsgraphics/jsgraphics_e.htm}}, soluciona esto generando múltiples elementos div de 1 pixel de tamaño. No son imágenes, pero visualmente lo parecen.
-
-En busca de otras opciones para realizar esta función, se ha decidido investigar implementaciones actuales de aplicaciones web que realicen dibujos semejantes a los que se quieren lograr en este proyecto. Existen diversas implementaciones usando la librería mencionada anteriormente, pero gracias a skrbl\footnote{skrbl: easy to share online whiteboard\url{http://www.skrbl.com/}}, se ha descubierto otra opción muy interesante.
+Es importante recordar que Javascript es un lenguaje de scripting sin ningún tipo de soporte para gráficos incorporados. Todo lo que se puede hacer es, por ejemplo, modificar el código fuente de la web mediante javascript y diferentes eventos (de ratón o teclado). Se tiene que buscar, por tanto, una forma de mostrar gráficos modificando código que pueda estar dentro de una web.
 
 Los elementos que se quieren dibujar para este proyecto son perfectamente implementables por lo que se conoce como gráficos vectoriales. Círculos, líneas, cuadrados, texto, todo esto se puede hacer de forma sencilla con cualquier programa que permita editar este tipo de gráficos. Existe un formato abierto llamado SVG\footnote{Scalable Vector Graphics - \url{http://www.w3.org/Graphics/SVG/}}, cuyo formato no es binario como suelen ser los propietarios, sino especificado en XML. Gracias a esto, es posible crear y modificar gráficos vectoriales mediante Javascript. Un ejemplo de archivo SVG podría ser el de la figura \ref{fig:svg_example} (ejemplo extraido de Wikipedia)
 
@@ -171,7 +159,7 @@ Los elementos que se quieren dibujar para este proyecto son perfectamente implem
 \caption{Ejemplo simple de archivo svg}\label{fig:svg_example}
 \end{figure}
 
-Por desgracia, realizando pruebas sobre cómo se incluyen gráficos SVG en páginas web, se observa que dichos gráficos no funcionan en ninguna versión de Internet Explorer (Firefox y Safari funcionan sin problemas). Se descubre que es necesario un plugin para poder visualizar dichos archivos en este navegador, pero sin embargo se puede utilizar skrbl sin ningún problema. Se acaba descubriendo otro formato llamado VML\footnote{Vector Markup Language - \url{http://www.w3.org/TR/1998/NOTE-VML-19980513}}. El siguiente párrafo introductorio de la entrada sobre VML en la Wikipedia\footnote{Vector Markup Language, Wikipedia - \url{http://en.wikipedia.org/wiki/Vector_Markup_Language}} explica perfectamente porqué no funcionan los SVG en Internet Explorer:
+Por desgracia, realizando pruebas sobre cómo se incluyen gráficos SVG en páginas web, se observa que dichos gráficos no funcionan en ninguna versión de Internet Explorer (Firefox, Safari y Opera funcionan sin problemas). Se descubre que es necesario un plugin para poder visualizar dichos archivos en este navegador, pero que no obstante, existe otro formato llamado VML\footnote{Vector Markup Language - \url{http://www.w3.org/TR/1998/NOTE-VML-19980513}}, que si está implementado en las versiones actuales de Internet Explorer. El siguiente párrafo introductorio de la entrada sobre VML en la Wikipedia\footnote{Vector Markup Language, Wikipedia - \url{http://en.wikipedia.org/wiki/Vector_Markup_Language}} explica perfectamente porqué no funcionan los SVG en Internet Explorer:
 
 \begin{quote}
 	\textbf{Vector Markup Language (VML)} is an XML language used to produce vector graphics. VML was submitted as a proposed standard to the W3C in 1998 by Microsoft, Macromedia, and others, but was rejected as a web standard because Adobe, Sun, and others submitted a competing proposal known as PGML. The two standards were joined to create SVG.
@@ -191,86 +179,21 @@ Este tipo de planteamiento, sin embargo, no es adecuado para el tipo de aplicaci
 Por lo tanto, canvas es ideal para realiar dibujos estáticos, pero poco adecuado para realizar aplicaciones interactivas como será ésta.
 
 \subsubsection{Ruby}
-Ruby es un lenguaje inspirado en Perl, Smalltalk, Eiffel, Ada y Lisp, creado por Yukihiro ``matz'' Matsumoto\footnote{Acerca de Ruby - \url{http://www.ruby-lang.org/es/about/}}. Ruby en si es solo el lenguaje, y existen diferentes implementaciones. De ellas, la oficial está implementada en \texttt{C} y es interpretado en una sola pasada\footnote{Ruby, Wikipedia - \url{http://es.wikipedia.org/wiki/Ruby}}. Típicamente se puede ejecutar un archivo ruby desde la línea de comandos, con una linea parecida a la siguiente:
+Ruby es un lenguaje inspirado en Perl, Smalltalk, Eiffel, Ada y Lisp, creado por Yukihiro ``matz'' Matsumoto\footnote{Acerca de Ruby - \url{http://www.ruby-lang.org/es/about/}}. Ruby en si es solo el lenguaje, y existen diferentes implementaciones. De ellas, la oficial está implementada en \texttt{C} y es \textbf{interpretado en una sola pasada}\footnote{Ruby, Wikipedia - \url{http://es.wikipedia.org/wiki/Ruby}}. Típicamente se puede ejecutar un archivo ruby desde la línea de comandos, con una linea parecida a la siguiente:
 
 \begin{verbatim}
 $ ruby archivo.rb
 \end{verbatim}
 
 \textbf{Desarrollando la web, Ruby on Rails}
-Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} es una plataforma de desarrollo web basada en Ruby, que ayuda a desarrollar aplicaciones web, y que sigue el paradigma Modelo Vista Controlador. Dicho patrón es muy semejante al conocido patrón en 3 capas, separando la capa que trata con los datos, la que realiza operaciones, y la del interfaz. Rails es capaz de hacer la representación del modelo (dominio) por nosotros, simplemente observando la base de datos actual, genera los controladores para manejar los elementos (crear, borrar, modificar, listar, etc) y las vistas correspondientes a cada una de dichas operaciones. A partir de ahí, el programador solo debe modificar a su gusto lo que rails ha generado.
+Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} es una plataforma de desarrollo (framework) web basada en Ruby, que ayuda a desarrollar aplicaciones web, y que sigue el paradigma Modelo Vista Controlador. Dicho patrón es muy semejante al conocido patrón en 3 capas, separando la capa que trata con los datos, la que realiza operaciones, y la del interfaz. Gracias a este enfoque es posible por fin enfocar el desarrollo de una aplicación web de forma muy similar al desarrollo de cualquier otra aplicación tradicional como la que se está acostumbrado. Se tendrán las clases del dominio, que representarán objetos bien definidos, que serán usados por los distintos controladores, cada uno de los cuales agrupará una serie de funcionalidades comunes y afines, y todo esto manejado desde las diferentes vistas.
 
-Este proceso de desarrollo hace que sea relativamente sencillo de adaptar al proceso típico de desarrollo de una pieza de software tradicional. Es posible empezar por especificar las clases del dominio, traducirlo a una base de datos, y dejar que Rails cree toda la estructura. A partir de ahí se puede empezar a implementar código obviando partes laboriosas como son las de tratar con la base de datos. Ahora se dispone de unas clases en Ruby, para cada clase del dominio, con una serie de funciones implementadas: listar, mostrar, crear, editar y destruir. Dichos controladores interactuan con el usuario mediante las vistas, cuya estructura es muy similar a los explicados anteriormente PHPs. En las vistas es donde se escribe el html, ayudado de todas las funciones que el controlador ofrece. Por ejemplo, un recorrido entre todos los elementos de una tabla, se lograría con:
-
-\begin{verbatim}
-<% for comment in @comments %>
-...
-<% end %>
-\end{verbatim}
-
-Pudiéndose incluir cualquier operación normal dentro de dicho bucle con líneas tan sencillas como:
-
-\begin{verbatim}
-<%= link_to 'Show', :action => 'show', :id => comment %>
-<%= link_to 'Edit', :action => 'edit', :id => comment %>
-\end{verbatim}
-
-La primera línea crea un link con el texto ``Show'', que hace la acción \texttt{show} (la cual está implementada en el controlador), pasándole el parámetro \texttt{:id} con valor \texttt{comment}. 
-
-Se puede ver que la forma de trabajar con Ruby on Rails es muy similar a la de una aplicación normal, acercando el concepto de página web al de una aplicación cualquiera más que nunca. Definitivamente, Rails ayudará a seguir un proceso de desarrollo ordenado y estructurado, con sus etapas de especificación, diseño e implementación bien diferenciadas, en contra de lo que normalmente se estaba acostumbrado.
+Hasta ahora el proceso de desarrollo de una web era una tarea bastante ``artesanal'', por el hecho de que estaba todo agrupado en una sola capa. Programar de forma tradicional en \texttt{PHP} es como trabajar con solo la capa de Vistas de Ruby on Rails. 
 
 \textbf{Instalando Ruby}
-Uno de los requisitos establecidos es que fuera relativamente sencillo de instalar en un servidor típico web con Apache y MySQL. Para averiguar el procedimiento que se debería seguir, se ha realizado una instalación en una máquina con \emph{Ubuntu 7.10}. Existen numerosos tutoriales para hacer esto, pero se ha basado en el creado por el usuario \emph{Falko Timme} en HowtoForge\footnote{Using Ruby On Rails With Apache2 On Debian Etch - \url{http://howtoforge.com/ruby_on_rails_debian_etch}}. Puesto que se quiere entender cómo añadir soporte para Ruby a una máquina ya funcionando como servidor, se puede dar por hecho que hay Apache y MySQL instalados y funcionando.
+Uno de los requisitos establecidos es que fuera relativamente sencillo de instalar en un servidor típico web con Apache y MySQL. Para poder realizar pruebas a lo largo de todo el proceso de desarrollo en un entorno lo más realista posible, se ha contratado un servicio de hosting de tipo VPS, en slicehost\footnote{\url{http://www.slicehost.com/}}. Este tipo de servicio de hosting ofrece un entorno virtual privado (Virtual Private Server) que a efectos prácticos significa tener un entorno Linux con la distribución de tu elección, con unos recursos asgurados. La diferencia con los sistemas de hosting compartidos es que, aunque estés compartiendo la máquina con otras personas, al estar todos en entornos virtualizados con unos recursos reservados, no hay posibilidad de unos usuarios acaparando los recursos.
 
-Para empezar hay que instalar el soporte para Ruby en el sistema. Otros paquetes son necesarios, como por ejemplo Rails, pues las webs son desarrolladas con esta plataforma.
-
-\begin{verbatim}
-# apt-get install ruby libzlib-ruby rdoc irb rubygems rails eruby
-\end{verbatim}
-
-Una vez instalado el soporte de Ruby se puede comprobar su correcta instalación con el comando \texttt{ruby -v}. Después hace falta instalar \texttt{mod\_fcgid}\footnote{mod\_fcgid Home Page - \url{http://fastcgi.coremail.cn/}}. Este módulo se encarga de ejecutar scripts, independientemente del lenguaje en que hayan sido programados, ahorrando trabajo individual con cada lenguaje que se quiera añadir.
-
-\begin{verbatim}
-# apt-get install libapache2-mod-fcgid libfcgi-ruby1.8
-\end{verbatim}
-
-Se debería activar el módulo \texttt{mod\_rewrite}, pero es muy común, así que es posible que ya esté activado.
-\begin{verbatim}
-# a2enmod rewrite
-\end{verbatim}
-
-Para que Ruby pueda contactar con MySQL se debería instalar el paquete \texttt{libmysql-ruby} también:
-\begin{verbatim}
-# apt-get install libmysql-ruby
-\end{verbatim}
-
-Finalmente, solo queda asegurarse de que el archivo de configuración del vhost (Virtualhost) de Apache, del directorio donde se vayan a depositar las aplicaciones Ruby on Rails, tenga activadas las opciones \texttt{ExecCGI} y \texttt{FollowSymLinks}. Dicho archivo se suele poder encontrar en \texttt{/etc/apache2/sites-enabled/}, y las líneas de configuración del directorio deberían tener una forma parecida a la siguiente:
-
-\begin{verbatim}
-   <Directory /aplicacion/en/ruby/public>
-      Options ExecCGI FollowSymLinks
-      AllowOverride all
-      Order allow,deny
-      Allow from all
-   </Directory>
-\end{verbatim}
-
-En resumen:
-\begin{itemize}
-	\item Instalar los paquetes  \texttt{ruby libzlib-ruby rdoc irb rubygems rails eruby libmysql-ruby}.
-	\item Activar el módulo \texttt{mod\_rewrite} de apache.
-	\item Activar las opciones \texttt{ExecCGI FollowSymLinks} en la configuración del directorio del vhost.
-\end{itemize}
-
-Se puede comprobar el correcto funcionamiento creando una aplicación de prueba mediante el comando \texttt{\$ rails /algun/directorio/}. Rails entonce creará la estructura básica, y solo hace falta apuntar con el navegador a \texttt{/algun/directorio/public/}. En el caso de la captura de pantalla, se ha definido el \texttt{DocumentRoot} de Apache esta carpeta directamente.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=16cm]{rubyapache.png}
-\caption{Pantalla de bienvenida por defecto de rails}\label{fig:rubyapache}
-\end{figure}
-
-Existen múltiples opciones para configurar Apache de forma que soporte proyectos en Rails, un ejemplo es el proyecto \texttt{Passenger}, también llamado \texttt{mod\_rails}\footnote{Phusion Passenger - \url{http://www.modrails.com/}}, que requiere de pasos similares a los explicados anteriormente para utilizar fcgi.
+Esto también significa un entorno de pruebas excelente para los propósitos de este proyecto. Este servicio de hosting ofrece una serie de artículos para ayudar a la instalación de todo tipo de configuraciones para Ruby on Rails. Tomando como partida la distribución \textbf{Ubuntu Hardy}, y siguiendo los pasos iniciales básicos de configuración \footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-setup-page-1}} \footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-setup-page-2}}, solo queda instalar Ruby\footnote{\url{http://articles.slicehost.com/2008/4/30/ubuntu-hardy-ruby-on-rails}}, Apache\footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-installing-apache-and-php5}}, MySQL\footnote{\url{http://articles.slicehost.com/2008/7/8/ubuntu-hardy-installing-mysql-with-rails-and-php-options}}, y finalmente Phusion Passenger\footnote{\url{http://articles.slicehost.com/2008/5/1/ubuntu-hardy-mod_rails-installation}} (aunque podría ser cualquier de las otras opciones, como Mongrels o Thin). A pesar de parecer una instalación bastante larga, si se tomara como base un servidor con Apache y MySQL funcionando, solo se tendría que añadir el soporte para \texttt{ruby}, \texttt{rubygems}, \texttt{rails} y phusion passenger (\texttt{mod\_rails}).
 
 \subsection{Otras consideraciones}
 A lo largo de este documento no se ha tratado el tema de base de datos. Ante todas las opciones disponibles, se pueden descartar todas las que no sean libres, por un coste de licencias generalmente inalcanzable en el ámbito de este proyecto (no hay ningún tipo de subvención). De entre las opciones libres la base de datos por excelencia es MySQL\footnote{MySQL - \url{http://www.mysql.com/}}, que es considerada el compañero ideal para Ruby. A simple vista no existen requisitos extras que puedan hacer considerar alguna otra opción, por tanto se da por hecho que MySQL será el Sistema Gestor de Base de Datos de este proyecto.

@@ -2,11 +2,11 @@
 \section{Especificaci\'on} % (fold)
 \label{sec:especificacion}
 
-Este proyecto surge de la necesidad de realizar presentaciones a distancia, mayoritariamente por videoconferencia. Las videoconferencias están en el día a día de las empresas, y por supuesto, las presentaciones en powerpoint están en la vida diaria de cualquiera. Las presentaciones a distancia son problemáticas por las siguientes razones:
+Este proyecto surge de la necesidad de realizar presentaciones a distancia, mayoritariamente por videoconferencia. Las videoconferencias están en el día a día de las empresas, y por supuesto, las presentaciones en powerpoint están en la vida diaria de cualquiera. El realizar estas presentaciones a distancia crea una serie de problemas:
 
 \begin{itemize}
 	\item Cada \emph{usuario} ve el documento individualmente, por lo cual no hay una sincronía entre lo que todos ven. Cada uno puede estar mirando una hoja distinta, o a un punto distinto.
-	\item A diferencia de en una presentación real, el poniente carece de una pizarra donde hacer explicaciones donde las diapositivas no son suficiente.
+	\item A diferencia de en una presentación real, el poniente carece de una pizarra o una superficie donde hacer explicaciones cuando las diapositivas no son suficiente.
 \end{itemize}
 
 Estas dos carencias básicas hacen que se pierda un gran porcentaje del tiempo de dichas conferencias en \underline{forzar} esa sincronía, con explicaciones constantes de en qué diapositiva se está, o a qué punto mirar, o en simular dicha pizarra, con explicaciones verbales en vez de gráficas.
@@ -85,7 +85,7 @@ Para ayudar a entender el concepto de lo que será el sistema, la figura \ref{fi
 Una explicación más detallada de la tecnología que se va a utilizar se podrá encontrar en las próximas secciones, pero hay una serie de requisitos que se afectan a la tecnología que se use, que deben ser considerados.
 
 \begin{description}
-	\item[Servidor] El servidor no tiene que requerir más de lo que sería un servidor web típico. Apache/MySql sobre linux. Otros requisitos se admiten, pero tienen que estar accesibles de forma sencilla (binarios en forma de paquete, por ejemplo) para las distribuciones típicas de Linux. Nada de compilar fuentes, por ejemplo.
+	\item[Servidor] El servidor no tiene que requerir más de lo que sería un servidor web típico. Apache/MySQL sobre linux. Otros requisitos se admiten, pero tienen que estar accesibles de forma sencilla (binarios en forma de paquete, por ejemplo) para las distribuciones típicas de Linux. Nada de compilar fuentes, por ejemplo.
 	\item[Cliente] Los navegadores más importantes tienen que estar soportados, Internet Explorer, Firefox y Safari como mínimo. Se intentará alcanzar el mayor grado de compatibilidad con Explorer 6, y en el peor caso, que cumpla las funcionalidades básicas.
 	\item[Software] Puesto que los usuarios no tienen que tener que instalar ningún software nuevo, es altamente deseable que la web sea lo más sencilla posible. Se hará todo lo posible por evitar utilizar tecnologías que el usuario no tiene porqué tener instalados en su ordenador. Se va a intentar cumplir el requisito de que el usuario solo tiene que tener funcionando un navegador web moderno. En cuanto a la programación del esqueleto de la web, se considera interesante utilizar un lenguaje dinámico más moderno para agilizar el proceso, en vez del clásico PHP o ASP. También, el interés propio de explorar nuevas áreas, puesto que ya se tiene amplia experiencia con PHP, Ruby es un lenguaje muy interesante, y será considerado en la etapa de diseño.
 \end{description}
