@@ -18,21 +18,21 @@ Así pues, los pasos que se han seguido son los siguientes:
 \end{enumerate}
 
 \section{Javascript: Consideraciones previas}
-Debido a las razones explicadas anteriormente, se deduce que Javascript es un lenguaje un tanto peculiar. Su sintaxis en la misma en todos los navegadores, pero no su DOM (Document Object Model), el cual suele cambiar sutilmente de uno a otro. Estas diferencias han hecho que tradicionalmente, saber programar en Javascript signifique conocer en profundidad dichas diferencias, y la forma en que evitarlas. En esta sección se pretende explicar qué es el DOM, y qué soluciones hay para saltar dichas diferencias.
+Debido a las razones explicadas anteriormente, se deduce que Javascript es un lenguaje un tanto peculiar. Su sintaxis en la misma en todos los navegadores, pero no su DOM (Document Object Model), el cual suele cambiar sutilmente de uno a otro. Estas diferencias han hecho que tradicionalmente, saber programar en Javascript signifique conocer en profundidad dichas diferencias, y la forma en que evitarlas.
 
-Los navegadores ``proveen'' a Javascript con dicho DOM, que no es más que la página web en formato típico orientado a objetos. Por ejemplo, en cualquier momento se puede acceder a los objetos \texttt{navigator, document, window, location, screen}, etc, los cuales contienen una serie de atributos y métodos que se pueden consultar o ejecutar. Por ejemplo, el atributo \texttt{appName} del objeto \texttt{navigator} devuelve una cadena de texto con el identificador del navegador. Así, una forma sencilla de diferenciar los navegadores IE del resto sería mediante una línea como la siguiente:
+Los navegadores ``proveen'' a Javascript con dicho DOM, que no es más que una serie de objetos, a modo de librería, con los que poder consultar o modificar cualquier cosa. Por ejemplo, en cualquier momento se puede acceder a los objetos \texttt{navigator, document, window, location, screen}, etc, los cuales contienen una serie de atributos y métodos que se pueden consultar o ejecutar. Por ejemplo, el atributo \texttt{appName} del objeto \texttt{navigator} devuelve una cadena de texto con el identificador del navegador. Así, una forma sencilla de diferenciar los navegadores IE del resto sería mediante una línea como la siguiente:
 
 \begin{verbatim}
 if (navigator.appName == "Microsoft Internet Explorer") 
 \end{verbatim}
 
-Otro objeto muy importante es el \texttt{document}, a partir del cual se puede acceder y modificar todo el código html. Por ejemplo, mediante la línea siguiente se podría obtener un objeto que representaría la etiqueta \texttt{<svg>}:
+Otro objeto muy importante es el \texttt{document}, a partir del cual se puede acceder y modificar todo el código html. Por ejemplo, mediante la línea siguiente se podría obtener un objeto que representaría la etiqueta \texttt{<svg id=`mainElement`>} :
 
 \begin{verbatim}
 var mainElem = document.getElementById("mainElement");
 \end{verbatim}
 
-La mayor parte del DOM es similar en todos los navegadores, haciendo las tareas típicas muy simples. Pero es en esas pequeñas diferencias en que Javascript se convierte en algo tedioso y problemático. Con el tiempo Javascript se ha ido popularizando y por lo tanto un mayor número de programadores han dedicado sus esfuerzos al lenguaje, incrementando la cantidad de documentación y librerías disponibles en proporción dicha popularidad. Era solo cuestión de tiempo que se encontrara una solución a los problemas que se han planteado.
+La mayor parte del DOM es similar en todos los navegadores, haciendo las tareas típicas muy simples. Pero es en esas pequeñas diferencias en que Javascript se convierte en algo tedioso y problemático. Con el tiempo Javascript se ha ido popularizando y por lo tanto un mayor número de programadores han dedicado sus esfuerzos al lenguaje, incrementando la cantidad de documentación y librerías disponibles en proporción a dicha popularidad. Era solo cuestión de tiempo que se encontrara una solución a los problemas que se han planteado.
 
 La solución ha aparecido en forma de librerías que permiten hacer las acciones comunes de forma unificada, encargándose ella de distinguir entre navegadores y versiones, y hacer que siempre se ejecuten los comandos apropiados. Existen diferentes librerías para esto, y en este caso se ha decidido usar jQuery. Tomando el ejemplo de querer añadir un evento a un elemento, este es el código típico que se debería ejecutar:
 
@@ -53,7 +53,7 @@ El mismo código con jQuery incluida, quedaría así:
 $("body").attach("mousedown",doSomething);
 \end{verbatim}
 
-Aunque aparentemente se reduzca el número de líneas, a la hora de ejecutar se tienen que hacer el mismo número de comprobaciones, quedando por tanto en un rendimiento similar, sino peor. Sin embargo, dejando todo este número de comprobaciones ``rutinarias'' de manos de una librería hace que se produzcan menos errores, pues al ser una librería pública usada por un gran número de personas, se puede asumir que posiblemente esté libre de bugs.
+Aunque aparentemente se reduzca el número de líneas, a la hora de ejecutar se tienen que hacer el mismo número de comprobaciones, quedando por tanto en un rendimiento similar, sino peor. Sin embargo, dejando todo este número de comprobaciones ``rutinarias'' de manos de una librería hace que se produzcan menos errores, pues al ser una librería pública usada por un gran número de personas, se puede asumir hayan tenido en cuenta un mayor número de factores de los que uno es capaz trabajando independientemente. Una vez más, debido a una mayor sencillez del código, es posible realizar un trabajo más limpio y libre de errores.
 
 No solo eso, sino que es posible añadir dicha librería directamente de la página de jquery de la siguiente forma:
 
@@ -85,7 +85,24 @@ Se ha establecido que se utilizará VML para renderizar los elementos en navegad
 		\end{tabular}
 \end{table}
 
-En principio podría considerarse que cualquier persona con dichos navegadores debería ser capaz de participar en una pizarra, al menos, como espectador, pero estas tecnologías no son las únicas que pueden limitar el rango de navegadores que puedan funcionar. Ya se ha comentado que la librería jQuery tiene unos requerimientos más restrictivos. No obstante, se considerará la posibilidad de implementar una ``versión de compatibilidad'' que quizá permita ser espectador de una presentación a base de páginas estáticas que se actualicen de forma periódica, pero cuya frecuencia de actualización sea mucho menor.
+En principio podría considerarse que cualquier persona con dichos navegadores debería ser capaz de participar en una pizarra, al menos, como espectador, pero estas tecnologías no son las únicas que pueden limitar el rango de navegadores que puedan funcionar. Ya se ha comentado que la librería jQuery tiene unos requerimientos más restrictivos.
+
+\begin{table}[h]
+	\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			Navegador & Versión \\
+			\hline
+			Internet Explorer & 6.0 \\
+			\hline
+			Mozilla Firefox & 2 \\
+			\hline
+			Safari & 3.1 \\
+			\hline
+			Opera & 9.0 \\
+			\hline
+		\end{tabular}
+\end{table}
 
 Es imposible dar un porcentaje exacto de uso de los diferentes navegadores, pues varía dependiendo del grupo de usuarios que tiendan a visitar este tipo de webs, y por tanto, la única forma sería tener estadísticas de dicha web a lo largo de un periodo de tiempo. Sin embargo, tomando el ejemplo de una de las pocas webs que publica sus estadísticas\footnote{\url{http://www.w3schools.com/browsers/browsers_stats.asp}}, los navegadores mencionados comprenden más del 98.5\% del total.
 
@@ -110,7 +127,7 @@ Por desgracia, para que dicho módulo funcione existen una serie de requisitos. 
 <style>v\:* { behavior: url(#default#VML);}</style>
 \end{verbatim}
 
-La primera línea tiene el formato típico de un documento \texttt{XML} formal. Se definen dos espacios de nombres, el princial siendo el de xhtml definido pr el \texttt{W3C}, y el segundo el de la especificación de \texttt{VML} por parte de microsoft, al cual se le añade el prefijo \texttt{v:} . Gracias a esta línea se consigue que se puedan incluir los elementos directamente en el documento, siempre y cuando empiecen por el prefijo v: .
+La primera línea tiene el formato típico de un documento \texttt{XML} formal. Se definen dos espacios de nombres, el princial siendo el de xhtml definido pr el \texttt{W3C}, y el segundo el de la especificación de \texttt{VML} por parte de microsoft, al cual se le añade el prefijo \texttt{v:} . Gracias a esta línea se consigue que se puedan incluir los elementos directamente en el documento, siempre y cuando empiecen por el prefijo \texttt{v:} .
 
 La segunda línea es necesaria para que se puedan aplicar correctamente los estilos a los diferentes elementos. Dicha línea puede añadirse en cualquier punto de la cabecera (entre las etiquetas de \texttt{head}).
 
@@ -121,16 +138,16 @@ A diferencia de VML, SVG necesita de una etiqueta principal dentro de la cual co
 \begin{verbatim}
 <svg id="mainElement" xmlns="http://www.w3.org/2000/svg" 
    xmlns:xlink="http://www.w3.org/1999/xlink" 
-   preserveAspectRatio="none" height="3500px" width="5000px">
+   preserveAspectRatio="none" height="600px" width="800px">
 </svg>
 \end{verbatim}
 
-El atributo id permitirá acceder fácilmente a este elemento mediante javascript. Los dos atributos xmlns son también típicos de un documento \texttt{XML}, y añaden las definiciones correspondientes a los elementos \texttt{SVG} y de \texttt{xlink}. Xlink se utiliza para referenciar elementos exteriores al documento, como podrían ser imágenes, y se explicará con más detalle en secciones posteriores. El atributo preserveAspectRatio ayuda a que no se deforme la imagen con posibles redimensionamientos de la ventana, y height/width simplemente indican el tamaño, que preferiblemente debería ser mayor del de la ventana del navegador.
+El atributo id permitirá acceder fácilmente a este elemento mediante javascript. Los dos atributos xmlns son también típicos de un documento \texttt{XML}, y añaden las definiciones correspondientes a los elementos \texttt{SVG} y de \texttt{xlink}. Xlink se utiliza para referenciar elementos exteriores al documento, como podrían ser imágenes, y se explicará con más detalle en secciones posteriores. El atributo preserveAspectRatio ayuda a que no se deforme la imagen con posibles redimensionamientos de la ventana, y height/width simplemente indican el tamaño de la imagen SVG (no hay que olvidar, que al fin y al cabo estamos generando una imagen de tipo SVG).
 
-Por último, para todo tipo de exploradores es necesario definir dos variables de Javascript, una que apunte al elemento principal del cual colgarán las etiquetas y otro que apunte al elemento exterior que servirá de referencia a la hora de calcular la posición exacta del ratón respecto al documento. En VML ambos elementos pueden ser el mismo, por lo tanto teniendo un div sería suficiente. Para SVG, sin embargo es necesario que la etiqueta SVG esté contenida dentro de una etiqueta DIV.
+Por último, para todo tipo de navegadores es necesario definir dos variables de Javascript, una que apunte al elemento principal del cual colgarán las etiquetas y otro que apunte al elemento exterior que servirá de referencia a la hora de calcular la posición exacta del ratón respecto al documento. En VML ambos elementos pueden ser el mismo, por lo tanto teniendo un div sería suficiente. Para SVG, sin embargo es necesario que la etiqueta SVG esté contenida dentro de una etiqueta DIV.
 
-Este concepto puede parecer en principio confuso, pero es fácilmente entendible conociendo lo que es el \texttt{DOM} (Document Object Model).
-\texttt{mainElem} sería ahora, a su vez, un objeto, con una serie de atributos y métodos. La razón por la cual se necesitan dos variables distintas es porque, en el caso de SVG, los elementos deben colgar de dicha etiqueta, con lo cual seberán realizar llamadas al método \texttt{appendChild} de dicho objeto, pero por desgracia, solo ciertos objetos del DOM tienen los atributos \texttt{offsetLeft} y \texttt{offsetTop}, que servirán para averiguar la posición del ratón de forma precisa. La etiqueta DIV, al ser un elemento de posicionamiento natural en XHTML, si dispone de dichos atributos. 
+Este concepto puede parecer en principio confuso, pero es fácilmente explicable entendiendo bien el \texttt{DOM} (Document Object Model).
+\texttt{mainElem} sería ahora, a su vez, un objeto, con una serie de atributos y métodos. La razón por la cual se necesitan dos variables distintas es porque, en el caso de SVG, los elementos deben colgar de dicha etiqueta, con lo cual seberán realizar llamadas al método \texttt{appendChild} de dicho objeto, pero por desgracia, solo ciertos objetos del DOM tienen los atributos \texttt{offsetLeft} y \texttt{offsetTop}, que servirán para averiguar la posición del ratón de forma precisa. La etiqueta DIV, al ser un elemento de posicionamiento natural en XHTML, si dispone de dichos atributos, pero no la etiqueta \texttt{SVG}.
 
 Las dos variables a definir son \texttt{mainElem} y \texttt{container}.
 
