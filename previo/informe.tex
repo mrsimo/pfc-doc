@@ -3,6 +3,8 @@
 \usepackage [T1]{fontenc}
 \usepackage [utf8]{inputenc}
 \usepackage {anysize}
+\usepackage {graphicx}
+\usepackage [pdfborder = 0 0 0]{hyperref}
 \begin{document}
 \author{Albert Llop}
 \title{\Huge{\textbf{Proyecto de Fin de Carrera} \\ Pizarra Web Compartida}}
@@ -65,7 +67,7 @@ Se considera una pizarra como un lugar donde poder escribir, dibujar, al cual se
 \end{description}
 
 \section{Trabajo realizado}
-El proyecto ya ha pasado por las fases de especificación, diseño, y está muy avanzado en cuanto a lo que implementación se refiere. Se ha realizado un trabajo previo de estudio de las diferentes posibilidades que existen para implementar una web; se han seleccionado unas tecnologías con las que implementar dicha web, y se han establecido unas pautas a seguir para tener un desarrollo controlado.
+El proyecto ya ha pasado por las fases de especificación, diseño, y está muy avanzado en cuanto a lo que implementación se refiere. Se ha realizado un trabajo previo de estudio de las diferentes posibilidades que existen para implementar una web; se han seleccionado unas tecnologías con las que implementar dicha web, y se han establecido unas pautas a seguir para tener un desarrollo pautado.
 
 Las tecnología seleccionada para implementar el sistema de la web es Ruby on Rails, además del típico XHTML + CSS. En cuanto a la pizarra en si, se han descartado opciones bastante obvias como podía ser Adobe Flash, optando por usar una mezcla de Javascript y gráficos vectoriales, VML para Internet Explorer, y SVG para el resto de navegadores.
 
@@ -76,8 +78,25 @@ En cuanto a la pizarra, se ha implementado un \textbf{motor de renderizado} tota
 \section{Planificación del trabajo por realizar}
 La implementación de la web está muy avanzada, con todo prácticamente funcional al 100\%. El sistema necesita un trabajo de Testing para mejorar algunos aspectos de usabilidad (sobretodo para usuarios no familiarizados con el proyecto), y siempre es posible realizar mejoras. En cuanto a la pizarra, existen algunos bugs conocidos, sobretodo de compatibilidad entre navegadores (especialmente Internet Explorer). Se tienen que solucionar, y realizar pruebas de sincronismo entre más de dos personas.
 
-La mayor parte del trabajo que falta por realizar es de documentación. Los capítulos de trabajo previo han sido redactados, y solo se ha comenzado a redactar el resto recientemente. Espero enfocar la documentación en dos áreas diferentes. Primero, en comentar el proceso de implementación, comentando los problemas que han surgido, las soluciones que se han encontrado, y describiendo el resultado final.
+Se adjunta un diagrama de Gantt con la esperada planificación esperada de los próximos meses. Buena parte del testing será realizada por compañeros que se han ofrecido voluntarios a probar la web, por ello se ven dos líneas de trabajo a la vez. Se pueden ver dos líneas de trabajo también al principio, pues son tareas más bien pequeñas que afectan a ambas partes del proyecto (sistema e interfaz) que espero ir realizando conjuntamente. Como se puede ver, la idea es dejar listo el código a finales de Noviembre.
 
-Segundo, aún siendo un proyecto en su mayoría práctico, se ha tenido que realizar una tarea de investigación bastante peculiar. En cuanto a la pizarra, todo el área del manejo de gráficos vectoriales carece totalmente de documentación, con muy pocas aplicaciones online utilizando SVG o VML para algo más que gráficos estáticos. Y en cuanto a la parte del sistema, habiendo implementado la web en Ruby on Rails, se ha entrado totalmente en lo que es el desarrollo web moderno. Gracias a Frameworks como este, se ha conseguido que el desarrollo de páginas web haya pasado de ser un trabajo bastante artesanal, a algo mucho más estructurado, con la posibilidad de aplicar los conocimientos típicos del desarrollo de aplicaciones clásicas. Querría pues, realizar un ejercicio de reflexión sobre la situación del desarrollo web en los tiempos actuales.
+La mayor parte del trabajo que falta por realizar es de documentación. Los capítulos de trabajo previo han sido redactados, y solo se ha comenzado a redactar el resto recientemente. Espero enfocar la documentación en dos áreas diferentes. Primero, en comentar el proceso de implementación, comentando los problemas que han surgido, las soluciones que se han encontrado, describiendo el resultado final, con un capítulo extra dedicado a comentar las posibles mejores que se podrían implementar, viabilidad comercial, y los pasos y requisitos a seguir si se quisiera acabar lanzando la web públicamente como un servicio. Para todo esto se espera dedicar todo el mes de Diciembre.
+
+Segundo, aún siendo un proyecto en su mayoría práctico, se ha tenido que realizar una tarea de investigación bastante peculiar. En cuanto a la pizarra, todo el área del manejo de gráficos vectoriales carece de documentación alguna, con muy pocas aplicaciones online utilizando SVG o VML para algo más que gráficos estáticos. Y en cuanto a la parte del sistema, habiendo implementado la web en Ruby on Rails, se ha entrado totalmente en lo que es el desarrollo web moderno. Gracias a Frameworks como éste, se ha conseguido que el desarrollo de páginas web haya pasado de ser un trabajo bastante artesanal, a algo mucho más estructurado, con la posibilidad de aplicar los conocimientos típicos del desarrollo de aplicaciones clásicas. Querría pues, realizar un ejercicio de reflexión sobre la situación del desarrollo web en los tiempos actuales. Estos dos capítulos están pensados ser redactados las dos primeras semanas de Enero.
+
+El diagrama a tamaño completo puede encontrarse también en
+
+\url{http://simo.ws/ganttfinalbig.jpg}
+\newpage
+
+\begin{figure}[ht]
+\centering
+\includegraphics[angle=90,totalheight=1\textheight]{ganttfinal1.jpg}
+\includegraphics[angle=90,totalheight=1\textheight]{ganttfinal2.jpg}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\end{figure}
 
 \end{document}
