@@ -151,7 +151,7 @@ Los atributos que se pueden consultar mediante la \textbf{variable de estado} (\
 \caption{Esquema de distancias de los distintos elementos}\label{fig:mouse_pointer}
 \end{figure}
 
-La figura \ref{fig:mouse_pointer} muestra un pequeño esquema de estas distancias. Mediante estos tres tipos atributos es posible averiguar la posición del ratón respecto al DIV contenedor, sea cual sea la situación de la página, con estas instrucciones.
+La figura \ref{fig:mouse_pointer} muestra un pequeño esquema de estas distancias. Mediante estos tres tipos atributos es posible averiguar la posición del ratón respecto al DIV contenedor, sea cual sea la situación de la página, con estas instrucciones.
 
 \begin{verbatim}
 //IE
@@ -162,12 +162,58 @@ x = e.clientX - container.offsetLeft + window.pageXOffset;
 y = e.clientY - container.offsetTop + window.pageYOffset;
 \end{verbatim}
 
-Con estos conocimientos ya es posible programar las herramientas de línea, trazo de lápiz, elipse y caja, que son la base de lo que este proyecto pretendía. El código de la implementación se puede encontrar en el anexo. 
+Con estos conocimientos ya es posible programar las herramientas de línea, trazo de lápiz, elipse y caja, que son la base de lo que este proyecto pretendía. El resto del trabajo necesario para programar estas herramientas es de puesta en práctica de estos apartados, y no se considera importante destacar nada más. El código de la implementación se puede encontrar en el anexo.
 
 % subsubsection donde_esta_el_raton (end)
 
 % subsection eventos_de_ratón (end)
 
+\subsection{Introducción de texto} % (fold)
+\label{sub:introduccion_de_texto}
 
+El método tradicional para introducir texto en páginas web, es mediante los elementos de formulario \texttt{input} de tipo \texttt{text} o los llamados \texttt{textarea}. Para esta situación el más adecuado será el \texttt{textarea} puesto que el otro es simplemente una línea, y los \texttt{textarea} se pueden redimensionar a voluntad.
+
+El efecto que se quiere lograr es el de crear un pequeño recuadro donde escribir, y al hacer click fuera o pulsar tabulador, este texto pase a formar parte del documento. Existe un requisito importante, y es que la posición del dexto mientras se escribe, y cuando se introduzca \emph{definitivamente}, debe ser la misma, para así no confundir al usuario.
+
+Este proceso difiere del resto de herramientas por necesitar de dos pasos distintos, uno para crear un \texttt{textarea} en alguna posición, y otro pra acabar agregándolo finalmente.
+
+\subsubsection{Generación de un textarea} % (fold)
+\label{ssub:generacion_de_un_textarea}
+En este caso, la creación del elemento no será en el evento \texttt{mousedown}, puesto que los usuarios están acostumbrados que las cosas suceden al soltar el botón del ratón, no al pulsarlo. Al detectar un evento de tipo \texttt{mouseup} con la herramienta de texto seleccionada, y siempre y cuando se haya clicado antes dentro del contenedor, se crea diámicamente eset textarea, posicionado mediante CSS con origen en la posición del ratón.
+
+% subsubsection generación_de_un_textarea (end)
+
+\subsubsection{Introducción del texto} % (fold)
+\label{ssub:introduccion_del_texto}
+Para poder averiguar cuando el usuario quiere dejar de escribir e introducir el texto en el documento, hay que simular de alguna manera las distintas posibilidades por las que un usuario puede pretender hacer esto. Lo más intuitivo es que esto suceda cuando el elemento pierda el \texttt{focus}, es decir, cuando se clique fuera o se pulse tabulador. La forma de asegurarse que esto sucede es capturando los eventos \texttt{change} y \texttt{blur}, además de mediante los eventos que ya se capturan de mousedown y mouseup.
+
+Al detectar este suceso, se genera un nuevo DIV, que estará anidado dentro de del contenedor igual que el resto de elementos, y posicionado mediante CSS en el mismo lugar en el que estaba el \texttt{textarea}, con la misma fuente, tamaño y color.
+
+
+% subsubsection introducción_del_texto (end)
+
+% subsection introducción_de_texto (end)
+
+\subsection{Goma de borrar} % (fold)
+\label{sub:goma_de_borrar}
+
+Existen dos vertientes diferentes a la hora de plantear la goma de borrar. La funcionalidad típica a la que se está acostumbrado en los programas de dibujo, es a la de una goma que, de forma inversa a lo que sería el lápiz, borra solamente el trozo por el que se pasa por encima. Esta vertiente, por el tipo de datos con los que se está trabajando, sería extremadamente difícil de implementar, pues al pasar por en medio de un elemento, se debería detectar en qué punto ha pasado, y dividir los elementos en múltiples trazos (si son líneas o trazos de lápiz), o prácticamente imposible de representar si se tratara de una caja o una elipse.
+
+La otra vertiente, más usada en los programas de pizarra compartida por la sencillez, tanto para el programador, como para el usuario, es la una goma de borrar que no elimina solo aquellas zonas por las que pasa, sino que elimina el elemento entero. Situándose en la posición del usuario que está utilizando esta pizarra para acompañar sus explicaciones, la situación clásica es la de estar resaltando distintos elementos de la página, que luego querrá eliminar para seguir su explicación. Tener la facilidad de clicar en el elemento, y que este desaparezca por completo, sería muy práctico, y posiblemente la mejor solución.
+
+Existen múltiples formas de enfocar este problema, puesto que es posible capturar eventos del ratón en cualquiera de los elementos que se generan, no solamente en el contenedor. Sin embargo, se considera que esto es excesivamente complejo, y que gracias al atributo \texttt{target} de la \textbf{variable de estado} del evento, es posible solucionar todos los problemas con los eventos que ya se capturaban con anterioridad.
+
+Suponiendo que se tiene la herramienta de goma de borrar seleccionada, y que se quiere borrar algo que está en un punto donde coincide, por ejemplo, un círculo y una línea. El círculo se ha dibujado después de la línea, por lo tanto está por encima, así que lo más lógico es que se borrara primero. Al hacer click, el evento se generará en el elemento círculo, pues es el que está visible en ese momento, pero tal y como se ha explicado en la sección \textbf{¿Cómo capturarlos? }\ref{ssub:como_capturarlos}, este evento irá saltando de superior al inferior, llegando, en efecto, a los eventos que se capturan en el contenedor o en la etiqueta \texttt{body}.
+
+Una vez más, mediante la \texttt{variable de estado} es muy fácil saber cuál fue el objeto que generó el evento originalmente, a pesar de que en ese momento se esté tratando el evento de un elemento \emph{inferior}. Y una vez más, existe un conflicto entre los atributos generados por \texttt{IE}, y los atributos generados por el resto de navegadores.
+
+\begin{verbatim}
+// IE
+event.srcElement
+// SVG
+event.target
+\end{verbatim}
+
+% subsection goma_de_borrar (end)
 
 % section javascript_dibujo (end)

@@ -17,7 +17,7 @@ Así pues, los pasos que se han seguido son los siguientes:
 	\item Funcionalidades extra: Impresión de documentos.
 \end{enumerate}
 
-\subsection{Javascript: Consideraciones previas}
+\section{Javascript: Consideraciones previas}
 Debido a las razones explicadas anteriormente, se deduce que Javascript es un lenguaje un tanto peculiar. Su sintaxis en la misma en todos los navegadores, pero no su DOM (Document Object Model), el cual suele cambiar sutilmente de uno a otro. Estas diferencias han hecho que tradicionalmente, saber programar en Javascript signifique conocer en profundidad dichas diferencias, y la forma en que evitarlas.
 
 Los navegadores ``proveen'' a Javascript con dicho DOM, que no es más que una serie de objetos, a modo de librería, con los que poder consultar o modificar cualquier cosa. Por ejemplo, en cualquier momento se puede acceder a los objetos \texttt{navigator, document, window, location, screen}, etc, los cuales contienen una serie de atributos y métodos que se pueden consultar o ejecutar. Por ejemplo, el atributo \texttt{appName} del objeto \texttt{navigator} devuelve una cadena de texto con el identificador del navegador. Así, una forma sencilla de diferenciar los navegadores IE del resto sería mediante una línea como la siguiente:
