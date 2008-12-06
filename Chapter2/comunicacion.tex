@@ -1,5 +1,5 @@
 %!TEX root = /Users/simo/Documents/PFC/Chapter2/chapter2.tex
-\section{Javascript: Comunicación} % (fold)
+\section{Comunicación} % (fold)
 \label{sec:javascript_comunicacion}
 En estos momentos ya es posible renderizar gráficos vectoriales, así como poder dibujarlos de forma interactiva. Es, a efectos prácticos, una \textbf{Pizarra Web}, faltando solo hacerla compartida. Para conseguir esto se han de conseguir dos funcionalidades básicas:
 
@@ -56,7 +56,7 @@ De la misma forma, se puede utilizar la versión más completa de las funciones 
 este comando crearía una solicitud HTTP como la que se genera cuando se rellena un formulario, mandándola mediante POST, con los atributos especificados en data. Lógicamente es necesario un sistema que sea capaz de entender todas estas solicitudes, pero por ahora este capítulo se centrará en como el Javascript tratará todas las comunicaciones necesarios con el servidor, suponiendo siempre que existe el sistema que actuará de forma adecuada.
 
 \newpage
-\subsubsection{Crear y destruir elementos} % (fold)
+\subsection{Crear y destruir elementos} % (fold)
 \label{ssub:crear_y_destruir_elementos}
 
 Esta parte es la más sencilla, puesto que solo es necesario comunicar al servidor de los cambios realizados por el usuario en concreto. En todos los casos está muy claro cuando se crea un elemento, y cuando se elimina, por tanto, ese será el momento de comunicarlo. 
@@ -118,23 +118,39 @@ En este caso, cuando la consulta finaliza y es satisfactoria, y suponiendo que e
 utilizando, como ya se había comentado anteriormente, los atributos \texttt{srcElement} y \texttt{target} de la \textbf{variable de estado}, para saber con qué elementos se estaba tratando.
 
 % subsubsection crear_y_destruir_elementos (end)
-
-\subsubsection{Sincronización entre usuarios} % (fold)
+\newpage
+\subsection{Sincronización entre usuarios} % (fold)
 \label{ssub:sincronizacion_entre_usuarios}
 
 Uno de los mayores retos a los que se enfrenta esta aplicación, es mantener a todos los usuarios sincronizados. Hasta este momento es posible mantener al servidor informado de la creación y eliminación de elementos, pero no es posible informar al resto de usuarios de dichas acciones. En el caso de aplicaciónes típicas, con un paradigma cliente-servidor en que el servidor pudiera iniciar transferencias de información, lo lógico sería que cuando hubiera algún cambio, el servidor informara al resto de clientes de los cambios.
 
-Sin embargo, en el caso de una página web, esto no es posible. No hay ninguna posibilidad de que el servidor establezca una conexión con el usuario por iniciativa propia, y por tanto la única solución restante es realizar consultas periódicas en busca de nuevos cambios. El tiempo entre consulta y consulta, así como la latencia entre el servidor y el cliente, definirá el tiempo máximo entre la creación de un elemento y el momento en que el resto de usuarios es consciente de los cambios.
+Sin embargo, en el caso de una página web, esto no es posible. No hay ninguna posibilidad de que el servidor establezca una conexión con el usuario por iniciativa propia, y por tanto la única solución restante es realizar consultas periódicas en busca de nuevos cambios. El tiempo entre consulta y consulta, así como la latencia entre el servidor y el cliente, son los factores que definen el tiempo entre que se realiza un cambio y el momento en que el resto de usuarios es consciente de ello.
 
-$tMin > 2tLatencia$
-$tMax < 2tLatencia + tIntervalo$
+Teniendo en cuenta que la latencia es un parámetro incontrolable, la única posibilidad para mejorar los tiempos es cambiar el tiempo entre una consulta y otra. Existen dos estrategias posibles para esto, ambas perfectamente viables, aunque adecuadas para diferentes necesidades.
 
-%Suponiendo unos recursos ilimitados por parte del servidor, con tiempo de procesamiento de la página de 0ms, siempre habría un tiempo mínimo limitado por lalatencia. Sin embargo este planteamiento no es realista. Crear nuevas solicitudes cuando aún no se sabe el restultado de anteriores, puede generar una serie de problemas, especialmente por
+\subsubsection{Realizar peticiones cada periodo de tiempo fijo} % (fold)
+\label{ssub:nunca_tener_más_de_una_petición_pendiente}
+El enfoque más directo y más logico en un primer acercamiento al problema, es ir lanzando peticiones periódicamente, sin importar que peticiones anteriores hayan sido contestadas ya o no. Suponiendo una latencia de unos 200ms entre servidor y usuario, el tiempo de estabilidad $t_e$ será de $ 2t_l < t_e > 2t_l + t_r$ con $t_l$ siendo la latencia y $t_r$ el tiempo entre peticiones. Este enfoque permite personalizar al máximo el comportamiento de la aplicación, pudiendo tener mejores tiempos si se dispone de recursos suficientes, o empeorándolos en caso contrario.
 
-%El tiempo de latencia no es posible de mejorar más que asegurándose de estar lo más cerca posible de los usuarios, y que los usuarios tengan una buena conexión. El tiempo entre solicitudes si que es reducible, pero hasta cierto punto, pues se corre el riesgo de saturar el servidor con un exceso de solicitudes. Suponiendo una latencia de 200ms, y un intervalo entre latencia y latencia de 0ms (se crea una nueva en cuanto se recibe la anterior), se puede llegar a tener un tiempo de un segundo. 
+Sin embargo, este enfoque produce una serie de problemas asociados al hecho de tener conexiones simultáneas pendientes. Debido a que la latencia no es un número fijo, y por tanto es posible completar peticiones en orden distinto al que se han generado, se debería realizar todo un control de paquetes semejante al realizado por TCP en las redes de datos, para permitir un comportamiento adecuado de la aplicación.
 
+\begin{quotation}
+  Un elemento es creado en momento $0$ por el usuario $u1$. El servidor, debido a la latencia, recibe notificación del cambio en el momento $10$. Mientras tanto, el usuario $u2$, ha ido mandando peticiones cada unidad de tiempo, pero debido a la inestabilidad de la red, recibe primero el resultado de una petición que llegó al servidor en el momento $11$, antes que otra que había llegado al servidor en el momento $9$. Debido a ello, primero recibe notificación de borrar el elemento, puesto que ya no está, y después la segunda notificación le informa de que aún sigue ahí.
+\end{quotation}
 
+Este es solo el primero de varios problemas posible, sin tener en cuenta que varios usuarios pueden agregar o eliminar elementos al mismo tiempo, cambiar de página, o que el servidor se caiga y se deje de recibir contestaciones. No es, ni mucho menos, una tarea imposible de realizar, pero si requiere de un grado de control extra.
 
+% subsubsection nunca_tener_más_de_una_petición_pendiente (end)
+
+\subsubsection{Una petición a la vez} % (fold)
+\label{ssub:una_peticion_a_la_vez}
+Otro enfoque posible es el de ir realizando peticiones contínuas, pero siempre una detrás de otra. Es decir, generando la petición, procesando la respuesta, y generando una petición inmediatamente después. Con este planteamiento es posible ignorar la mayoría de problemas de sincronización comentados, y permitirá una menor carga por parte tanto del servidor como del navegador del usuario. El tiempo de estabilidad en este caso, sería de $ 2t_l < t_e > 4t_l$ . De nuevo, tomando una latencia media de 200ms, se baraja un $t_e$ de casi un segundo.
+
+Comparando con la estrategia anterior, sin embargo, se puede observar que esta diferencia no es tan acentuada. Un planteamento realista no contemplaría más de cuatro o cinco peticiones por segundo, en cuyo caso se estaría hablando de nuevo, de un $t_r$ de 200ms, con lo cual se estaría en un $t_e$ entre 400ms y 600ms (500ms de media). Comparado con esta segunda estrategia, en la cual se maneja un $t_e$ de entre 400 y 800ms (600ms de media), solo se obtendría un beneficio de unos 100ms de media, además de reducir de $5$ peticiones por segundo a $2,5$.
+
+Con una diferencia tan pequeña, no se considera necesario el esfuerzo necesario para mantener un sistema con el primer enfoque, y que el segundo, siendo más sencillo y robusto, permitirá una mayor fiabilidad del código.
+
+% subsubsection una_peticion_a_la_vez (end)
 
 % subsubsection sincronización_entre_usuarios (end)
 
