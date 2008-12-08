@@ -43,8 +43,10 @@ En cuanto a modelos, se cree necesario crear un nuevo controlador para todas las
 \subsection{Implementación} % (fold)
 \label{sub:implementación}
 
-A pesar de la nueva complejidad de las clases introducidas (tres nuevas clases, con un total de seis nuevas relaciones), el proceso de traducción de este diagrama a clases es púramente burocrático. El peso de controlar las restricciones dejadas atrás por la normalización recae sobre los controladores, que a la hora de invitar a gente se deberá comprobar que no sea miembro y que no haya sido invitado ya.
+A pesar de la nueva complejidad de las clases introducidas (tres nuevas clases, con un total de seis nuevas relaciones), el proceso de traducción de este diagrama a clases es púramente burocrático. El peso de controlar las restricciones dejadas atrás por la normalización recae sobre los controladores, que a la hora de invitar a gente se deberá comprobar que no sea miembro y que no haya sido invitado ya, todo sostenido sobre un Scaffold para los grupos, de la misma forma que se ha hecho con los documentos, pero con un pequeño extra de complejidad.
+
+La forma de organizar todas estas nuevas funcionalidades es mostrando una lista de grupos (acción \texttt{index} del Scaffold) dentro del panel de control, de la misma forma que los documentos, y que al ir a editar un grupo se muestre un formulario si eres administrador, o una vista simple si no se es. De la misma forma, el pequeño formulario para invitar a gente solo aparecerá si el usuario es administrador. En cuanto a los usuarios invitados, cuando se entre en el panel, en caso de que haya sido invitado a algún grupo, se le mostrará un mensaje con el nombre de usuario de la persona que ha invitado y el nombre del grupo, con opción de aceptar o rechazar.
 
 % subsection implementación (end)
 
-% section secundo_ciclo (end)
+% section tercer_ciclo (end)
