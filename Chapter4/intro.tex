@@ -1,0 +1,126 @@
+%!TEX root = /Users/simo/Documents/PFC/Chapter4/chapter4.tex
+\section{Introducción} % (fold)
+\label{sec:introducccion}
+
+El desarrollo de aplicaciones web mediante Frameworks del estilo de Ruby on Rails necesita de ciertas medidas a la hora de realizar su \texttt{deploy} (instalación y puesta en marcha) en los servidores donde se va a acabar sirviendo la aplicación finalmente. Existen múltiples posibilidades, pero siempre hay que tener en cuenta que, las aplicaciones, para poder funcionar, necesitan cargar una serie de librerías en memoria, que son la que realizan todo el trabajo. En este capítulo se comentarán las posibilidades existenten a la hora de realizar el llamado deploy de una aplicación Rails, y más específicamente ésta.
+
+\section{Configuración básica del servidor} % (fold)
+\label{sub:configuracion_basica_del_servidor}
+
+Ruby es un lenguaje bastante novedoso, y aunque cada vez más las distribuciones modernas de sistemas UNIX tran por defecto soporte para este lenguaje, es posible que en instalaciones clásicas dicho soporte no exista. Por tanto, es necesario realizar una instalación previa, necesaria para cualquier técnica usada a posteriori para servir la aplicación. En todos los pasos se incluirán opciones alternativas para las distribuciones que utilizan APT (como Debian y Ubuntu) y las que utilizan RPM (mediante YUM, como Fedora o CentOS, distribuciones muy comunes en configuraciones de servidores web).
+
+\subsection{Ruby} % (fold)
+\label{ssub:ruby}
+
+Es posible instalar el soporte para Ruby de múltiples maneras \footnote{A fecha de escritura de este capítulo, Ruby on Rails recomienda el uso de Ruby 1.8.7, aunque las versiones 1.8.6, 1.8.5 y 1.8.4 son funcionales. http://rubyonrails.org/down}. El objetivo, sea cual sea el procedimiento, es que al ajecutar la línea \texttt{ruby -v} se obtenga una línea del estilo de:
+
+\begin{verbatim}
+  $ ruby -v
+  ruby 1.8.7 ...
+\end{verbatim}
+
+\subsubsection{Compilando las fuentes} % (fold)
+\label{ssub:compilando_las_fuentes}
+
+ La primera de ellas, compilando las fuentes :
+
+\begin{verbatim}
+  $ wget http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7.tar.gz
+  $ tar xvzf ruby-1.8.7.tar.gz
+  $ cd ruby-1.8.7.tar.gz
+  $ ./configure
+  $ make
+  # make install
+\end{verbatim}
+
+A partir de aquí, es recomendable realizar un enlace simbólico de forma que el comando \texttt{ruby} ejecute esta versión, puesto que suele instalarse como \texttt{ruby1.8}
+
+% subsubsection compilando_las_fuentes (end)
+
+\subsubsection{APT} % (fold)
+\label{ssub:apt}
+
+Es necesario instalar los siguientes paquetes.
+
+\begin{verbatim}
+  # apt-get install ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 \
+                    libreadline-ruby1.8 libruby1.8 libopenssl-ruby
+\end{verbatim}
+
+% subsubsection apt (end)
+
+\subsubsection{RPM} % (fold)
+\label{ssub:rpm}
+
+Existe un repositorio creado por la comunidad, con diferentes paquetes necesarios para el soporte de ruby en sistemas compatibles con YUM. Para añadir este repositorio, editar el archivo \texttt{/etc/yum.repos.d/ruby.repo} y añadir:
+
+\begin{verbatim}
+  [ruby]
+  name=ruby
+  baseurl=http://repo.premiumhelp.eu/ruby/
+  gpgcheck=0
+  enabled=1
+\end{verbatim}
+
+Posteriormente es posible instalar los paquetes necesarios:
+
+\begin{verbatim}
+  # yum install ruby ruby-devel ruby-docs
+\end{verbatim}
+
+En caso de no estar disponible dicho repositorio, sería fácil encontrar dichos RPM's en algún otro repositorio. Los binarios incluidos en este repositorio a fecha de la escritura de este documento, referentes al soporte de Ruby son los siguientes:
+
+\begin{verbatim}
+  ruby-1.8.6.111-1.i686.rpm
+  ruby-devel-1.8.6.111-1.i686.rpm
+  ruby-docs-1.8.6.111-1.i686.rpm
+  ruby-irb-1.8.6.111-1.i686.rpm
+  ruby-libs-1.8.6.111-1.i686.rpm
+  ruby-mode-1.8.6.111-1.i686.rpm
+  ruby-mysql-2.7.4-1.i686.rpm
+  ruby-postgres-0.7.1-6.i686.rpm
+  ruby-rdoc-1.8.6.111-1.i686.rpm
+  ruby-ri-1.8.6.111-1.i686.rpm
+  ruby-tcltk-1.8.6.111-1.i686.rpm
+\end{verbatim}
+
+% subsubsection rpm (end)
+
+% subsubsection ruby (end)
+
+\subsection{RubyGems} % (fold)
+\label{sub:rubygems}
+
+Una Gem es el formato standard para distribuir librerías de todo tipo para Ruby. RubyGems es la vía standard de distribución de dichas Gems, y funciona de una forma similar a APT o YUM, en cuanto a que es posible buscar, instalar y desinstalar Gems mediante instrucciones en la línea de comandos, descargando automáticamente los archivos necesarios de los repositorios públicos.
+
+En este caso, y teniendo instalado el soporte para Ruby, para instalar RubyGems es necesario bajar la última versión de la web oficial del proyecto \footnote{http://rubyforge.org/projects/rubygems/}, y instalar mediante \footnote{A fecha de la escritura de este capítulo, la última versión de RubyGems es 1.3.1}:
+
+\begin{verbatim}
+  $ tar xvzf rubygems-1.3.1.tgz
+  $ cd rubygems-1.3.1.tgz
+  # ruby setup.rb --no-rdoc --no-ri
+\end{verbatim}
+
+RubyGems se instalará automáticamente en el sistema, pudiéndose comprobar con una instrucción semejante a la necesaria con Ruby:
+
+\begin{verbatim}
+  $ gem -v
+  1.3.1
+\end{verbatim}
+
+% subsection rubygems (end)
+
+% subsection configuracion_basica_del_servidor (end)
+
+\section{FastCGI} % (fold)
+\label{sub:fastcgi}
+
+CGI, o \emph{Common Gateway Interface} es un protocolo para permitir la comunicación entre servidores web y aplicaciones funcionando en procesos separados, que se inician al principio de una petición web, y se paran al servir la petición. FastCGI es una variación de CGI que lo mejora en varios aspectos.
+
+Mediante CGI es posible ejecutar cualquier tipo de proceso desde un servidor web, y suele ser la forma de tener funcionando scripts en lenguajes varios, como Perl o Python. También es posible ejecutar código PHP, por ejemplo, pero existen otras alternativas para PHP dada la popularidad del lenguaje en entornos web, más expecíficas y por tanto, más eficientes.
+
+CGI se ha utilizado desde el principio para servir código en Ruby, y toda aplicación en Ruby on Rails viene iniciada con soporte para CGI y FastCGI. Generalmente, realizar un deploy 
+
+% subsection fastcgi (end)
+
+% section introduccion (end)
