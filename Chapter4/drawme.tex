@@ -1,0 +1,127 @@
+%!TEX root = /Users/simo/Documents/PFC/Chapter4/chapter4.tex
+\section{Esta aplicación en particular} % (fold)
+\label{sec:esta_aplicacion_en_particular}
+
+La aplicación está online de forma pública \footnote{http://github.com/albertllop/pfc} desde el hosting de repositorios GIT github \footnote{http://github.com}. Es posible descargar el código mediante el enlace de descarga incluido en la página de la aplicación, o descargando el código directamente mediante git:
+
+\begin{verbatim}
+  $ git clone git://github.com/albertllop/pfc.git
+\end{verbatim}
+
+Se recomienda la segunda metodología para facilitar una actualización futura más sencilla del código. La mayoría de pasos a seguir a partir de aquí son comunes a cualquier otra aplicación en Ruby on Rails.
+
+\subsection{Configurar la base de datos} % (fold)
+\label{sub:configurar_la_base_de_datos}
+
+Es necesario especificar los datos para la conexión a una base de datos. El archivo en cuestión se encuentra en \texttt{/config/database.yml} y se incluye un archivo de ejemplo en \texttt{/config/database.yml.template}.
+
+\begin{verbatim}
+  # database.yml.template
+  development:
+    adapter: mysql
+    encoding: utf8
+    database: drawme_development
+    username: root
+    password: root
+    host: localhost
+    socket: /temp/mysql.sock
+
+  production:
+    adapter: mysql
+    encoding: utf8
+    database: drawme_production
+    username: root
+    password: root
+    host: localhost
+    socket: /temp/mysql.sock
+\end{verbatim}
+
+Como se observa, es posible configurar diferentes conexiones y bases de datos tanto para el entorno de desarrollo como para el de producción. Ruby on Rails soporta MySql, PostgreSQL y SQLite de forma nativa, aunque existen múltiples Gems y tutoriales para poder conectar con la mayoría de SGBD existentes \footnote{http://wiki.rubyonrails.com/rails/pages/HowtosDatabase}, como Oracle, Microsoft SQL Server o IBM DB2.
+
+Una vez configurada la base de datos todos los procesos a seguir se pueden ejecutar desde la línea de comandos. Se debe crear la base de datos en si, y generar la estructura de tablas:
+
+\begin{verbatim}
+  rake db:create RAILS_ENV=production
+  rake db:migrate RAILS_ENV=production
+\end{verbatim}
+
+El parámetro \texttt{RAILS\_ENV=production} es necesario cuando se quiere ejecutar cualquier tarea de \texttt{rake} suponiendo el entorno de producción, puesto que el entorno por defecto es el de desarrollo.
+
+% subsection configurar_la_base_de_datos (end)
+
+\subsection{Arrancando los mongrels} % (fold)
+\label{sub:arrancando_los_mongrels}
+
+Puesto que la combinación de Balanceador Proxy de Apache con varios procesos Mongrel es una de las formas más habituales de servir aplicaciones Ruby on Rails, se han incluido unas tareas \texttt{Rake} para ayudar con el proceso. Se debe editar el archivo de configuración \texttt{/config/mongrel\_cluster.yml} y cambiar dos valores, \texttt{port} y \texttt{servers}:
+
+\begin{verbatim}
+  # mongrel_cluster.yml
+  --- 
+  port: 3000
+  servers: 2
+  log_file: log/mongrel.log
+  environment: production
+  pid_file: tmp/pids/mongrel.pid  
+\end{verbatim}
+
+El parámetro \texttt{port} sirve para indicar el puerto en que iniciar los procesos, y el parámetro \texttt{servers} para indicar cuantos procesos iniciar. En este caso, se iniciarían dos instancias mongrel en los puertos \texttt{3000} y \texttt{3001}.
+
+Las tareas en si son las siguientes:
+
+\begin{verbatim}
+  rake servers:start
+  rake servers:stop
+  rake servers:restart
+\end{verbatim}
+
+Las cuales inician, paran, o reinician los procesos automáticamente.
+
+% subsection arrancando_los_mongrels (end)
+
+\subsection{Configurando SSL} % (fold)
+\label{sub:configurando_ssl}
+
+Una aplicación Ruby on Rails no difiere de cualquier otra en cuanto a su soporte para SSL. Dado que, en los ejemplos contemplados, se presupone una configuración con Apache recibiendo las peticiones (tanto con FastCGI, mod\texttt{\_rails} o Mongrels), es posible implementar el soporte para conexiones seguras directamente en la configuración del site de Apache. El procedimiento más sencillo es duplicando la configuración incluyendo el puerto de SSL y los parámetros adecuados.
+
+\begin{verbatim}
+  <VirtualHost *:443>
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/cert.pem
+
+    DocumentRoot /path/to/application/public
+
+    RewriteEngine On
+
+    <Proxy balancer://app>
+      BalancerMember http://127.0.0.1:3000
+      BalancerMember http://127.0.0.1:3001
+    </Proxy>
+    
+    # Redirect all non-static requests
+    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+    RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+
+    ProxyPass / balancer://app/
+    ProxyPassReverse / balancer://app/
+    ProxyPreserveHost on
+
+  </VirtualHost>
+\end{verbatim}
+
+De este modo se tendría soporte en toda la aplicación para SSL. Puesto que se ha establecido que el soporte SSL sería opcional, no se requieren más pasos. En caso de querer añadir SSL como un requisito para usar alguna funcionalidad de la web, o que esté disponible solo en algunas acciones, se podría realizar mediante el plugin \texttt{ssl_requirement} \footnote{http://dev.rubyonrails.org/svn/rails/plugins/ssl_requirement/}, soportado oficialmente por Ruby on Rails, pero no incluído en el núcleo de funcionalidades de Rails.
+
+\begin{verbatim}
+  # Instalar el plugin
+  $ script/plugin install ssl_requirement
+  
+  # Requerir SSL para las acciones login y panel del controlador user_controller.rb
+  ssl_required :login, :panel
+  
+  # Ofrecer la posibilidad de utilizar SSL para las acciones login y panel del
+  # controlador user_controller.rb
+  ssl_allowed :login, :panel
+\end{verbatim}
+
+% subsection configurando_ssl (end)
+
+% section esta_aplicacion_en_particular (end)
