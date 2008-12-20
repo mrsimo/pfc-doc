@@ -2,7 +2,7 @@
 \section{Esta aplicación en particular} % (fold)
 \label{sec:esta_aplicacion_en_particular}
 
-La aplicación está online de forma pública \footnote{http://github.com/albertllop/pfc} desde el hosting de repositorios GIT github \footnote{http://github.com}. Es posible descargar el código mediante el enlace de descarga incluido en la página de la aplicación, o descargando el código directamente mediante git:
+La aplicación está online de forma pública \footnote{\url{http://github.com/albertllop/pfc}} desde el hosting de repositorios GIT (un sistema de control de versiones) github \footnote{\url{http://github.com}}. Es posible descargar el código mediante el enlace de descarga incluido en la página de la aplicación, o descargando el código directamente mediante git:
 
 \begin{verbatim}
   $ git clone git://github.com/albertllop/pfc.git
@@ -13,7 +13,7 @@ Se recomienda la segunda metodología para facilitar una actualización futura m
 \subsection{Configurar la base de datos} % (fold)
 \label{sub:configurar_la_base_de_datos}
 
-Es necesario especificar los datos para la conexión a una base de datos. El archivo en cuestión se encuentra en \texttt{/config/database.yml} y se incluye un archivo de ejemplo en \texttt{/config/database.yml.template}.
+Es necesario especificar los datos para la conexión a una base de datos. El archivo en cuestión se encuentra en \texttt{/config/database.yml}. Se ha incluido un archivo de ejemplo para facilitar la tarea, en \texttt{/config/database.yml.template}
 
 \begin{verbatim}
   # database.yml.template
@@ -36,7 +36,7 @@ Es necesario especificar los datos para la conexión a una base de datos. El arc
     socket: /temp/mysql.sock
 \end{verbatim}
 
-Como se observa, es posible configurar diferentes conexiones y bases de datos tanto para el entorno de desarrollo como para el de producción. Ruby on Rails soporta MySql, PostgreSQL y SQLite de forma nativa, aunque existen múltiples Gems y tutoriales para poder conectar con la mayoría de SGBD existentes \footnote{http://wiki.rubyonrails.com/rails/pages/HowtosDatabase}, como Oracle, Microsoft SQL Server o IBM DB2.
+Como se observa, es posible configurar diferentes conexiones y bases de datos tanto para el entorno de desarrollo como para el de producción. Ruby on Rails soporta MySql, PostgreSQL y SQLite de forma nativa, aunque existen múltiples Gems y tutoriales para poder conectar con la mayoría de SGBD existentes \footnote{\url{http://wiki.rubyonrails.com/rails/pages/HowtosDatabase}}, como Oracle, Microsoft SQL Server o IBM DB2.
 
 Una vez configurada la base de datos todos los procesos a seguir se pueden ejecutar desde la línea de comandos. Se debe crear la base de datos en si, y generar la estructura de tablas:
 
@@ -81,7 +81,7 @@ Las cuales inician, paran, o reinician los procesos automáticamente.
 \subsection{Configurando SSL} % (fold)
 \label{sub:configurando_ssl}
 
-Una aplicación Ruby on Rails no difiere de cualquier otra en cuanto a su soporte para SSL. Dado que, en los ejemplos contemplados, se presupone una configuración con Apache recibiendo las peticiones (tanto con FastCGI, mod\texttt{\_rails} o Mongrels), es posible implementar el soporte para conexiones seguras directamente en la configuración del site de Apache. El procedimiento más sencillo es duplicando la configuración incluyendo el puerto de SSL y los parámetros adecuados.
+Una aplicación Ruby on Rails no difiere de cualquier otra en cuanto a su soporte para SSL. Dado que, en los ejemplos contemplados, se presupone una configuración con Apache recibiendo las peticiones (tanto con FastCGI, \texttt{mod\_rails} o Mongrels), es posible implementar el soporte para conexiones seguras directamente en la configuración del site de Apache. El procedimiento más sencillo es duplicando la configuración incluyendo el puerto de SSL y los parámetros adecuados.
 
 \begin{verbatim}
   <VirtualHost *:443>
@@ -108,7 +108,7 @@ Una aplicación Ruby on Rails no difiere de cualquier otra en cuanto a su soport
   </VirtualHost>
 \end{verbatim}
 
-De este modo se tendría soporte en toda la aplicación para SSL. Puesto que se ha establecido que el soporte SSL sería opcional, no se requieren más pasos. En caso de querer añadir SSL como un requisito para usar alguna funcionalidad de la web, o que esté disponible solo en algunas acciones, se podría realizar mediante el plugin \texttt{ssl\_requirement} \footnote{http://dev.rubyonrails.org/svn/rails/plugins/ssl\_requirement/}, soportado oficialmente por Ruby on Rails, pero no incluído en el núcleo de funcionalidades de Rails.
+De este modo se tendría soporte en toda la aplicación para SSL. Puesto que se ha establecido que el soporte SSL sería opcional, no se requieren más pasos. En caso de querer añadir SSL como un requisito para usar alguna funcionalidad de la web, o que esté disponible solo en algunas acciones, se podría realizar mediante el plugin \texttt{ssl\_requirement} \footnote{\url{http://dev.rubyonrails.org/svn/rails/plugins/ssl\_requirement/}}, soportado oficialmente por Ruby on Rails, pero no incluido en el núcleo de funcionalidades de Rails.
 
 \begin{verbatim}
   # Instalar el plugin
