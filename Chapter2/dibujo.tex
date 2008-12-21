@@ -1,15 +1,15 @@
 %!TEX root = /Users/simo/Documents/PFC/Chapter2/chapter2.tex
 \section{Dibujo} % (fold)
 \label{sec:javascript_dibujo}
-La sictuación actual es de la disposición de una serie de funciones con las que generar gráficos vectoriales y modificarlos, funcionando en la gran mayoría de exploradores. Proceder a implementar unas herramientas de dibujo mediante esta librería es ahora posible. En esta sección no se pretende describir el proceso de creación de una herramienta de dibujo genérica, sino las peculiaridades de Javascript respecto a la forma en que trata los eventos, las diferencias entre navegadores, y la influencia de la estructura del documento (HTML y CSS).
+La situación actual es de la disposición de una serie de funciones con las que generar gráficos vectoriales y modificarlos, funcionando en la gran mayoría de exploradores. Proceder a implementar unas herramientas de dibujo mediante esta librería es ahora posible. En esta sección no se pretende describir el proceso de creación de una herramienta de dibujo genérica, sino las peculiaridades de Javascript respecto a la forma en que trata los eventos, las diferencias entre navegadores, y la influencia de la estructura del documento (HTML y CSS).
 
-El reto con el que uno se enfrenta inicialmente es el de conseguir capturar los eventos de ratón de forma adecuada. En los usos típicos de las herramientas deseadas, y exceptuando la introducción de texto, toda la interacción se hace mediante el ratón. Hay que recordar también, el entorno en el que estas acciones se ejecutarán: habrá un marco en la página web (un elemento DIV) dentro de el cual se podrá dibujar, y una serie de elementos externos a este marco. Esto es importante puesto que es posible que los elementos exteriores interfieran de alguna forma. Dichos elementos exteriores deberán ser los siguientes:
+El reto con el que uno se enfrenta inicialmente es el de conseguir capturar los eventos de ratón de forma adecuada. En los usos típicos de las herramientas deseadas, y exceptuando la introducción de texto, toda la interacción se hace mediante el ratón. Hay que recordar también el entorno en el que estas acciones se ejecutarán: habrá un marco en la página web (un elemento DIV) dentro de el cual se podrá dibujar, y una serie de elementos externos a este marco. Esto es importante puesto que es posible que los elementos exteriores interfieran de alguna forma. Dichos elementos exteriores deberán ser los siguientes:
 
 \begin{description}
   \item[Elementos estáticos] El nombre del documento, el link de vuelta a la web \emph{normal}, así como cualquier otro elemento estático.
   \item[Barra de herramientas] Debe haber alguna forma, lo más sencilla posible, de elegir las herramientas a usar, y de configurarlas (elegir el color, grosor y transparencia). Estos elementos pueden complicar más la tarea pues deben ser dinámicos, y controlar también eventos de ratón y/o teclado.
   \item[Lista de usuarios] Esta lista deberá ser dinámica también, puesto que los usuarios podrán entrar y salir de la pizarra, y deberá informarse al resto de usuarios activos de alguna forma. No influirá con el ratón, pero si ejecutará operaciones periódicamente, y ejercerá cambios sobre el código de la página, si bien no sobre la pizarra en si.  
-  \item[Selector de páginas] De la misma forma que la lista de usuarios, éste influirá poco en cuanto a eventos se refiero, pero será actualizado dinámicamente, y debe permitir flexibilidad por si el usuario no tiene permiso para cambiar de página.
+  \item[Selector de páginas] De la misma forma que la lista de usuarios, éste influirá poco en cuanto a eventos se refiere, pero será actualizado dinámicamente, y debe permitir flexibilidad por si el usuario no tiene permiso para cambiar de página.
 \end{description}
 
 En este momento, para dibujar, es solo necesario considerar la barra de herramientas. Más adelante, cuando se implementen más funciones, se deberá considerar cómo implementarlas, y de qué forma influencian a lo que ya se tiene.
@@ -29,7 +29,7 @@ Una segunda manera sería, mediante jQuery, con una línea como la siguiente (su
 \end{verbatim}
 Aunque aparentemente pueda parecer más complicada, es mucho más limpia en cuanto a que se separa lo que es el contenido de la web (HTML) con lo que es su comportamiento, de la misma forma que se separa su diseño utilizando CSS, y se considera poco elegante y práctico añadir estilos directamente en el código de los elementos.
 
-En cuanto al problema de la configuración de las herramientas, existen múltiples y variadas soluciones. No es posible encontrar de forma nativa una manera de seleccionar un color, o de tener una barra de desplazamiento. Las únicas herrmientas de las que se dispone en HTML para introducción de datos, son campos de texto o listas. Esto, aunque suficiente, es poco útil para el usuario, pues es más sencillo seleccionar un color de una paleta de colores que escribiendo su código RGB. De la misma forma, es más intuitivo usar una barra de desplazamiento para elegir el grosor o la transparencia, que escribiendo sus valores directamente. En otro tipo de herramientas sería interesante poder hacer estas cosas a mano, si se necesitara de más precisión, pero en esta aplicación es más prioritaria la agilidad de uso.
+En cuanto al problema de la configuración de las herramientas, existen múltiples y variadas soluciones. No es posible encontrar de forma nativa una manera de seleccionar un color, o de tener una barra de desplazamiento. Las únicas herramientas de las que se dispone en HTML para introducción de datos, son campos de texto o listas. Esto, aunque suficiente, es poco útil para el usuario, pues es más sencillo seleccionar un color de una paleta de colores que escribiendo su código RGB. De la misma forma, es más intuitivo usar una barra de desplazamiento para elegir el grosor o la transparencia, que escribiendo sus valores directamente. En otro tipo de herramientas sería interesante poder hacer estas cosas a mano, si se necesitara de más precisión, pero en esta aplicación es más prioritaria la agilidad de uso.
 
 A pesar de no existir nada directamente en HTML, existen múltiples opciones que, mediante javascript, simulan estos elementos.
 
@@ -55,7 +55,7 @@ Mediante jQuery UI \footnote{jQuery UI - http://ui.jquery.com/}, una extensión 
     $("#fill").html(ui.value);
   }});
 \end{verbatim}
-Esta función crea un slider en el elemento con id \texttt{\#fill-dialog}, con posibles valores entre el 20 y el 100, puesto de forma pre-definida a 80, que al cambiar actualiza el contenido del elemento con id \texttt{\#fill} (campo de texto mostrando el valor actual), y que al soltarse actualiza la variable \texttt{fill} con el valor seleccionado.
+Esta función crea un slider en el elemento con id \texttt{\#fill-dialog}, con posibles valores entre el 20 y el 100, puesto de forma predefinida a 80, que al cambiar actualiza el contenido del elemento con id \texttt{\#fill} (campo de texto mostrando el valor actual), y que al soltarse actualiza la variable \texttt{fill} con el valor seleccionado.
 
 \begin{figure}[h!]
 \centering
@@ -84,7 +84,7 @@ El que solo se quiera poder dibujar dentro del marco seleccionado para ello, hac
 \subsubsection{¿Cómo funcionan los eventos en Javascript?} % (fold)
 \label{ssub:como_funcionan_los_eventos}
 
-En Javascript es posible capturar eventos en cualquier elemento, y siempre sucederá de forma jerárgica según la visibilidad que se tiene de los distintos elementos. Es decir, si se tiene un trozo de código como el siguiente:
+En Javascript es posible capturar eventos en cualquier elemento, y siempre sucederá de forma jerárquica según la visibilidad que se tiene de los distintos elementos. Es decir, si se tiene un trozo de código como el siguiente:
 \begin{verbatim}
   <div>
     <p>Hola <a id="albert-link" href="/users/albert">Albert</a>, qué tal estás?</p>
@@ -93,7 +93,7 @@ En Javascript es posible capturar eventos en cualquier elemento, y siempre suced
 
 y se hace click en la palabra Albert, saltará un evento en el elemento \texttt{a}, cuando acabe de hacer lo que sea que debe hacer, y pasará a ejecutar el evento del elemento \texttt{p}, seguirá con el del \texttt{div}, y acabará con el del elemento \texttt{body}, que en cada documento HTML es el contenedor de todo lo que se ve en pantalla. Por tanto, si se quisiera capturar cualquier movimiento de ratón en la pantalla, se deberían capturar los eventos \texttt{mousemove} del elemento \texttt{body}.
 
-Por otra lado, el ejemplo anterior tiene un problema, y es que el evento \texttt{click} de todo elemento \texttt{a} lo que hace es mandar al usuario a la página que éste linka. En caso de querer, por ejemplo, en vez de mandar al usuario a la página con los detalles personales de Albert, que está en \texttt{/users/albert}, si no que queremos hacerlo más dinámico y mostrarlo directamente mediajte Javascript, se debería capturar el evento click de dicho elemento, y realizar lo necesario (una llamada por ajax, creación o modificación de otro elemento para mostrar la información, etc). Pero el comportamiento de los eventos en Javascript, por defecto, al acabar de atender el evento capturado por el usuario, sigue ejecutando el comportamiento normal de dicho elemento (ir a la página enlazada), a menos que la función ejecutada devuelva un valor falso.
+Por otro lado, el ejemplo anterior tiene un problema, y es que el evento \texttt{click} de todo elemento \texttt{a} lo que hace es mandar al usuario a la página que éste linca. En caso de querer, por ejemplo, en vez de mandar al usuario a la página con los detalles personales de Albert, que está en \texttt{/users/albert}, si no que queremos hacerlo más dinámico y mostrarlo directamente mediante Javascript, se debería capturar el evento click de dicho elemento, y realizar lo necesario (una llamada por ajax, creación o modificación de otro elemento para mostrar la información, etc). Pero el comportamiento de los eventos en Javascript, por defecto, al acabar de atender el evento capturado por el usuario, sigue ejecutando el comportamiento normal de dicho elemento (ir a la página enlazada), a menos que la función ejecutada devuelva un valor falso.
 
 Es decir, el código javascript debería ser semejante al siguiente:
 \begin{verbatim}
@@ -104,7 +104,7 @@ Es decir, el código javascript debería ser semejante al siguiente:
   });
 \end{verbatim}
 
-Ésto es considerado una buena técnica puesto que en caso de estar ante un usuario sin soporte para Javascript, el sistema mostrará la información de todas maneras, aunque no de una forma tan dinámica. En el caso que interesa a este proyecto, hay que comprender este comportamiento para que, por ejemplo, se pueda seguir dibujando aun estando fuera del marco, o para tener varias cosas que estén encima del marco, poder trabajar con ellas mediante eventos, y que éstos no influyan al proceso de dibujo.
+Esto es considerado una buena técnica puesto que en caso de estar ante un usuario sin soporte para Javascript, el sistema mostrará la información de todas maneras, aunque no de una forma tan dinámica. En el caso que interesa a este proyecto, hay que comprender este comportamiento para que, por ejemplo, se pueda seguir dibujando aun estando fuera del marco, o para tener varias cosas que estén encima del marco, poder trabajar con ellas mediante eventos, y que éstos no influyan al proceso de dibujo.
 
 % subsubsection como_funcionan_los_eventos (end)
 
@@ -114,7 +114,7 @@ Es decir, el código javascript debería ser semejante al siguiente:
 En este caso, por el comportamiento que se le quiere dar a la aplicación, es necesario estar siempre al tanto de los siguientes eventos:
 \begin{itemize}
   \item Cuando se pulsa un botón del ratón dentro del marco. Si se pulsa el ratón fuera del marco, no debe afectar al dibujo, más que en el caso de las herramientas o el selector de páginas, pero estos trabajan de forma independiente.
-  \item Debemos saber en todo momento cuándo se está moviendo el ratón, y cuándo se suelta el botón, debido a los casos explicados anteriormente, si va dibujando hasta soltar el ratón fuera del marco, o de la ventana. Si se ignoraran los eventos fuera del marco, se producirían comportamientos incómodos, como que se deje de mover una línea por rozar un borde, o que, al no enterarse de que se ha soltado el botón, se siga dibujando aún cuando no se está pulsando.
+  \item Se debe saber en todo momento cuándo se está moviendo el ratón, y cuándo se suelta el botón, debido a los casos explicados anteriormente, si va dibujando hasta soltar el ratón fuera del marco, o de la ventana. Si se ignoraran los eventos fuera del marco, se producirían comportamientos incómodos, como que se deje de mover una línea por rozar un borde, o que, al no enterarse de que se ha soltado el botón, se siga dibujando aún cuando no se está pulsando.
 \end{itemize}
 
 Sabiendo, como se ha comentado antes, que siempre se tendrá un elemento con id \texttt{\#container}, que será el \texttt{marco}, el código para capturar los eventos es el siguiente:
@@ -122,8 +122,8 @@ Sabiendo, como se ha comentado antes, que siempre se tendrá un elemento con id 
 \begin{verbatim}
   $(document).ready(function(){
     $(container).bind("mousedown", mouseDown);
-    $("body").bind(   "mousemove", mouseMove);
-    $("body").bind(   "mouseup",   mouseUp);
+    $("body").bind("mousemove", mouseMove);
+    $("body").bind("mouseup", mouseUp);
   });
 \end{verbatim}
 
@@ -136,7 +136,7 @@ En este caso, en vez de implementar las tres funciones directamente, se pasan co
 
 No hay que olvidar, que lo que se está haciendo es, en cierta medida, \emph{incrustar} un elemento SVG, o un conjunto de elementos VML, dentro de otro elemento DIV. A la hora de crear elementos, por tanto, es necesario especificar las posiciones como pixels respecto del inicio del marco. Mediante jQuery es posible obtener la posición absoluta del ratón, respecto del total de la ventana del navegador, pero para este caso es necesario algo más preciso, que tenga en cuenta también la posición del DIV, y o si se ha hecho scroll o no.
 
-Los atributos que se pueden consultar mediante la \textbf{variable de estado} (\texttt{event} a partir de ahora) del evento, y el resto del DOM, y que son útilies para posicionar elementos, son las siguientes.
+Los atributos que se pueden consultar mediante la \textbf{variable de estado} (\texttt{event} a partir de ahora) del evento, y el resto del DOM, y que son útiles para posicionar elementos, son las siguientes.
 
 \begin{description}
   \item[\texttt{event.clientX} y \texttt{event.clientY}] Estos atributos devuelven la posición del ratón respecto a lo que ahora se ve en el navegador. Esto quiere decir, aunque se haya hecho scroll, si se clica en la esquina superior izquierda, ambos valdrán 0.
@@ -173,13 +173,13 @@ Con estos conocimientos ya es posible programar las herramientas de línea, traz
 
 El método tradicional para introducir texto en páginas web, es mediante los elementos de formulario \texttt{input} de tipo \texttt{text} o los llamados \texttt{textarea}. Para esta situación el más adecuado será el \texttt{textarea} puesto que el otro es simplemente una línea, y los \texttt{textarea} se pueden redimensionar a voluntad.
 
-El efecto que se quiere lograr es el de crear un pequeño recuadro donde escribir, y al hacer click fuera o pulsar tabulador, este texto pase a formar parte del documento. Existe un requisito importante, y es que la posición del dexto mientras se escribe, y cuando se introduzca \emph{definitivamente}, debe ser la misma, para así no confundir al usuario.
+El efecto que se quiere lograr es el de crear un pequeño recuadro donde escribir, y al hacer click fuera o pulsar tabulador, este texto pase a formar parte del documento. Existe un requisito importante, y es que la posición del texto mientras se escribe, y cuando se introduzca \emph{definitivamente}, debe ser la misma, para así no confundir al usuario.
 
-Este proceso difiere del resto de herramientas por necesitar de dos pasos distintos, uno para crear un \texttt{textarea} en alguna posición, y otro pra acabar agregándolo finalmente.
+Este proceso difiere del resto de herramientas por necesitar de dos pasos distintos, uno para crear un \texttt{textarea} en alguna posición, y otro para acabar agregándolo finalmente.
 
 \subsubsection{Generación de un textarea} % (fold)
 \label{ssub:generacion_de_un_textarea}
-En este caso, la creación del elemento no será en el evento \texttt{mousedown}, puesto que los usuarios están acostumbrados que las cosas suceden al soltar el botón del ratón, no al pulsarlo. Al detectar un evento de tipo \texttt{mouseup} con la herramienta de texto seleccionada, y siempre y cuando se haya clicado antes dentro del contenedor, se crea diámicamente eset textarea, posicionado mediante CSS con origen en la posición del ratón.
+En este caso, la creación del elemento no será en el evento \texttt{mousedown}, puesto que los usuarios están acostumbrados que las cosas suceden al soltar el botón del ratón, no al pulsarlo. Al detectar un evento de tipo \texttt{mouseup} con la herramienta de texto seleccionada, y siempre y cuando se haya clicado antes dentro del contenedor, se crea dinámicamente este textarea, posicionado mediante CSS con origen en la posición del ratón.
 
 % subsubsection generación_de_un_textarea (end)
 
