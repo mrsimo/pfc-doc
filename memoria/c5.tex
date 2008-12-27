@@ -46,7 +46,7 @@ Esta es la opción más sencilla, y no necesita más que una acción que cree un
 \subsubsection{Subir imágenes una a una} % (fold)
 \label{ssub:subir_imagenes_una_a_una}
 
-Esta opción es el ejemplo clásico de uso de un plugin para subir archivos. El plugin utilizado en este caso es \texttt{attachment-fu} \footnote{http://github.com/technoweenie/attachment\_fu} , el cual, añadiendo unas líneas como las siguientes, hace que se relacione directamente con los archivos subidos mediante la interfaz web.
+Esta opción es el ejemplo clásico de uso de un plugin para subir archivos. El plugin utilizado en este caso es \texttt{attachment-fu} \footnote{\url{http://github.com/technoweenie/attachment\_fu}} , el cual, añadiendo unas líneas como las siguientes, hace que se relacione directamente con los archivos subidos mediante la interfaz web.
 
 \begin{verbatim}
 class Image < ActiveRecord::Base
@@ -66,7 +66,7 @@ Introduciendo esto en \texttt{/app/models/image.rb}, y al crear un objeto de tip
 
 \begin{itemize}
   \item Comprobará que es una imagen, porque se le ha pasado el parámetro \texttt{:content\_type => :image}. En caso de no ser un archivo de tipo imagen válido, fallará el momento de crear el objeto, es decir, al realizar un \texttt{save} o un \texttt{create} sobre \texttt{Image}.
-  \item Generará tres thumbnails, con los tamaños especificados usando el formato clásico de \texttt{ImageMagick} \footnote{http://imagemagick.org/script/command-line-options.php\#resize}, mediante \texttt{MiniMagick} \footnote{http://rubyforge.org/projects/mini-magick/}.
+  \item Generará tres thumbnails, con los tamaños especificados usando el formato clásico de \texttt{ImageMagick} \footnote{\url{http://imagemagick.org/script/command-line-options.php\#resize}}, mediante \texttt{MiniMagick} \footnote{http://rubyforge.org/projects/mini-magick/}.
   \item Guardará las imágenes en la carpeta \texttt{/document\_images}. Puesto que se le ha especificado claramente que está en la raíz de la aplicación, las guardará ahí, y no en \texttt{public}, que es lo normal. \texttt{public} es la carpeta que está abierta al público, y si se guardara en \texttt{/public/document\_images} en vez de en \texttt{/document\_images}, cualquier persona podría acceder a las imágenes mediante la dirección pública como \texttt{http://dominio.com/document\_images/..}
   
   De esta forma las imágenes están fuera del alcance, y se deberán servir mediante un método que lea este archivo y lo transmita, que al ser programado especialmente, puede controlar que el usuario que está reclamando una imagen tenga permisos para ver el documento, y no esté intentando ver documentos del resto.
