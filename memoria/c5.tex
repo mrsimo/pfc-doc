@@ -1,4 +1,4 @@
-%!TEX root = /Users/simo/Documents/PFC/Chapter3/chapter3.tex
+%!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
 \section{Quinto Ciclo} % (fold)
 \label{sec:quinto_ciclo}
 
@@ -75,7 +75,7 @@ Introduciendo esto en \texttt{/app/models/image.rb}, y al crear un objeto de tip
 Con la siguiente instrucción:
 
 \begin{verbatim}
-  render :file => image.public_filename(params[:thumb])
+  send_file :file => image.public_filename(params[:thumb])
 \end{verbatim}
 
 es posible renderizar dicha imagen, de la misma forma que si accediera desde la dirección pública, pero estando dicha imagen fuera del alcance de todo el mundo, y pudiendo realizar las comprobaciones pertinentes.
