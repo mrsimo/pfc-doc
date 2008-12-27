@@ -1,0 +1,283 @@
+%!TEX root = /Users/simo/Documents/PFC/Chapter4/chapter4.tex
+\section{Introducción} % (fold)
+\label{sec:introducccion}
+
+El desarrollo de aplicaciones web mediante Frameworks del estilo de Ruby on Rails necesita de ciertas medidas a la hora de realizar su \texttt{deploy} (instalación y puesta en marcha) en los servidores donde se va a acabar sirviendo la aplicación finalmente. En este capítulo se comentarán las posibilidades existentes a la hora de realizar el llamado deploy de una aplicación Rails, y más específicamente ésta.
+
+\section{Configuración básica del servidor} % (fold)
+\label{sub:configuracion_basica_del_servidor}
+
+Ruby es un lenguaje relativamente moderno, y aunque cada vez más las distribuciones modernas de sistemas UNIX traen por defecto soporte para este lenguaje, es posible que en instalaciones clásicas dicho soporte no exista. Por tanto, es necesario realizar una instalación previa, necesaria para cualquier técnica usada a posteriori para servir la aplicación. Se incluyen opciones alternativas para las distribuciones que utilizan APT (como Debian y Ubuntu) y las que utilizan RPM (mediante YUM, como Fedora o CentOS, distribuciones muy comunes en configuraciones de servidores web).
+
+\subsection{Ruby} % (fold)
+\label{ssub:ruby}
+
+Es posible instalar el soporte para Ruby de múltiples maneras \footnote{A fecha de escritura de este capítulo, Ruby on Rails recomienda el uso de Ruby 1.8.7, aunque las versiones 1.8.6, 1.8.5 y 1.8.4 son funcionales. \url{http://rubyonrails.org/down}}. El objetivo, sea cual sea el procedimiento, es que al ejecutar la línea \texttt{ruby -v} se obtenga una línea del estilo de:
+
+\begin{verbatim}
+  $ ruby -v
+  ruby 1.8.7 ...
+\end{verbatim}
+
+\subsubsection{Compilando las fuentes} % (fold)
+\label{ssub:compilando_las_fuentes}
+
+ La primera de ellas, compilando las fuentes :
+
+\begin{verbatim}
+  $ wget http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7.tar.gz
+  $ tar xvzf ruby-1.8.7.tar.gz
+  $ cd ruby-1.8.7.tar.gz
+  $ ./configure
+  $ make
+  # make install
+\end{verbatim}
+
+A partir de aquí, es recomendable realizar un enlace simbólico de forma que el comando \texttt{ruby} ejecute esta versión, puesto que suele instalarse como \texttt{ruby1.8}
+
+% subsubsection compilando_las_fuentes (end)
+
+\subsubsection{APT} % (fold)
+\label{ssub:apt}
+
+Es necesario instalar los siguientes paquetes.
+
+\begin{verbatim}
+  # apt-get install ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 \
+                    libreadline-ruby1.8 libruby1.8 libopenssl-ruby
+\end{verbatim}
+
+% subsubsection apt (end)
+
+\subsubsection{RPM} % (fold)
+\label{ssub:rpm}
+
+Existe un repositorio creado por la comunidad, con los diferentes paquetes necesarios para el soporte de ruby en sistemas compatibles con YUM. Para añadir este repositorio, es necesario editar el archivo \texttt{/etc/yum.repos.d/ruby.repo} y añadir:
+
+\begin{verbatim}
+  [ruby]
+  name=ruby
+  baseurl=http://repo.premiumhelp.eu/ruby/
+  gpgcheck=0
+  enabled=1
+\end{verbatim}
+
+Posteriormente es posible instalar los paquetes necesarios:
+
+\begin{verbatim}
+  # yum install ruby ruby-devel ruby-docs
+\end{verbatim}
+
+En caso de no estar disponible dicho repositorio, sería fácil encontrar dichos RPM's en algún otro repositorio. Los binarios incluidos en este repositorio a fecha de la escritura de este documento, referentes al soporte de Ruby son los siguientes:
+
+\begin{verbatim}
+  ruby-1.8.6.111-1.i686.rpm
+  ruby-devel-1.8.6.111-1.i686.rpm
+  ruby-docs-1.8.6.111-1.i686.rpm
+  ruby-irb-1.8.6.111-1.i686.rpm
+  ruby-libs-1.8.6.111-1.i686.rpm
+  ruby-mode-1.8.6.111-1.i686.rpm
+  ruby-mysql-2.7.4-1.i686.rpm
+  ruby-postgres-0.7.1-6.i686.rpm
+  ruby-rdoc-1.8.6.111-1.i686.rpm
+  ruby-ri-1.8.6.111-1.i686.rpm
+  ruby-tcltk-1.8.6.111-1.i686.rpm
+\end{verbatim}
+
+Se observa que la versión de ruby incluida en este repositorio es la \texttt{1.8.6}, compatible perfectamente con Rails.
+
+% subsubsection rpm (end)
+
+% subsubsection ruby (end)
+
+\subsection{RubyGems} % (fold)
+\label{sub:rubygems}
+
+Una Gem es el formato standard para distribuir librerías de todo tipo para Ruby. RubyGems es la vía standard de distribución de dichas Gems, y funciona de una forma similar a APT o YUM, en cuanto a que es posible buscar, instalar y desinstalar Gems mediante instrucciones en la línea de comandos, descargando automáticamente los archivos necesarios de los repositorios públicos.
+
+En este caso, y teniendo instalado el soporte para Ruby, para instalar RubyGems es necesario bajar la última versión de la web oficial del proyecto \footnote{\url{http://rubyforge.org/projects/rubygems/}}, e instalar mediante las siguientes líneas\footnote{A fecha de la escritura de este capítulo, la última versión de RubyGems es 1.3.1}:
+
+\begin{verbatim}
+  $ tar xvzf rubygems-1.3.1.tgz
+  $ cd rubygems-1.3.1.tgz
+  # ruby setup.rb --no-rdoc --no-ri
+\end{verbatim}
+
+RubyGems se instalará automáticamente en el sistema, pudiéndose comprobar con una instrucción semejante a la necesaria con Ruby:
+
+\begin{verbatim}
+  $ gem -v
+  1.3.1
+\end{verbatim}
+
+Una vez instalado RubyGems, suele ser necesario instalar las Gems que use la aplicación que se quiere hacer funcionar. En el caso de esta aplicación, las gemas necesarias son las siguientes:
+
+\begin{verbatim}
+  # gem install RedCloth haml mime-types rmagick mongrel mongrel_cluster \
+                rack rails rake rspec --no-rdoc --no-ri
+\end{verbatim}
+
+\begin{description}
+  \item[rails] Oficialmente, no debería ser imprescindible instalar esta Gem en el servidor, puesto que la práctica habitual es \emph{congelar} la versión de Rails utilizada para desarrollar la aplicación, y así evitar que la versión actual de la aplicación se rompa con versiones futuras al actualizar la Gem en el sistema. El proceso de \emph{congelar} la Gem consiste en copiar las librerías de Rails al directorio de la aplicación para que se carguen esas versiones y no las instaladas con el sistema. Es una política usada por Rails para liberarse de la carga de mantener soporte con versiones antiguas. Realísticamente, instalar Rails es la forma más fácil de instalar todas las dependencias básicas de cada aplicación en Rails.
+  
+  \item[rake] Se instala automáticamente con la rails Gem. Rake, o \emph{Ruby Make}, es el Make que se usa en cualquier aplicación en Ruby. Su sintaxis es en Ruby directamente, y existen múltiples \emph{tareas} ya disponibles para realizar lo más común, como crear la base de datos y toda su estructura a partir de las \emph{migraciones}, rotar logs, congelar la rails Gem, además de otras tareas personalizadas, como se explicará más adelante. 
+  
+  \item[rspec] RSpec es un \emph{Behaviour Driven Development Framework for Ruby} (o BDD framework), utilizado por Rails, y que se instala automáticamente por la rails Gem. Un BDD framework provee un método sencillo de traducir los requisitos impuestos por las funcionalidades, a una serie de Tests que comprueban que el código escrito hace lo que se ha especificado que tiene que hacer. Dichos tests se pueden ejecutar en la instalación de cualquier aplicación Rails para comprobar que ninguna modificación añadida por el código de la aplicación, o de algún Plugin o Gem, no haya \emph{roto} Rails.
+  
+  \item[RedCloth] A la hora de introducir descripciones, tanto para los grupos como para los documentos, se permite un formateo limitado del texto mediante Textile \footnote{\url{http://www.textism.com/tools/textile/}}, una sintaxis de escritura semejante a Markdown \footnote{\url{http://daringfireball.net/projects/markdown/}}. RedCloth se utiliza para convertir texto con formato Textile a html de forma segura evitando posibles códigos maliciosos.
+  
+  \item[haml] Haml es una alternativa para implementar vistas con código ruby. La forma tradicional es mediante ERB, el cual permite incrustar código ruby dentro de plantillas normales en HTML, de forma muy similar a como se incrusta código al programar webs con PHP o JSP. Haml ofrece una sintaxis alternativa a HTML, utilizando la tabulación para controlar el cierre de etiquetas, eliminando por tanto una gran cantidad del código e integrándose de forma más íntima con el código ruby. Algunas de las vistas más complejas de la aplicación están implementadas en haml.
+  
+  \item[mime-types] Esta Gem permite obtener el mime-type de prácticamente cualquier archivo con formato conocido. Necesaria a la hora de generar objetos de tipo \texttt{Image} cuando se tiene una imagen en el disco duro del sistema.
+  
+  \item[rmagick] Un interface escrito en Ruby para ImageMagick. Necesario para el plugin \texttt{attachment-fu}. \texttt{MiniMagick} o \texttt{ImageScience} serían alternativas a esta Gem.
+  
+  \item[mongrel] Mongrel es un servidor web dedicado a servir aplicaciones escritas en ruby, que además está escrito en Ruby.
+  
+  \item[mongrel\_cluster] Es un plugin para mongrel que simplifica el proceso de manipular múltiples instancias a la vez.
+  
+\end{description}
+
+% subsection rubygems (end)
+
+% subsection configuracion_basica_del_servidor (end)
+
+\section{De desarrollo a producción} % (fold)
+\label{sec:producción}
+
+Las necesidades de una aplicación funcionando en local, en un entorno de desarrollo donde lo que se necesita es realizar pruebas, no son las mismas que las de una aplicación funcionando en el servidor final, ante usuarios que no son los desarrolladores.
+
+Así pues, una aplicación rails viene preparada para comportarse de forma distinta en ambas situaciones. Entre otras, las diferencias básicas más importantes son las siguientes:
+
+\begin{itemize}
+  \item En modo desarrollo, cuando se produce un error, se genera todo un informe de error con la información necesaria para solucionarlo. En producción, los usuarios no necesitan ver ninguna línea de código, por tanto siempre se muestra un mensaje de error genérico, del tipo 404 o 500.
+  \item Cacheo de clases. Cuando se está trabajando en local lo más cómodo es poder realizar cambios en el código que se reflejen inmediatamente en el servidor local con que se está trabajando. En producción, sin embargo, no se espera que hayan cambios en el código, manteniendo por tanto todas las clases cargadas en memoria, sin que se vuelvan a cargar los archivos en memoria hasta que no se reinicie el servidor.
+\end{itemize}
+
+El segundo punto hace que las aplicaciones puedan funcionar de forma muy eficiente en situaciones en que la aplicación puede mantenerse en memoria.
+
+% section producción (end)
+
+\section{FastCGI} % (fold)
+\label{sub:fastcgi}
+
+CGI, o \emph{Common Gateway Interface} es un protocolo para permitir la comunicación entre servidores web y aplicaciones funcionando en procesos separados, que se inician al principio de una petición, y se paran al servirse. FastCGI es una variación de CGI que lo mejora en varios aspectos.
+
+Mediante CGI es posible ejecutar cualquier tipo de proceso desde un servidor web, y suele ser la forma de tener funcionando scripts en lenguajes varios, como Perl o Python. También es posible ejecutar código PHP, por ejemplo, pero existen otras alternativas para PHP dada la popularidad del lenguaje en entornos web, más específicas y por tanto, más eficientes.
+
+CGI se ha utilizado desde el principio para servir código en Ruby, y toda aplicación en Ruby on Rails viene iniciada con soporte para CGI y FastCGI. Generalmente, realizar un deploy que pretenda servir la aplicación mediante FastCGI solo necesita que la configuración del site en apache, el atributo \texttt{DocumentRoot} apunte a la carpeta \texttt{/public} de la aplicación, y no a la raíz, además de tener activadas las opciones \texttt{ExecCGI} y \texttt{RewriteEngine}. Por ejemplo, una configuración mínima sería:
+
+\begin{verbatim}
+  <VirtualHost *:80>
+      DocumentRoot /var/www/ejemplo/public
+      Options Indexes ExecCGI FollowSymLinks
+      RewriteEngine On
+  </VirtualHost>
+\end{verbatim}
+
+Esta técnica se considera actualmente desfasada, puesto que la eficiencia y escalabilidad son mínimas. Ante cada petición se carga el entorno rails con las partes necesarias, se genera la página, y se manda. No se beneficia en absoluto de las características comentadas de una aplicación funcionando en producción en cuanto a eficiencia se refiere.
+
+Actualmente se utiliza en algunos servidores de hosting compartidos, donde no se permiten acciones más complejas como el arranque de procesos por parte del cliente. Incluso en estos casos, en la actualidad existen opciones más adecuadas para estas situaciones, como se verá más adelante en la sección sobre Phussion Passenger \ref{sub:phussion_passenger}.
+
+% subsection fastcgi (end)
+
+\section{Phussion Passenger} % (fold)
+\label{sub:phussion_passenger}
+
+Phussion Passenger, también conocido como \texttt{mod\_rails}, es un módulo para el servidor web Apache que añade soporte para aplicaciones escritas en Ruby on Rails (y otros frameworks en ruby con ligeras modificaciones). \texttt{mod\_rails} es el substituto natural de FastCGI, mejorando substancialmente la eficiencia y la escalabilidad de las aplicaciones funcionando en este entorno.
+
+A diferencia de FastCGI, \texttt{mod\_rails} carga en memoria instancias de la aplicación de forma dinámica según la demanda de la aplicación en si, siempre dentro de unos parámetros establecidos. Además, permite mantener cargado en memoria el núcleo de Rails en si, de forma que las diferentes aplicaciones de un mismo servidor que utilicen \texttt{mod\_rails} para servir sus páginas, compartirán dicho núcleo.
+
+Gracias a esta capacidad de compartir recursos entre aplicaciones, es la solución ideal para máquinas que tendrán varias aplicaciones en Rails funcionando al mismo tiempo, produciendo ganancias en cuanto a memoria, y manteniendo un rendimiento prácticamente equivalente a otras soluciones.
+
+Para instalar \texttt{mod\_rails} en un servidor con apache, se debe instalar su Gem:
+
+\begin{verbatim}
+  # gem install passenger
+\end{verbatim}
+
+Y ejecutar el instalador:
+
+\begin{verbatim}
+  # passenger-install-apache2-module
+\end{verbatim}
+
+El instalador compila automáticamente las fuentes necesarias e informa de los paquetes faltantes, sugiriendo los comandos a realizar para instalarlos según la distribución de Linux en que se encuentre. Al final, indica tres líneas que deben añadirse al archivo de configuración de apache.
+
+Desde ese momento, hay que realizar los mismos pasos que con FastCGI, haciendo que el site configurado apunte su \texttt{DocumentRoot} a la carpeta \texttt{/public}
+
+% subsection phussion_passenger (end)
+
+\section{Mongrels o Thins} % (fold)
+\label{sub:mongrels_thins}
+
+Existen otro tipo de enfoques para servir aplicaciones rails que permiten una configuración mucho más personalizada. Tanto \texttt{Mongrel} como \texttt{Thin} son servidores web sencillos pensados únicamente para servir aplicaciones escritas en ruby. Es posible arrancar cualquiera de los dos desde una aplicación rails, ligada a un puerto, y desde ese momento se puede acceder a esa aplicación desde ese puerto, sin necesidad de más configuración.
+
+Ambos mantienen todo el tiempo la aplicación cargada en memoria, y aprovechan todas las características de una aplicación Rails funcionando en producción. Sin embargo, y como se ha comentado con anterioridad, una instancia de dichos servidores solo puede servir una página a la vez, por lo tanto se recomienda tener múltiples instancias dependiendo de la carga de dicha aplicación.
+
+Ambos pueden instalarse en forma de Gem, y lo aconsejable es crear un archivo de configuración en el que guardar las preferencias con laa que se desea arrancar las diferentes instancias.
+
+\begin{verbatim}
+  # mongrel_config.yml
+  pid_file: tmp/pids/mongrel.pid
+  log_file: log/mongrel.log
+  port: "3000"
+  environment: production
+  cwd: /path/to/app
+  address: 0.0.0.0
+  servers: 2
+\end{verbatim}
+
+\begin{verbatim}
+  # thin_config.yml
+  pid: tmp/pids/thin.pid
+  log: log/thin.log
+  port: "3000"
+  environment: production
+  chdir: /path/to/app
+  address: 0.0.0.0
+  servers: 2
+  daemonize: true
+\end{verbatim}
+
+En ambos casos se pretenden levantar dos instancias, empezando en el puerto 3000, por lo tanto ocuparán los puertos 3000 y 3001. Se pueden arrancar dichas instancias con los siguientes comandos.
+
+\begin{verbatim}
+  $ mongrel_rails cluster::start -C path/to/mongrel_config.yml
+  $ thin start --all path/to/thin_config.yml
+\end{verbatim}
+
+Una vez se tienen varias instancias funcionando, se necesita un balanceador de carga de modo que se vayan distribuyendo las peticiones entre todas las instancias. El proceso tradicional para esto es, mediante apache, configurar el site de la siguiente manera:
+
+\begin{verbatim}
+  <VirtualHost *:80>
+      DocumentRoot /path/to/application/public
+      
+      RewriteEngine On
+      
+      <Proxy balancer://app>
+        BalancerMember http://127.0.0.1:3000
+        BalancerMember http://127.0.0.1:3001
+      </Proxy>
+      
+      # Redirect all non-static requests
+      RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+      RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+
+      ProxyPass / balancer://app/
+      ProxyPassReverse / balancer://app/
+      ProxyPreserveHost on
+      
+  </VirtualHost>
+\end{verbatim}
+
+Un par de puntos a destacar:
+
+\begin{itemize}
+  \item Se deben especificar todos las instancias de forma manual, haciendo que la modificación de la cantidad de instancias no sea un proceso automático.
+  \item Las dos líneas de \texttt{RewriteCond} y \texttt{RewriteRule} comprueban si la solicitud coincide con contenido estático, como podrían ser imágenes, y en caso de ser así, trata la solicitud directamente sin llegar a requerir la acción de una instancia de la aplicación. Este proceso incrementa en gran medida la disponibilidad de las instancias de aplicación, puesto que solo requieren de su acción en los casos en los que realmente es necesario. Si no se incluyera, las instancias deberían atender las peticiones de la página en si (código HTML generado), sino también todos y cada uno de los contenidos estáticos (imágenes, archivos css, javascript, etc) los cuales no requieren de procesado, ni de consulta de base de datos, pero si mantienen la instancia ocupada mientras se transmiten.
+\end{itemize}
+
+% subsection mongrels_thins (end)
+
+% section introduccion (end)
