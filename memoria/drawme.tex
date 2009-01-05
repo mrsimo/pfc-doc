@@ -41,8 +41,8 @@ Como se observa, es posible configurar diferentes conexiones y bases de datos ta
 Una vez configurada la base de datos todos los procesos a seguir se pueden ejecutar desde la línea de comandos. Se debe crear la base de datos en si, y generar la estructura de tablas:
 
 \begin{verbatim}
-  rake db:create RAILS_ENV=production
-  rake db:migrate RAILS_ENV=production
+  $ rake db:create RAILS_ENV=production
+  $ rake db:migrate RAILS_ENV=production
 \end{verbatim}
 
 El parámetro \texttt{RAILS\_ENV=production} es necesario cuando se quiere ejecutar cualquier tarea de \texttt{rake} suponiendo el entorno de producción, puesto que el entorno por defecto es el de desarrollo.
@@ -69,12 +69,18 @@ El parámetro \texttt{port} sirve para indicar el puerto en que iniciar los proc
 Las tareas en si son las siguientes:
 
 \begin{verbatim}
-  rake servers:start
-  rake servers:stop
-  rake servers:restart
+  $ rake servers:start
+  $ rake servers:stop
+  $ rake servers:restart
 \end{verbatim}
 
 Las cuales inician, paran, o reinician los procesos automáticamente.
+
+No hay que olvidar tampoco el proceso que se encarga de tratar los archivos comprimidos e imágenes, que debe estar funcionando junto con el resto de la aplicación.
+
+\begin{verbatim}
+	$ rake jobs:work RAILS_ENV=production &
+\end{verbatim}
 
 % subsection arrancando_los_mongrels (end)
 
@@ -123,13 +129,3 @@ De este modo se tendría soporte en toda la aplicación para SSL. Puesto que se 
 \end{verbatim}
 
 % subsection configurando_ssl (end)
-
-
-
-
-
-
-
-
-
-

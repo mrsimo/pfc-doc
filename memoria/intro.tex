@@ -157,8 +157,11 @@ Así pues, una aplicación rails viene preparada para comportarse de forma disti
 El segundo punto hace que las aplicaciones puedan funcionar de forma muy eficiente en situaciones en que la aplicación puede mantenerse en memoria.
 
 % section producción (end)
+\section{Software servir aplicaciones en Ruby (on Rails)} % (fold)
+\label{sec:software_servir_aplicaciones_en_ruby_on_rails_}
 
-\section{FastCGI} % (fold)
+% section software_servir_aplicaciones_en_ruby_on_rails_ (end)
+\subsection{FastCGI} % (fold)
 \label{sub:fastcgi}
 
 CGI, o \emph{Common Gateway Interface} es un protocolo para permitir la comunicación entre servidores web y aplicaciones funcionando en procesos separados, que se inician al principio de una petición, y se paran al servirse. FastCGI es una variación de CGI que lo mejora en varios aspectos.
@@ -181,7 +184,7 @@ Actualmente se utiliza en algunos servidores de hosting compartidos, donde no se
 
 % subsection fastcgi (end)
 
-\section{Phussion Passenger} % (fold)
+\subsection{Phussion Passenger} % (fold)
 \label{sub:phussion_passenger}
 
 Phussion Passenger, también conocido como \texttt{mod\_rails}, es un módulo para el servidor web Apache que añade soporte para aplicaciones escritas en Ruby on Rails (y otros frameworks en ruby con ligeras modificaciones). \texttt{mod\_rails} es el substituto natural de FastCGI, mejorando substancialmente la eficiencia y la escalabilidad de las aplicaciones funcionando en este entorno.
@@ -208,7 +211,7 @@ Desde ese momento, hay que realizar los mismos pasos que con FastCGI, haciendo q
 
 % subsection phussion_passenger (end)
 
-\section{Mongrels o Thins} % (fold)
+\subsection{Mongrels o Thins} % (fold)
 \label{sub:mongrels_thins}
 
 Existen otro tipo de enfoques para servir aplicaciones rails que permiten una configuración mucho más personalizada. Tanto \texttt{Mongrel} como \texttt{Thin} son servidores web sencillos pensados únicamente para servir aplicaciones escritas en ruby. Es posible arrancar cualquiera de los dos desde una aplicación rails, ligada a un puerto, y desde ese momento se puede acceder a esa aplicación desde ese puerto, sin necesidad de más configuración.

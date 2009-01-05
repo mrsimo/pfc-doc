@@ -44,9 +44,9 @@ La forma en que funciona es teniendo una tabla propia de tareas, llamadas \textt
 
 La forma en que Rails hace que un modelo esté automáticamente replicado en la base de datos es mediante el motor \texttt{ActiveRecord}. Si en vez de heredar el modelo Task de ActiveRecord, se hereda de un objeto más simple, como un Struct, se tiene un modelo personalizable, que \texttt{delayed\_jobs} puede serializar de forma muy sencilla, y que puede tener implementadas igualmente funciones. La clase Task quedaría así:
 \begin{verbatim}
-class Task < Struct.new(:document_id, :directory, :file)
+class Task < Struct.new(:filename,:dir,:document_id)
   def perform
-    # procesar el archivo file que está en el directorio directory,
+    # procesar el archivo filename que está en el directorio dir,
     # y asignar las páginas generadas al documento document_id
   end    
 end
@@ -55,7 +55,7 @@ end
 Y a la hora de añadir una \texttt{Task} a la cola de tareas de \texttt{delayed\_jobs}:
 
 \begin{verbatim}
-  Delayed::Job.enqueue Task.new(document,directory,file)
+  Delayed::Job.enqueue Task.new(file,directory,document)
 \end{verbatim}
 
 Para ejecutar el proceso que se encarga de ir reclamando \texttt{Jobs} e ir ejecutando sus funciones \texttt{perform}:

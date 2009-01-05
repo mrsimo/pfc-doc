@@ -1,0 +1,53 @@
+%!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
+
+Una de las principales razones por las que se optó por realizar un proyecto relacionado con el desarrollo web, es el interés particular del autor en este área. El desarrollo web es un ámbito de la informática que mucha gente empieza a practicar por afición, o por simple necesidad personal, generalmente sin ninguna disciplina como la adquirida mediante una educación adecuada. De la misma forma que el simple interés personal puede llevar a una persona a realizar pequeños programas, se requiere de un estudio más profundo y una mayor organización y planificación entrar en procesos de desarrollo de software más complejo, o que requiera del trabajo paralelo de múltiples personas.
+
+Lo mismo se puede decir del desarrollo web, es muy fácil realizar pequeños scripts en PHP, pero para webs más grandes o donde la calidad es más importante, es necesaria la organización adecuada. Siendo el desarrollo web, a su vez, una de las áreas donde más interés económico existe gracias a internet, y a que las compañías cada vez más creen en él como en un medio de comunicación importante para sus clientes, se ha llegado inevitablemente a un punto donde este desarrollo \emph{casero} no es suficiente.
+
+A lo largo de los años se han ido adaptando las técnicas del desarrollo de software clásico, teniendo a la disposición del desarrollador web múltiples libros teorizando sobre los procesos de desarrollo web. Uno de los aspectos que más han triunfado es todo lo relacionado con la metodología de desarrollo ágil, por ser más adecuada para proyectos de tamaño pequeño o medio, permitiendo un desarrollo más relajado tanto por parte de los programadores, como por la parte de los clientes, los cuales suelen apreciar la evolución de la aplicación consecuente a un desarrollo cíclico.
+
+Estas metodologías, sin embargo, difieren generalmente de las impartidas en enseñanzas informáticas clásicas, quedando patente en el proceso de estudio necesario para la realización de este proyecto. El mundo del desarrollo web está constantemente avanzando, y es posible encontrar áreas con poca o ninguna información al respecto, como ha sido en este caso el trabajo con gráficos vectoriales embedidos en páginas web.
+
+Este capítulo pretende plasmar las impresiones personales del autor en cuanto a lo referente al desarrollo web aprendido a lo largo de este proyecto, para ayudar a dar una imagen del estado actual a los lectores de esta memoria.
+
+\section{Javascript} % (fold)
+\label{sec:javascript}
+
+Javascript ha evolucionado con los años de ser un lenguaje oscuro utilizado solamente en contadas ocasiones, la mayoría de veces con consecuencias desastrosas para los navegadores que no fueran Internet Explorer, a ser un lenguaje perfectamente capaz de realizar prácticamente cualquier tarea. Javascript en si, es igual en todos los navegadores, cambiando, como ya se ha explicado, el DOM proporcionado por los navegadores. Una vez salvadas las diferencias entre navegadores gracias a las librerías como jQuery, Prototype o Mootools, es posible realizar una serie de acciones:
+
+\begin{itemize}
+  \item Modificación del código fuente de la web de forma dinámica, tanto HTML como CSS.
+  \item Realizar comunicaciones entre la aplicación y el servidor de forma transparente al usuario mediante Ajax. Es posible tanto enviar información, como recivirla y usarla. Es posible realizar comunicaciones con otros servidores aunque no tengan el mismo dominio.
+  \item Permite capturar una serie de eventos que afectan a los múltiples elementos de la estructura de la web. Entre ellos se encuentran los básicos que afectan al ratón y al teclado.
+\end{itemize}
+
+Aunque en un principio esto pueda parecer relativamente limitado, mediante estos tres tipos de acciones es posible realizar prácticamente cualquier cosa. Tareas que clásicamente han sido relegadas a alternativas como aplicaciones Flash o Java, empiezan a ser implementadas púramente en javascript.
+
+A modo de experimento se puede encontrar una animación realizada puramente mediante HTML, CSS y jQuery en \footnote{\url{http://robot.anthonycalzadilla.com/}}, y explicado ampliamente en el blog de CSS Tricks\footnote{Building an Animated Cartoon Robot with jQuery - \url{http://css-tricks.com/jquery-robot/}}. A efectos prácticos, es una animación indistinguible de otra hecha en flash, y todo con menos de 50 líneas de código javascript.
+
+Otros usos origiales de javascript se pueden encontar en los múltiples servicios de Google, como Maps\footnote{\url{http://maps.google.com}}, Mail\footnote{\url{http://mail.google.com}} o Reader\footnote{\url{http://reader.google.com}}, o en los escritorios llamados Web Operating Systems como eyeOS\footnote{\url{http://eyeos.org}}.
+
+\subsection{Ventajas de usar Javascript} % (fold)
+\label{sub:ventajas_de_usar_javascript}
+
+Dejando claro que javascript es cada vez más vesátil, y en cada vez más situaciones capaz de substituir funcionalidades generalmente desempañadas por Flash, ¿existe alguna ventaja en ello?
+
+No existe una respuesta definitiva a dicha pregunta, pero si es verdad que existen ciertas ventajas (y desventajas) al utilizar javascript en vez de Flash (u otras alternativas como Java). Las ventajas se pueden resumir en los siguientes puntos:
+
+\begin{itemize}
+  \item Javascript puede hacerse completamente accesible a personas sin Javascript. A parte de aplicaciones donde el uso de Javascript sea esencial, como sería en esta misma aplicación, en situaciones más sencillas como formularios o galerías de imágenes, es posible implementar las funcionalidades en Javacsript de forma que aunque el usuario no tenga Javascript activado, sea completamente usable, tal y como se ha explicado en la sección \ref{sub:eventos_de_raton}. Esto es también posible con Flash, pero la realidad es que la práctica habitual es la de, en caso de no tener Flash instalado, avisar al usuario de ello, y no dar otra alternativa.
+  \item Rapidez de carga. Gracias a las librerías mencionadas, las cuales se pueden comprimir en gran medida, y compartir por todos los scripts de una aplicación, solo es necesario descargar la librería una vez. De la misma forma, imágenes iguales, y trozos de código compartidos que no forman parte de las librerías propias del lenguaje, puede compartirse de forma que el usuario solo tenga que descargarlas una vez. En flash cada objeto es auto contenido, teniendo todos los elementos necesarios para cargarse, debiéndose generar el objeto entero, a pesar de que comparta código con otros objetos de la web.
+  \item Integración transparente con la web. El hecho de que javascript simplemente modifica la estructura actual de la web, permite que, incluso si los javascripts se cargan después de todo lo demás, la web se vea bien. Tomando como ejemplo una galería de imágenes que al clicar en ellas se ve su versión en grande, la estructura inicial de la página no depende en absoluto de javascript, haciendo que al cargar se vea perfectamente. En los segundos necesarios para que el usuario se situe en la página y decida clicar en una de ellas, ha habido tiempo suficiente para que los archivos javascript carguen. En la misma situación donde se utilice un objeto flash, se debería esperar a cargar todo el objeto, con sus imágenes incluidas, habiendo unos segundos en los que el usuario no ve nada.
+\end{itemize}
+
+Flash, sin embargo, aún tiene otras ventajas, generalmente en la parte del desarrollador más que la del usuario:
+
+\begin{itemize}
+  \item Facilidad de programación. Flash ha sido utilizado desde hace años para los propósitos descritos anteriormente, y por ello puede llegar a considerarse más sencillo realizar ciertas tareas mediante flash. La animación del Robot mediante jQuery, a pesar de ser tan realista, es un experimento altamente innovador, e intentar realizar una animación semejante enfrontaría al programador con una falta total de documentación y ejemplos en los que basarse. En el otro extremo, Flash tiene múltiples librerías y ejemplos con los que guiarse para este tipo de tareas.
+  \item Funcionalidades únicas, como reproducción de videos o sonidos, son el área de excelencia de Flash, completamente inalcanzable por Javascript. Otras posibilidades como animaciones en tres dimensiones gracias a librerias como Papervision3D\footnote{\url{http://papervision3d.org/}} son fácilmente implementables en Flash.
+  \item Puesto que Flash está dedicado a este tipo de menesteres, animaciones y contenidos dinámicos, una misma acción implementada en Flash será más eficiente que estando implementada puramente en Javascript, permitiendo ser reproducida en ordenadores menos potentes.
+\end{itemize}
+
+% subsection ventajas_de_usar_javascript (end)
+
+% section javascript (end)

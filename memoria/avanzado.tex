@@ -1,0 +1,110 @@
+%!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
+\section{Consideraciones importantes} % (fold)
+\label{sec:consideraciones_importantes}
+A la hora de realizar un deploy de una aplicación se deben tener muchos factores en cuenta, entre ellos, los siguientes:
+
+\begin{itemize}
+	\item Carga que se espera que reciba la aplicación.
+	\item Tipos de contenidos de la web (ricos en multimedia, texto plano).
+	\item Aplicación semi-estática (un blog, sitio de noticias que se actualiza cuando se escribe un post), o con una gran cantidad de movimiento (foro, comunidad 2.0).
+	\item Necesidades esenciales de la aplicación (en el caso de esta aplicación, por ejemplo, es deseable un tiempo de respuesta muy rápido).
+	\item ¿Existe un desarrollo continuo de la aplicación? Y si es así, ¿hay más de un solo desarrollador trabajando en el código?
+	\item Importancia de los datos almacenados, o de que la aplicación se mantenga online el mayor tiempo posible.
+\end{itemize}
+
+Los cuatro primeros puntos afectan al proceso de deploy en cuanto a que es necesario pensar en una configuración adecuada de hardware y software para las necesidades de la aplicación. Una aplicación con pocas visitas puede pasar sin problemas con un hosting compartido como los que se pueden alquilar a precios muy reducidos. Pero una aplicación con un gran volumen de carga necesitará de servidores dedicados, en cuyo caso, se deberá considerar cuántos, qué tipo de software usar para servir la aplicación (¿Mongrels o \texttt{mod\_rails}?), ¿es necesario un servidor dedicado de base de datos? Es apache adecuado, o conviene más un servidor web más especializado como Nginx\footnote{\url{http://nginx.net/}}?
+
+Estos parámetros resultarán en una configuración diferente a otra, pero los últimos dos afectan directamente a la metodología de desarrollo de aplicación, y aunque no llegan a afectar directamente esta aplicación, se consideran interesantes de estudiar para profundizar en los conceptos de un desarrollo adecuado de aplicaciones web.
+
+% section consideraciones_importantes (end)
+
+\subsection{Integración Continua} % (fold)
+\label{sub:ic}
+
+La integración continua es un tema importante dentro del mundo de las metodologías ágiles. El concepto se entender y aceptar la importancia de la integración del código escrito para una aplicación de forma continua, de la forma más automatizada posible, y en pequeñas cantidades de código. Se considera que hacer esto es importante por varias razones, especialmente cuando varios desarrolladores trabajan en el mismo código.
+
+\begin{itemize}
+	\item Si se realizan incorporaciones de código de forma continua es posible reducir la cantiad de conflictos en gran medida. Al tener que tratar en todo caso con una cantidad pequeña de código nuevo, que puede tanto sufrir conflictos con código anterior, como introducir nuevos problemas, siempre es más fácil de aislar y solucionar dichos problemas.
+	\item Es necesario que encontrar dichos conflictos sea fácil. Cuando el tamaño de la aplicación empieza a crecer, encontrar posibles conflictos de forma manual puede resultar tedioso y contraproducente, por lo tanto es necesario automatizar el proceso. Al saber qué partes fallan, y puesto que la cantidad de código que puede producir dichos fallos es relativamente pequeña, es muy fácil de solucionar.
+	\item El poder realizar actualizaciones constantes de la aplicación online hace que se pueda ver una evolución a tiempo real. Esto es deseable puesto que ayuda a establecer un flujo constante de comunicación entre los usuarios o responsables de la aplicación, y las personas que la están desarrollando.
+\end{itemize}
+
+% subsection ic (end)
+
+\subsection{Testing} % (fold)
+\label{sub:testing}
+
+En muchas metodologías de desarrollo se considera el testing como una de las fases del desarrollo, en la cual se implementan una serie de tests que son capaces de comprobar que el código escrito realiza las tareas que debe realizar de forma adecuada. Este proceso es útil para futuras ampliaciones del código en las cuales siempre es posible que partes nuevas de la aplicación puedan afectar a código ya escrito con anterioridad.
+
+En ambientes de desarrollo con metodologías ágiles, donde se realiza una evolución continua del código, y es impostante comprobar constantemente que los nuevos cambios no afectan a cosas realizadas con anterioridad, o más comunmente, con el realizado por otros desarrolladores, es importante tener una base sólida de tests con los que poder realiar una integración continua lo más automática y transparente posible.
+
+Gracias a estas nuevas metodologías de desarrollo en las que el testing pasa a ser un aspecto esencial, se ha avanzado en gran medida en este campo, teniendo a la disposición del desarrollador múltiples técnicas para ello. Dichas técnicas, sin embargo, son relativamente modernas, y una gran cantidad de desarrolladores no han sido introducidos en los conceptos de testing, tanto así que existen numerosas iniciativas\footnote{\url{http://smartic.us/2008/8/15/tatft-i-feel-a-revolution-coming-on} - Brian Liles, \emph{TAFT, test all the f**in time}} \footnote{\url{http://rubyhoedown2008.confreaks.com/05-bryan-liles-lightning-talk-tatft-test-all-the-f-in-time.html}} que intentan fomentar un testing constante y riguroso del código, para beneficio tanto del propio desarrollador como del resto de personas que deban manipular el código el un futuro. 
+
+\subsubsection{Test Driven Development} % (fold)
+\label{ssub:test_driven_development}
+
+Inicialmente el concepto de tests se ha usado para que código ya escrito sea posible de controlar, de forma que modificaciones posteriores no introduzcan nuevos errores. Sin embargo, la evolución de los procesos de testing ha llevado a que no solamente se usen en la fase de testing posterior a la de implementación, sino que pasen a ser una herramienta de otras fases previas como la de especificación.
+
+Tomando como ejemplo el framework \texttt{Test::Unit} junto con la \texttt{gem Shoulda}\footnote{\url{http://www.thoughtbot.com/projects/shoulda/}}, un test de una acción de una aplicación web puede quedar así:
+
+\begin{verbatim}
+	context "on GET to :show for first record" do
+	  setup do
+	    get :show, :id => 1
+	  end
+
+	  should_assign_to :user
+	  should_respond_with :success
+	  should_render_template :show
+	  should_not_set_the_flash
+	end
+\end{verbatim}
+
+La sencillez de la sintaxis hace que pueda quedar claro lo que debe hacer dicha acción (quedando, por tanto, especificada), y puesto que al fin y al cabo se deberán realizar los tests en algún momento, se considera útil y beneficioso realizar una fase de especificación mediante tests, de forma que no sea necesaria una posterior creación de los mismos, y pudiendo constatar en todo momento que se están realizando las acciones que la persona que redactó la especificación quería. No es difícil entender que un lenguaje formal que no solo permite especificar como funciona una aplicación, sino que además es capaz de comprobarlo empíricamente, es algo beneficioso en cualquier tipo de desarrollo de software.
+
+% subsubsection test_driven_development (end)
+
+% subsection testing (end)
+
+\subsection{Automatización del deploy} % (fold)
+\label{sub:automatización_del_deploy}
+
+Otro de los puntos importantes de la integración continua es la automatización de tareas. Gracias a los frameworks de testing no es necesaria ninguna intervención humana para realizar dichos tests. El siguiente paso es automatizar el proceso de puesta online de los cambios del código. Tradicionalmente, el proceso de puesta online de una actualización de esta aplicación, sería el siguiente:
+
+\begin{enumerate}
+	\item Subir el código que ha cambiado
+	\item Realizar los cambios necesarios en la base de datos (ejecutar las migraciones)
+	\item Reiniciar la aplicación
+	\item Reiniciar el proceso paralelo de tratamiento de PDF's y archivos comprimidos.
+\end{enumerate}
+
+Estos pasos serán siempre iguales, y por lo tanto, fácil de automatizar. En el caso de aplicaciones ruby, se considera Capistrano\footnote{\url{http://www.capify.org/}} como la solución por excelencia para la automatización de tareas en servidores remotos, entre ellas, la de deploy de aplicaciones.
+
+Capistrano permite redactar una \emph{receta} para una aplicación, especificando el servidor al que acceder, el método (ssh o ftp), el lugar desde donde obtener el código actualizado (copia local o algún sistema de control de versiones), y permitiendo especificar una serie de acciones a realizar en cualquier momento, como reiniciar procesos paralelos a la vez que se reinicia la aplicación. Un ejemplo de receta podría ser la siguiente:
+
+\begin{verbatim}
+  set :repository,  "git@github.com:albertllop/pfc.git"
+  set :scm, "git"
+	set :branch, "master"
+	
+	set :application, "somewhere.net"
+	set :user, "john"
+	
+	set :deploy_to, "/path/to/application"
+	
+	namespace :deploy do
+	desc "Restart Application"
+  task :restart, :roles => :app do
+    run "cd #{current_path} && rake servers:restart"
+  end
+  
+  desc "Other actions to do after restarting"
+  task :after_update_code, :roles => :app do
+    run "cd #{current_path} && rake jobs:stop  RAILS_ENV=production"
+    run "cd #{current_path} && rake jobs:start RAILS_ENV=production"
+  end
+\end{verbatim}
+
+Mediante este archivo de configuración sería posible actualizar el código en el host \texttt{somewhere.net} desde el repositorio git especificado, reiniciando la aplicación con un comando personalizado, y realizando el reinicio del proceso paralelo después de actualizar el código.
+
+% subsection automatización_del_deploy (end)
