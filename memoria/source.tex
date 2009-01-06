@@ -1,0 +1,1449 @@
+%!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
+\section{Código fuente} % (fold)
+\label{sec:código_fuente}
+
+El código fuente es accesible de forma online desde el repositorio público de git de este proyecto, desde la dirección \url{http://github.com/albertllop/pfc}, y clonando directamente mediante git con:
+
+\begin{verbatim}
+  $ git clone git://github.com/albertllop/pfc.git  
+\end{verbatim}
+
+Se incluyen solamente las partes trascendentes referentes al desarrollo de la aplicación, dejando de banda elementos de diseño.
+
+\subsection{Librería javascript} % (fold)
+\label{sub:librería_javascript}
+
+\textbf{\texttt{/public/javascripts/drawer.js}}
+
+\subsubsection{Módulo de dibujo} % (fold)
+\label{ssub:módulo_de_dibujo}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYbh[var] mainElem@PYbf[;] @PYaE[// Element that will contain child nodes]
+@PYbh[var] container@PYbf[;] @PYaE[// Div that wraps the elements]
+@PYbh[var] svgns @PYbf[=] @PYaX["http://www.w3.org/2000/svg"]@PYbf[;]
+@PYbh[var] svg @PYbf[=] @PYbd[true]@PYbf[;] @PYaE[// True if NOT Internet Explorer]
+
+@PYbh[var] reload @PYbf[=] @PYag[0] @PYaE[// To force reloading :\]
+
+@PYaz[if] (navigator.appName @PYbf[==] @PYaX["Microsoft Internet Explorer"]) svg @PYbf[=] @PYbd[false]@PYbf[;]
+
+@PYaE[/********************************/]
+@PYaE[/****** DRAWING MODULE **********/]
+@PYaE[/********************************/]
+@PYaE[/* HELPING VARIABLES */]
+@PYbh[var] drawing@PYbf[,] erasing@PYbf[,] texting@PYbf[,] clicked_inside@PYbf[,]ready_to_write@PYbf[,] txt@PYbf[;]
+@PYbh[var] x@PYbf[,] y@PYbf[,] tmpX@PYbf[,] tmpY@PYbf[;] @PYaE[// Save original coords in some tools]
+@PYbh[var] refX@PYbf[,] refY@PYbf[;] 	@PYaE[// Help positioning the mouse in relation to the screen]
+@PYbh[var] tool @PYbf[=] @PYaX["line"]@PYbf[;] 	@PYaE[// What tool is selected?]
+@PYbh[var] current@PYbf[;] @PYaE[// current element]
+@PYbh[var] color @PYbf[=] @PYaX["blue"]@PYbf[;]
+@PYbh[var] thick @PYbf[=] @PYaX["2"]@PYbf[;]
+@PYbh[var] fill @PYbf[=] @PYaX["80"]@PYbf[;]
+@PYbh[var] prohibed @PYbf[=] @PYaz[new] @PYaY[Array](@PYaX["top"]@PYbf[,]@PYaX["tools"]@PYbf[,]@PYaX["pages"]@PYbf[,]@PYaX["fill-dialog"]@PYbf[,]@PYaX["thick-dialog"]); 
+@PYbh[var] cursorGrower@PYbf[;] @PYbh[var] cursorRadius @PYbf[=] @PYag[0]@PYbf[;]
+
+@PYaE[/* Three big events. From here everything's controlled. */]
+@PYbh[function] mouseDown(e){
+	@PYaz[if](@PYbf[!]e) e @PYbf[=] @PYaY[window].event@PYbf[;]
+	@PYaz[if] (ready_to_write @PYbf[&&] t.target.type @PYbf[!=] @PYaX["textarea"]) tf(e);
+    drawing @PYbf[=] @PYbd[true]@PYbf[;]clicked_inside@PYbf[=]@PYbd[true]@PYbf[;]
+    refX @PYbf[=] container.offsetLeft@PYbf[;]
+    refY @PYbf[=] container.offsetTop@PYbf[;]
+    x @PYbf[=] currPositionX(e);
+    y @PYbf[=] currPositionY(e);
+    cPX @PYbf[=] x@PYbf[;]
+    cPY @PYbf[=] y@PYbf[;]
+    switch (tool) {
+        case @PYaX["line"]@PYbf[:]
+            current @PYbf[=] @PYaz[new] Line(mainElem@PYbf[,]x@PYbf[,] y@PYbf[,] x@PYbf[,] y@PYbf[,] color@PYbf[,] thick@PYbf[,] fill);
+            @PYaz[break]@PYbf[;]
+        case @PYaX["pencil"]@PYbf[:]
+			current @PYbf[=] @PYaz[new] Pencil(mainElem@PYbf[,]@PYaX[""]@PYbf[,] color@PYbf[,] thick@PYbf[,] fill);
+			current.addPoint(x@PYbf[,]y);
+            @PYaz[break]@PYbf[;]
+        case @PYaX["square"]@PYbf[:]
+			current @PYbf[=] @PYaz[new] Square(mainElem@PYbf[,]x@PYbf[,]y@PYbf[,]@PYag[1]@PYbf[,]@PYag[1]@PYbf[,]color@PYbf[,]thick@PYbf[,]fill);
+            @PYaz[break]@PYbf[;]
+        case @PYaX["circle"]@PYbf[:]
+			current @PYbf[=] @PYaz[new] Circle(mainElem@PYbf[,]x@PYbf[,]y@PYbf[,]@PYag[1]@PYbf[,]@PYag[1]@PYbf[,]color@PYbf[,]thick@PYbf[,]fill);
+            @PYaz[break]@PYbf[;]
+        case @PYaX["eraser"]@PYbf[:]
+            erasing@PYbf[=]@PYbd[true]@PYbf[;]
+            @PYaz[break]@PYbf[;]
+        case @PYaX["image"]@PYbf[:]
+            current @PYbf[=] @PYaz[new] Image(mainElem@PYbf[,]x@PYbf[,]y@PYbf[,]@PYaX["test.jpg"]@PYbf[,]@PYag[1]);
+            @PYaz[break]@PYbf[;]
+		case @PYaX["cursor"]@PYbf[:]
+			current @PYbf[=] @PYaz[new] Circle(mainElem@PYbf[,]x@PYbf[,]y@PYbf[,]@PYag[1]@PYbf[,]@PYag[1]@PYbf[,]@PYaX["red"]@PYbf[,]@PYag[2]@PYbf[,]@PYag[90]);
+			cursorGrower @PYbf[=] setInterval(@PYaX["growCursor();"]@PYbf[,]@PYag[10]);
+			@PYaz[break]@PYbf[;]
+    }
+	@PYaz[if](svg) e.stopPropagation();
+	@PYaz[return] @PYbd[false]@PYbf[;]
+}
+
+
+@PYbh[function] mouseMove(e){
+	@PYaz[if](@PYbf[!]e) e @PYbf[=] @PYaY[window].event@PYbf[;]
+
+    refX @PYbf[=] container.offsetLeft@PYbf[;]
+    refY @PYbf[=] container.offsetTop@PYbf[;]
+    cPX @PYbf[=] currPositionX(e);
+    cPY @PYbf[=] currPositionY(e);
+    @PYaE[// Only want to do stuff when we are pressing the mouse button.]
+    @PYaz[if] (drawing) {
+        switch (tool) {
+            case @PYaX["line"]@PYbf[:]
+				@PYaE[// We've got x and y saved from before]
+                current.edit(x@PYbf[,] y@PYbf[,] cPX@PYbf[,] cPY);
+                @PYaz[break]@PYbf[;]
+			case @PYaX["pencil"]@PYbf[:]
+                current.addPoint(cPX@PYbf[,] cPY);
+                @PYaz[break]@PYbf[;]
+            case @PYaX["square"]@PYbf[:]
+				@PYbh[var] nX@PYbf[,]nY@PYbf[;]
+			    @PYaz[if] (x @PYbf[<=] cPX) nX @PYbf[=] x@PYbf[;]
+			    @PYaz[else] @PYaz[if] (x @PYbf[>] cPX) nX @PYbf[=] cPX@PYbf[;]
+			    @PYaz[if] (y @PYbf[<=] cPY) nY @PYbf[=] y@PYbf[;]
+			    @PYaz[else] @PYaz[if] (y @PYbf[>] cPY) nY @PYbf[=] cPY@PYbf[;]
+				current.edit(nX@PYbf[,]nY@PYbf[,]@PYaY[Math].abs(cPX @PYbf[-] x)@PYbf[,]@PYaY[Math].abs(cPY @PYbf[-] y));
+                @PYaz[break]@PYbf[;]
+            case @PYaX["circle"]@PYbf[:]
+				@PYbh[var] nX@PYbf[,]nY@PYbf[;]
+				@PYaz[if](cPX @PYbf[<=] x) nX @PYbf[=] (cPX @PYbf[+] (x@PYbf[-]cPX)@PYbf[/]@PYag[2]);
+				@PYaz[else] @PYaz[if](cPX @PYbf[>] x) nX @PYbf[=] (x @PYbf[+] (cPX@PYbf[-]x)@PYbf[/]@PYag[2]);
+				@PYaz[if](cPY @PYbf[<=] y) nY @PYbf[=] (cPY @PYbf[+] (y@PYbf[-]cPY)@PYbf[/]@PYag[2]);
+				@PYaz[else] @PYaz[if](cPY @PYbf[>] y) nY @PYbf[=] (y @PYbf[+] (cPY@PYbf[-]y)@PYbf[/]@PYag[2]);
+                current.edit(nX@PYbf[,]nY@PYbf[,]@PYaY[Math].abs(x@PYbf[-]nX)@PYbf[,]@PYaY[Math].abs(y@PYbf[-]nY));
+				@PYaz[break]@PYbf[;]
+			case @PYaX["eraser"]@PYbf[:]
+				@PYaz[if](erasing){
+					@PYaz[if] (@PYbf[!]svg @PYbf[&&] e.srcElement.parentElement.id @PYbf[==] @PYaX["vmlElem"]) {
+						remove(e.srcElement.id);
+						e.srcElement.parentElement.removeChild(e.srcElement);
+					} @PYaz[else] @PYaz[if] (@PYaY[parseInt](e.target.id)) {
+						remove(e.target.id);
+						e.target.parentNode.removeChild(e.target);
+					}
+				}
+        }
+    }
+	@PYaz[if] (tool @PYbf[!=] @PYaX["text"] @PYbf[&&] e.target.id @PYbf[!=] @PYaX["fill-dialog"] @PYbf[&&] e.target.id @PYbf[!=] @PYaX["thick-dialog"]) 
+		e.stopPropagation();
+	@PYaz[if] (@PYbf[!]ready_to_text) @PYaz[return] @PYbd[false]@PYbf[;]
+}
+
+
+@PYbh[function] mouseUp(e){
+	@PYaz[if](@PYbf[!]e) e @PYbf[=] @PYaY[window].event@PYbf[;]
+	@PYaz[if](tool @PYbf[==] @PYaX["cursor"]){
+		 clearInterval(cursorGrower);
+		 saveCursor(x@PYbf[,]y@PYbf[,]cursorRadius);
+		 current.element.id @PYbf[=] @PYaX["cursor_pointer"]@PYbf[;]
+		 cursorRadius @PYbf[=] @PYag[0]@PYbf[;]
+	} @PYaz[else] {
+    	refX @PYbf[=] container.offsetLeft@PYbf[;]
+    	refY @PYbf[=] container.offsetTop@PYbf[;]
+    	cPX @PYbf[=] currPositionX(e);
+    	cPY @PYbf[=] currPositionY(e);
+    	drawing @PYbf[=] @PYbd[false]@PYbf[;]
+    	switch (tool) {
+        	case @PYaX["eraser"]@PYbf[:]
+            	erasing@PYbf[=]@PYbd[false]@PYbf[;]
+            	@PYaz[break]@PYbf[;]
+        	case @PYaX["text"]@PYbf[:]
+				@PYaz[if](clicked_inside) upText(e);
+            	@PYaz[break]@PYbf[;]
+    	}
+		@PYaz[if](current @PYbf[!=] @PYbd[null]) save(current);
+		current @PYbf[=] @PYbd[null]@PYbf[;]
+	}
+	clicked_inside@PYbf[=]@PYbd[false]@PYbf[;]
+	@PYaz[if] (@PYbf[!]ready_to_text) @PYaz[return] @PYbd[false]@PYbf[;]
+}
+
+@PYaE[/* When creating text a little more juice is needed, so there's an]
+@PYaE[ * auxiliary function.]
+@PYaE[ * We create a new input where we click, to whom we attach the event]
+@PYaE[ * onChange, that will pop when the user is done writing.]
+@PYaE[ */]
+@PYbh[function] upText(e){
+    @PYaz[if] (texting) {
+		texting @PYbf[=] @PYbd[false]@PYbf[;]
+		$(@PYaX["#tools div"]).removeClass(@PYaX["selected"]);
+        txt @PYbf[=] @PYaY[document].createElement(@PYaX["textarea"]);
+        txt.setAttribute(@PYaX["rows"]@PYbf[,] @PYaX["6"]);
+		txt.setAttribute(@PYaX["cols"]@PYbf[,] @PYaX["20"]);
+        txt.setAttribute(@PYaX["class"]@PYbf[,] @PYaX["drawingText"]);
+        txt.style.position @PYbf[=] @PYaX["absolute"]@PYbf[;]
+        txt.style.top @PYbf[=] currPositionY(e) @PYbf[+] @PYaX["px"]@PYbf[;]
+        txt.style.left @PYbf[=] currPositionX(e) @PYbf[+] @PYaX["px"]@PYbf[;]
+        tmpX @PYbf[=] currPositionX(e);
+        tmpY @PYbf[=] currPositionY(e);
+        container.appendChild(txt);
+		@PYaz[if] (@PYbf[!]$.browser.safari) $(txt).resizable();
+		$(txt).focus();
+		
+		@PYaE[// Auxiliary function that will pop whenever the input thinks]
+		@PYaE[// the user has finished. It controls if something is written,]
+		@PYaE[// and acts accordingly.]
+		
+		@PYaE[// Attach the function to proper events]
+		$(txt).bind(@PYaX["change blur"]@PYbf[,]tf);
+		ready_to_write @PYbf[=] @PYbd[true]@PYbf[;]
+    }
+}
+
+@PYbh[function] tf(e){
+	@PYaz[if](txt.value @PYbf[!=] @PYaX[""]){
+		@PYbh[var] tmp @PYbf[=] txt.value.replace(@PYal[/(\r\n)|(\n)/g]@PYbf[,]@PYaX["<br />"]);
+		tx @PYbf[=] @PYaz[new] Text(container@PYbf[,]tmpX@PYbf[,]tmpY@PYbf[,]tmp@PYbf[,]color@PYbf[,]@PYaX["30"]@PYbf[,]@PYaX[""]@PYbf[,]@PYaX["0"]);
+		save(tx);
+	} 
+	$(txt).remove();
+}
+
+
+@PYbh[function] growCursor(){
+	cursorRadius @PYbf[+=] @PYag[3]@PYbf[;]
+	current.edit(x@PYbf[,]y@PYbf[,]cursorRadius@PYbf[,]cursorRadius);
+}
+\end{Verbatim}
+
+% subsubsection módulo_de_dibujo (end)
+
+\subsubsection{Módulo de renderizado} % (fold)
+\label{ssub:módulo_de_renderizado}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaE[/********************************/]
+@PYaE[/****** RENDERING MODULE ********/]
+@PYaE[/********************************/]
+
+
+@PYaE[/* LINE CLASS]
+@PYaE[ * x1,y1: Coords of the start of the line]
+@PYaE[ * x2,y2: Coords of the end of the line]
+@PYaE[ * color: of the stroke]
+@PYaE[ * thick: ness of the stroke]
+@PYaE[ * fill: transparency of the stroke]
+@PYaE[ * element: javascript node element]
+@PYaE[ * * * * * * * * * * * * * * * * * * * * * */]
+@PYbh[function] Line(here@PYbf[,]x1@PYbf[,] y1@PYbf[,] x2@PYbf[,] y2@PYbf[,] color@PYbf[,] thick@PYbf[,] fill){
+	@PYaz[this].x1@PYbf[=]x1@PYbf[;]@PYaz[this].y1@PYbf[=]y1@PYbf[;]@PYaz[this].x2@PYbf[=]x2@PYbf[;]@PYaz[this].y2@PYbf[=]y2@PYbf[;]
+	@PYaz[this].color@PYbf[=]color@PYbf[;]@PYaz[this].thick@PYbf[=]thick@PYbf[;]@PYaz[this].fill@PYbf[=]fill@PYbf[;]
+	@PYaz[this].type@PYbf[=]@PYaX["line"]@PYbf[;]
+    @PYaz[if] (svg) {
+        
+		@PYaz[this].element @PYbf[=] @PYaY[document].createElementNS(svgns@PYbf[,] @PYaX["line"]);
+		@PYaE[//Define attributes needed.]
+        $(@PYaz[this].element).attr(@PYaX["style"]@PYbf[,] @PYaX["fill: none;stroke: "] @PYbf[+] color @PYbf[+]
+        @PYaX[";stroke-width: "] @PYbf[+] thick @PYbf[+] @PYaX[";stroke-opacity: "] @PYbf[+] fill @PYbf[+] @PYaX[";"] @PYbf[+] 
+		@PYaX["width:100%;height:100%;"]);
+        @PYaE[//$(this.element).attr({"x1": x1,"x2": x2,"y1": y1, "y2": y2});]
+		@PYaz[this].element.setAttribute(@PYaX["x1"]@PYbf[,]x1);
+		@PYaz[this].element.setAttribute(@PYaX["y1"]@PYbf[,]y1);
+		@PYaz[this].element.setAttribute(@PYaX["x2"]@PYbf[,]x2);
+		@PYaz[this].element.setAttribute(@PYaX["y2"]@PYbf[,]y2);
+		@PYaE[//And finally append]
+		here.appendChild(@PYaz[this].element);
+		
+		@PYaE[//Move function to change the line.]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](x1@PYbf[,]y1@PYbf[,]x2@PYbf[,]y2){
+			@PYaz[this].element.setAttribute(@PYaX["x1"]@PYbf[,]x1);
+			@PYaz[this].element.setAttribute(@PYaX["y1"]@PYbf[,]y1);
+			@PYaz[this].element.setAttribute(@PYaX["x2"]@PYbf[,]x2);
+			@PYaz[this].element.setAttribute(@PYaX["y2"]@PYbf[,]y2);
+			@PYaz[this].x1@PYbf[=]x1@PYbf[;]@PYaz[this].y1@PYbf[=]y1@PYbf[;]@PYaz[this].x2@PYbf[=]x2@PYbf[;]@PYaz[this].y2@PYbf[=]y2@PYbf[;]
+		}
+		
+    } @PYaz[else] {
+		
+        @PYaz[this].element @PYbf[=] @PYaY[document].createElement(@PYaX["v:line"]);
+        @PYaE[//Define attributes]
+		$(@PYaz[this].element).attr({
+            from@PYbf[:] x1 @PYbf[+] @PYaX[","] @PYbf[+] y1@PYbf[,]
+            to@PYbf[:] x2 @PYbf[+] @PYaX[","] @PYbf[+] y2
+        });
+		@PYaz[this].st @PYbf[=] @PYaY[document].createElement(@PYaX["v:stroke"]);
+        $(@PYaz[this].st).attr({
+            color@PYbf[:] color@PYbf[,]
+            weight@PYbf[:] thick@PYbf[,]
+            opacity@PYbf[:] fill
+        });
+		
+		@PYaE[//Append where necessary]
+		here.appendChild(@PYaz[this].element);
+		@PYaz[this].element.appendChild(@PYaz[this].st);
+        
+		@PYaE[//Move function to change the line.]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](x1@PYbf[,]y1@PYbf[,]x2@PYbf[,]y2){
+			$(@PYaz[this].element).attr({
+            from@PYbf[:] @PYaX[""] @PYbf[+] x1 @PYbf[+] @PYaX[","] @PYbf[+] y1@PYbf[,]
+            to@PYbf[:] @PYaX[""] @PYbf[+] x2 @PYbf[+] @PYaX[","] @PYbf[+] y2
+        	});
+			@PYaz[this].x1@PYbf[=]x1@PYbf[;]@PYaz[this].y1@PYbf[=]y1@PYbf[;]@PYaz[this].x2@PYbf[=]x2@PYbf[;]@PYaz[this].y2@PYbf[=]y2@PYbf[;]
+		}
+		
+    }
+}
+
+@PYaE[/* PENCIL CLASS]
+@PYaE[ * points: string with the list of coords.]
+@PYaE[ * color: of the stroke]
+@PYaE[ * thick: ness of the stroke]
+@PYaE[ * fill: transparency of the stroke]
+@PYaE[ * element: javascript node element]
+@PYaE[ * * * * * * * * * * * * * * * * * * * * * */]
+@PYbh[function] Pencil(here@PYbf[,]points@PYbf[,] color@PYbf[,] thick@PYbf[,] fill){
+	@PYaz[this].points@PYbf[=]points@PYbf[;]
+	@PYaz[this].color@PYbf[=]color@PYbf[;]@PYaz[this].thick@PYbf[=]thick@PYbf[;]@PYaz[this].fill@PYbf[=]fill@PYbf[;]
+	@PYaz[this].type @PYbf[=] @PYaX["pencil"]@PYbf[;]
+    @PYaz[if] (svg) {
+		
+        @PYaz[this].element @PYbf[=] @PYaY[document].createElementNS(svgns@PYbf[,] @PYaX["polyline"]);
+		@PYaE[//Define attributes]
+        @PYaz[this].element.setAttribute(@PYaX["points"]@PYbf[,] points);
+        @PYaz[this].element.setAttribute(@PYaX["style"]@PYbf[,] @PYaX["fill:none; stroke:"] @PYbf[+] color @PYbf[+]
+        @PYaX["; stroke-width:"] @PYbf[+] thick @PYbf[+] @PYaX[";stroke-opacity:"] @PYbf[+] fill @PYbf[+] @PYaX[";"]);
+		@PYaE[//And append]
+		here.appendChild(@PYaz[this].element);
+		
+		@PYaE[//Function to add a new point to the polyline]
+		@PYaz[this].addPoint @PYbf[=] @PYbh[function](x@PYbf[,]y){
+			@PYaz[this].points@PYbf[=]@PYaz[this].points @PYbf[+] @PYaX[" "] @PYbf[+] x @PYbf[+] @PYaX[","] @PYbf[+] y@PYbf[;]
+			@PYaz[this].element.setAttribute(@PYaX["points"]@PYbf[,]@PYaz[this].points);
+		}
+		
+    } @PYaz[else] {
+		
+        @PYaz[this].element @PYbf[=] @PYaY[document].createElement(@PYaX["v:polyline"]);
+		@PYaE[//Define attributes]
+        $(@PYaz[this].element).attr(@PYaX["filled"]@PYbf[,] @PYaX["False"]);
+        @PYaz[this].element.setAttribute(@PYaX["points"]@PYbf[,]points);
+		@PYaE[//And the stroke]
+        @PYaz[this].st @PYbf[=] @PYaY[document].createElement(@PYaX["v:stroke"]);
+        $(@PYaz[this].st).attr({
+            color@PYbf[:] color@PYbf[,]
+            weight@PYbf[:] thick@PYbf[,]
+            opacity@PYbf[:] fill
+        });
+		@PYaE[//Append both]
+		here.appendChild(@PYaz[this].element);
+		@PYaz[this].element.appendChild(@PYaz[this].st);
+		
+		@PYaE[//Function to add a new point to the polyline]
+		@PYaz[this].addPoint @PYbf[=] @PYbh[function](x@PYbf[,]y) {
+			@PYaz[this].points @PYbf[=] @PYaz[this].points @PYbf[+] @PYaX[" "] @PYbf[+] x @PYbf[+] @PYaX[","] @PYbf[+] y@PYbf[;]
+			@PYaz[this].element.points.value @PYbf[=] @PYaz[this].points@PYbf[;]
+		}
+    }
+}
+
+
+@PYaE[/* SQUARE CLASS]
+@PYaE[ * x,y: Coords of the start of the square]
+@PYaE[ * width,height: Width and height of the square]
+@PYaE[ * color: of the stroke]
+@PYaE[ * thick: ness of the stroke]
+@PYaE[ * fill: transparency of the filling]
+@PYaE[ * element: javascript node element]
+@PYaE[ * * * * * * * * * * * * * * * * * * * * * */]
+@PYbh[function] Square(here@PYbf[,]x@PYbf[,] y@PYbf[,] w@PYbf[,] h@PYbf[,] color@PYbf[,] thick@PYbf[,] fill){
+	@PYaz[this].x @PYbf[=] x@PYbf[;]@PYaz[this].y @PYbf[=] y@PYbf[;]
+	@PYaz[this].width @PYbf[=] w@PYbf[;]@PYaz[this].height @PYbf[=] h@PYbf[;]
+	@PYaz[this].color @PYbf[=] color@PYbf[;]@PYaz[this].thick @PYbf[=] thick@PYbf[;]@PYaz[this].fill @PYbf[=] fill@PYbf[;]
+	@PYaz[this].type @PYbf[=] @PYaX["square"]@PYbf[;]
+	
+	@PYaz[if] (svg) {
+		
+		@PYaz[this].element @PYbf[=] @PYaY[document].createElementNS(svgns@PYbf[,] @PYaX["rect"]);
+		@PYaE[//Define attributes]
+		@PYaz[this].element.setAttribute(@PYaX["x"]@PYbf[,] x);
+		@PYaz[this].element.setAttribute(@PYaX["y"]@PYbf[,] y);
+		@PYaz[this].element.setAttribute(@PYaX["height"]@PYbf[,] h);
+		@PYaz[this].element.setAttribute(@PYaX["width"]@PYbf[,] w);
+		@PYaz[this].element.setAttribute(@PYaX["style"]@PYbf[,] @PYaX["stroke:"] @PYbf[+] color @PYbf[+]
+		@PYaX["; stroke-width:"] @PYbf[+]	thick @PYbf[+] @PYaX[";stroke-opacity:"] @PYbf[+] fill @PYbf[+] @PYaX[";fill:white;fill-opacity:0.4;"]);
+		@PYaE[//Append]
+		here.appendChild(@PYaz[this].element);
+		
+		@PYaE[//Function to edit the square]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](x@PYbf[,]y@PYbf[,]w@PYbf[,]h){
+			@PYaz[this].x@PYbf[=]x@PYbf[;]@PYaz[this].y@PYbf[=]y@PYbf[;]@PYaz[this].width@PYbf[=]w@PYbf[;]@PYaz[this].height@PYbf[=]h@PYbf[;]
+			@PYaz[this].element.setAttribute(@PYaX["x"]@PYbf[,] x);
+	        @PYaz[this].element.setAttribute(@PYaX["y"]@PYbf[,] y);
+	        @PYaz[this].element.setAttribute(@PYaX["height"]@PYbf[,] h);
+	        @PYaz[this].element.setAttribute(@PYaX["width"]@PYbf[,] w);
+		}
+	} @PYaz[else] {
+		
+		@PYaz[this].element @PYbf[=] @PYaY[document].createElement(@PYaX["v:rect"]);
+		@PYaE[//Define attributes]
+		@PYaz[this].element.style.left @PYbf[=] x@PYbf[;]
+		@PYaz[this].element.style.top @PYbf[=] y@PYbf[;]
+		@PYaz[this].element.style.height @PYbf[=] h@PYbf[;]
+		@PYaz[this].element.style.width @PYbf[=] w@PYbf[;]
+		@PYaz[this].element.style.position @PYbf[=] @PYaX["absolute"]@PYbf[;]
+		
+		@PYaz[this].st @PYbf[=] @PYaY[document].createElement(@PYaX["v:stroke"]);
+        $(@PYaz[this].st).attr({
+            color@PYbf[:] color@PYbf[,]
+            weight@PYbf[:] thick@PYbf[,]
+            opacity@PYbf[:] fill
+        });
+		
+		@PYaE[//Fill element needed]
+		@PYaz[this].fl @PYbf[=] @PYaY[document].createElement(@PYaX["v:fill"]);
+		@PYaz[this].fl.color @PYbf[=] @PYaX["white"]@PYbf[;]
+		@PYaz[this].fl.opacity @PYbf[=] @PYax[0.4]@PYbf[;]
+		
+		@PYaE[//Append everything]
+		here.appendChild(@PYaz[this].element);
+		@PYaz[this].element.appendChild(@PYaz[this].st);
+		@PYaz[this].element.appendChild(@PYaz[this].fl);
+		
+		@PYaE[//Edit function ]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](x@PYbf[,]y@PYbf[,]w@PYbf[,]h){
+			@PYaz[this].x@PYbf[=]x@PYbf[;]@PYaz[this].y@PYbf[=]y@PYbf[;]@PYaz[this].width@PYbf[=]w@PYbf[;]@PYaz[this].height@PYbf[=]h@PYbf[;]
+			@PYaz[this].element.style.left @PYbf[=] x@PYbf[;]
+	        @PYaz[this].element.style.top @PYbf[=] y@PYbf[;]
+	        @PYaz[this].element.style.height @PYbf[=] h@PYbf[;]
+	        @PYaz[this].element.style.width @PYbf[=] w@PYbf[;]
+		}
+	}
+}
+
+
+@PYaE[/* CIRCLE CLASS]
+@PYaE[ * x,y: Coords of the center of the square]
+@PYaE[ * rx,ry: Vertican and horizontal radius]
+@PYaE[ * color: of the stroke]
+@PYaE[ * thick: ness of the stroke]
+@PYaE[ * fill: transparency of the filling]
+@PYaE[ * element: javascript node element]
+@PYaE[ * * * * * * * * * * * * * * * * * * * * * */]
+@PYbh[function] Circle(here@PYbf[,]cx@PYbf[,]cy@PYbf[,]rx@PYbf[,]ry@PYbf[,]color@PYbf[,]thick@PYbf[,]fill){
+	@PYaz[this].x@PYbf[=]cx@PYbf[,]@PYaz[this].y@PYbf[=]cy@PYbf[;]@PYaz[this].rx@PYbf[=]rx@PYbf[;]@PYaz[this].ry@PYbf[=]ry@PYbf[;]
+	@PYaz[this].color@PYbf[=]color@PYbf[;]@PYaz[this].thick@PYbf[=]thick@PYbf[;]@PYaz[this].fill@PYbf[=]fill@PYbf[;]
+	@PYaz[this].type @PYbf[=] @PYaX["circle"]@PYbf[;]
+	@PYaz[if](svg){
+	
+        @PYaz[this].element @PYbf[=] @PYaY[document].createElementNS(svgns@PYbf[,] @PYaX["ellipse"]);
+		@PYaE[//Set attributes]
+        @PYaz[this].element.setAttribute(@PYaX["rx"]@PYbf[,] rx);
+        @PYaz[this].element.setAttribute(@PYaX["ry"]@PYbf[,] ry);
+        @PYaz[this].element.setAttribute(@PYaX["cx"]@PYbf[,] cx);
+        @PYaz[this].element.setAttribute(@PYaX["cy"]@PYbf[,] cy);
+        @PYaz[this].element.setAttribute(@PYaX["style"]@PYbf[,] @PYaX["stroke:"] @PYbf[+] color @PYbf[+] 
+		@PYaX["; stroke-width:"] @PYbf[+] thick @PYbf[+] @PYaX[";stroke-opacity:"] @PYbf[+] fill @PYbf[+] @PYaX[";fill:white;fill-opacity:0.4;"]);
+		@PYaE[//append]
+		here.appendChild(@PYaz[this].element);
+		
+		@PYaE[//Edit function]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](cx@PYbf[,]cy@PYbf[,]rx@PYbf[,]ry) {
+			@PYaz[this].x@PYbf[=]cx@PYbf[,]@PYaz[this].y@PYbf[=]cy@PYbf[;]@PYaz[this].rx@PYbf[=]rx@PYbf[;]@PYaz[this].ry@PYbf[=]ry@PYbf[;]
+			@PYaz[this].element.setAttribute(@PYaX["rx"]@PYbf[,] rx);
+	        @PYaz[this].element.setAttribute(@PYaX["ry"]@PYbf[,] ry);
+	        @PYaz[this].element.setAttribute(@PYaX["cx"]@PYbf[,] cx);
+	        @PYaz[this].element.setAttribute(@PYaX["cy"]@PYbf[,] cy);
+		}
+	} @PYaz[else] {
+		
+		@PYaz[this].element @PYbf[=] @PYaY[document].createElement(@PYaX["v:oval"]);
+		@PYaE[//Set attributes]
+		@PYaE[//In VML we need height and width, not radius]
+        @PYaz[this].element.style.width @PYbf[=] rx@PYbf[*]@PYag[2]@PYbf[;]
+        @PYaz[this].element.style.height @PYbf[=] ry@PYbf[*]@PYag[2]@PYbf[;]
+        @PYaz[this].element.style.position @PYbf[=] @PYaX["absolute"]@PYbf[;]
+        @PYaz[this].element.style.left @PYbf[=] cx@PYbf[-]rx@PYbf[;]
+        @PYaz[this].element.style.top @PYbf[=] cy@PYbf[-]ry@PYbf[;]
+        @PYaz[this].element.setAttribute(@PYaX["shape"]@PYbf[,] @PYaX["circle"]);
+        
+		@PYaz[this].st @PYbf[=] @PYaY[document].createElement(@PYaX["v:stroke"]);
+        $(@PYaz[this].st).attr({
+            color@PYbf[:] color@PYbf[,]
+            weight@PYbf[:] thick@PYbf[,]
+            opacity@PYbf[:] fill
+        });
+
+		@PYaE[//Fill element is needed]
+        @PYaz[this].fl @PYbf[=] @PYaY[document].createElement(@PYaX["v:fill"]);
+		@PYaz[this].fl.color @PYbf[=] @PYaX["white"]@PYbf[;]
+        @PYaz[this].fl.opacity @PYbf[=] @PYax[0.4]@PYbf[;] 
+		
+		@PYaE[//Append]
+		here.appendChild(@PYaz[this].element);
+		@PYaz[this].element.appendChild(@PYaz[this].st);
+		@PYaz[this].element.appendChild(@PYaz[this].fl);
+		
+		@PYaE[//Edit function]
+		@PYaz[this].edit @PYbf[=] @PYbh[function](cx@PYbf[,]cy@PYbf[,]rx@PYbf[,]ry){
+			@PYaz[this].x@PYbf[=]cx@PYbf[,]@PYaz[this].y@PYbf[=]cy@PYbf[;]@PYaz[this].rx@PYbf[=]rx@PYbf[;]@PYaz[this].ry@PYbf[=]ry@PYbf[;]
+			@PYaz[this].element.style.width @PYbf[=] rx@PYbf[*]@PYag[2]@PYbf[;]
+	        @PYaz[this].element.style.height @PYbf[=] ry@PYbf[*]@PYag[2]@PYbf[;]
+	        @PYaz[this].element.style.left @PYbf[=] cx@PYbf[-]rx@PYbf[;]
+	        @PYaz[this].element.style.top @PYbf[=] cy@PYbf[-]ry@PYbf[;]
+		}
+	}
+}
+
+@PYaE[/* TEXT CLASS]
+@PYaE[ * x,y: Coords of origin of the textbox]
+@PYaE[ * text: string of text represented]
+@PYaE[ * color: of the text]
+@PYaE[ * size: font size of the text]
+@PYaE[ * font: font of the text]
+@PYaE[ * fill: transparency of the filling]
+@PYaE[ * element: javascript node element]
+@PYaE[ * * * * * * * * * * * * * * * * * * * * * */]
+@PYbh[function] Text(here@PYbf[,]x@PYbf[,]y@PYbf[,]text@PYbf[,]color@PYbf[,]size@PYbf[,]font@PYbf[,]fill){
+	@PYaz[this].x@PYbf[=]x@PYbf[;]@PYaz[this].y@PYbf[=]y@PYbf[;]@PYaz[this].text@PYbf[=]text@PYbf[;]
+	@PYaz[this].color@PYbf[=]color@PYbf[;]@PYaz[this].size@PYbf[=]size@PYbf[;]@PYaz[this].fill@PYbf[=]fill@PYbf[;]
+	@PYaz[this].type@PYbf[=]@PYaX["text"]@PYbf[;]
+	@PYaz[if](font@PYbf[==]@PYaX[""]) @PYaz[this].font@PYbf[=]font@PYbf[;]
+	@PYaz[else] @PYaz[this].font@PYbf[=]@PYaX["Courier"]@PYbf[;]
+	
+	@PYaz[this].element @PYbf[=] @PYaY[document].createElement(@PYaX["div"]);
+	$(@PYaz[this].element).html(text);
+	@PYaz[this].element.style.top @PYbf[=] y @PYbf[+] @PYaX["px"]@PYbf[;]
+	@PYaz[this].element.style.left @PYbf[=] x @PYbf[+] @PYaX["px"]@PYbf[;]
+	@PYaz[this].element.style.fontFamily @PYbf[=] @PYaX["Verdana"]@PYbf[;]
+	@PYaz[this].element.style.fontSize  @PYbf[=]@PYaX["1.3em"]@PYbf[;]
+	@PYaz[this].element.style.zIndex @PYbf[=] @PYag[200]@PYbf[;]
+	@PYaz[this].element.style.position @PYbf[=] @PYaX["absolute"]@PYbf[;]
+	
+	@PYaz[this].element.style.margin@PYbf[=]@PYaX["0px"]@PYbf[;]
+	@PYaz[this].element.style.padding@PYbf[=]@PYaX["0px"]@PYbf[;]
+	
+	container.appendChild(@PYaz[this].element);
+}
+\end{Verbatim}
+
+% subsubsection módulo_de_renderizado (end)
+
+\subsubsection{Módulo de comunicación} % (fold)
+\label{ssub:módulo_de_comunicación}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaE[/********************************/]
+@PYaE[/***** COMMUNICATION MODULE *****/]
+@PYaE[/********************************/]
+@PYbh[var] delay @PYbf[=] @PYag[2500]@PYbf[;]	@PYaE[// Delay between update requests.]
+@PYbh[var] reloads @PYbf[=] @PYag[0]@PYbf[;]	@PYaE[// Counter to ask for everything every number of times]
+
+@PYaE[/* We will save the newly created element through ajax.]
+@PYaE[ * The parameter 'it' is an object we'll convert into]
+@PYaE[ * a JSON compatible string.]
+@PYaE[ * The JSON'd string is passed through GET typical way.]
+@PYaE[ */]
+@PYbh[function] save(it){
+	@PYbh[var] text @PYbf[=] toJSON(it);
+	$.ajaxQueue({
+		type@PYbf[:] @PYaX["GET"]@PYbf[,]
+		url@PYbf[:] @PYaX["/document/add_element/"] @PYbf[+] docId@PYbf[,]
+		data@PYbf[:] {attr@PYbf[:] text}@PYbf[,]
+		success@PYbf[:] @PYbh[function](ret){
+			it.element.id@PYbf[=]ret@PYbf[;]
+		}
+	});
+}
+
+@PYbh[function] saveCursor(x@PYbf[,]y@PYbf[,]r){
+	$.ajaxQueue({
+		url@PYbf[:] @PYaX["/document/save_cursor/"] @PYbf[+] docId@PYbf[,]
+		data@PYbf[:] {x@PYbf[:]x@PYbf[,]y@PYbf[:]y@PYbf[,]r@PYbf[:]r}
+		});
+}
+
+@PYaE[/* This function will be executed constantly, with a delay of "delay"]
+@PYaE[ * miliseconds between when a request finishes and the next is done.]
+@PYaE[ * TODO: Who takes care of discarding already-known stuff]
+@PYaE[ * The url to  request new data is:]
+@PYaE[ * /doc/:documentID/:pageNumber/list]
+@PYaE[ */]
+@PYbh[function] consult(repeat){
+	$.ajaxQueue({
+		type@PYbf[:] @PYaX["GET"]@PYbf[,]
+		url@PYbf[:] @PYaX["/document/list_elements/"] @PYbf[+] docId @PYbf[+] @PYaX["?reload="] @PYbf[+] (reload@PYbf[++])@PYbf[,]
+		success@PYbf[:] load@PYbf[,]
+		complete@PYbf[:] @PYbh[function](){
+			@PYaz[if](repeat) setTimeout(@PYaX["consult(true);"]@PYbf[,]delay);
+		}
+	});
+}
+
+@PYaE[/* This function receives the JSON compatible data]
+@PYaE[ * provided after consulting the server. It iterates]
+@PYaE[ * through it and adds the new elements.]
+@PYaE[ */]
+@PYbh[function] load(content){
+	@PYbh[var] t @PYbf[=] @PYaY[eval](@PYaX["("] @PYbf[+] content @PYbf[+] @PYaX[")"]);	@PYaE[// Convert JSON into actual data.]
+	@PYaE[// Load the good background]
+	bg @PYbf[=] @PYaX["url(/image/"] @PYbf[+] pageId @PYbf[+] @PYaX[")"]@PYbf[;]
+	currentbg @PYbf[=] $(container).get(@PYag[0]).style.backgroundImage@PYbf[;]
+	@PYaz[if](bg @PYbf[!=] currentbg){
+		$(container).css(@PYaX["background"]@PYbf[,]@PYaX["white url(\"/image/"] @PYbf[+] pageId @PYbf[+] 
+		                 @PYaX["\") no-repeat 100px 100px"]);
+		@PYaz[if](svg) $(mainElem).css(@PYaX["background-color"]@PYbf[,]@PYaX["transparent"]);		
+	}	
+	
+	@PYaE[// Change page number if needed]
+	change_page_to(t);
+
+	@PYaE[// Change users list]
+	@PYbh[var] users @PYbf[=] @PYaX[""]@PYbf[;]
+	@PYaz[for] (u @PYaz[in] t.users) users @PYbf[=] users @PYbf[+] @PYaX["<li>"] @PYbf[+] t.users@PYZlb[]u@PYZrb[] @PYbf[+] @PYaX["</li>"]@PYbf[;]
+	@PYaz[for] (u @PYaz[in] t.anonymous) users @PYbf[=] users @PYbf[+] @PYaX["<li>"] @PYbf[+] t.anonymous@PYZlb[]u@PYZrb[] @PYbf[+] @PYaX["</li>"]@PYbf[;]
+	$(@PYaX["#users-number"]).text(@PYaX["("] @PYbf[+] (t.users.length @PYbf[+] t.anonymous.length) @PYbf[+] @PYaX[")"]);
+	$(@PYaX["#users-list"]).html(users);
+	
+	@PYaz[if](t.elements.length@PYbf[>]@PYag[0]){	@PYaE[// It's a way to see if some data has been returned.]
+		@PYbh[var] i@PYbf[;]
+		
+		@PYaE[// First loop. Check if the elements are already loaded.]
+		@PYaz[for] (i @PYaz[in] t.elements){
+			@PYbh[var] tmp @PYbf[=] @PYaY[document].getElementById(t.elements@PYZlb[]i@PYZrb[].id);
+			@PYaz[if](tmp) tmp.id @PYbf[+=] @PYaX[" ok"]@PYbf[;]
+			@PYaz[else] {
+				@PYbh[var] e @PYbf[=] @PYaY[eval](@PYaX["("] @PYbf[+] t.elements@PYZlb[]i@PYZrb[].attr @PYbf[+] @PYaX[")"]);
+				@PYbh[var] tp@PYbf[;]
+				switch (e.type) {
+			    case @PYaX["line"]@PYbf[:]
+					tp @PYbf[=] @PYaz[new] Line(mainElem@PYbf[,]e.x1@PYbf[,] e.y1@PYbf[,] e.x2@PYbf[,] e.y2@PYbf[,] e.color@PYbf[,] e.thick@PYbf[,] e.fill);
+					@PYaz[break]@PYbf[;]
+			      case @PYaX["pencil"]@PYbf[:]
+					tp @PYbf[=] @PYaz[new] Pencil(mainElem@PYbf[,]e.points@PYbf[,] e.color@PYbf[,] e.thick@PYbf[,] e.fill);
+			          @PYaz[break]@PYbf[;]
+			      case @PYaX["square"]@PYbf[:]
+					tp @PYbf[=] @PYaz[new] Square(mainElem@PYbf[,]e.x@PYbf[,]e.y@PYbf[,]e.width@PYbf[,]e.height@PYbf[,] e.color@PYbf[,] e.thick@PYbf[,] e.fill);
+			          @PYaz[break]@PYbf[;]
+			      case @PYaX["circle"]@PYbf[:]
+					tp @PYbf[=] @PYaz[new] Circle(mainElem@PYbf[,]e.x@PYbf[,]e.y@PYbf[,]e.rx@PYbf[,]e.ry@PYbf[,] e.color@PYbf[,] e.thick@PYbf[,] e.fill);
+			          @PYaz[break]@PYbf[;]
+					case @PYaX["text"]@PYbf[:]
+						tp @PYbf[=] @PYaz[new] Text(mainElem@PYbf[,]e.x@PYbf[,]e.y@PYbf[,]e.text@PYbf[,]e.color@PYbf[,]e.size@PYbf[,]e.font@PYbf[,]e.fill);
+			    }
+				tp.element.id @PYbf[=] t.elements@PYZlb[]i@PYZrb[].id @PYbf[+] @PYaX[" ok"]@PYbf[;]
+			}
+		}
+	}
+	@PYaE[// Second Loop. Remove the ones that are no longer needed.]
+	@PYbh[var] nodes @PYbf[=] mainElem.childNodes@PYbf[;]
+	@PYbh[var] i @PYbf[=] @PYag[0]@PYbf[;]
+	@PYaz[for](i@PYbf[=]nodes.length@PYbf[;]i@PYbf[--;]i@PYbf[<]@PYag[0]) check(nodes@PYZlb[]i@PYZrb[]@PYbf[,]mainElem);
+	@PYaz[if](svg) {
+		nodes @PYbf[=] container.childNodes@PYbf[;]
+		@PYaz[for](i@PYbf[=]nodes.length@PYbf[;]i@PYbf[--;]i@PYbf[<]@PYag[0]) check(nodes@PYZlb[]i@PYZrb[]@PYbf[,]container);
+	}
+	
+	@PYaE[// CURSOR]
+	@PYaE[// #1 remove current one, and draw a new one]
+	$(@PYaX["#cursor_pointer"]).remove();
+	c @PYbf[=] @PYaz[new] Circle(mainElem@PYbf[,]t.cursor.x@PYbf[,]t.cursor.y@PYbf[,]t.cursor.r@PYbf[,]t.cursor.r@PYbf[,]@PYaX["red"]@PYbf[,]@PYag[2]@PYbf[,]@PYag[90]);
+	c.element.id @PYbf[=] @PYaX["cursor_pointer"]@PYbf[;]
+
+}
+
+@PYbh[function] check(node@PYbf[,]parent){
+	@PYaz[if] (node.id @PYbf[&&] node.id @PYbf[!=] @PYaX["svgElem"]) {
+		@PYbh[var] tmpId @PYbf[=] node.id.split(@PYbe[' ']);
+		@PYaz[if] (tmpId@PYZlb[]@PYag[1]@PYZrb[] @PYbf[==] @PYaX["ok"]) node.id @PYbf[=] tmpId@PYZlb[]@PYag[0]@PYZrb[];
+		@PYaz[else] parent.removeChild(node);
+	}
+}
+
+@PYaE[/* Function to tell the system to remove the elemtn from]
+@PYaE[ * the DB. It's done through ajax:]
+@PYaE[ * URL: /element/remove/:id]
+@PYaE[ */]
+@PYbh[function] remove(id){
+	$.ajax({
+		type@PYbf[:] @PYaX["GET"]@PYbf[,]
+		url@PYbf[:] @PYaX["/document/remove_element/"] @PYbf[+] id
+		});
+}
+
+
+@PYaE[/* Functions to change pages]
+@PYaE[ * previousPage]
+@PYaE[ * nextPage]
+@PYaE[ * reloadStuff]
+@PYaE[ */]
+@PYbh[function] change_page_to(t){
+	@PYaz[if](t.page_num @PYbf[!=] pageNum) $(@PYaX["#pages input"]).val(t.page_num);
+	pageNum @PYbf[=] t.page_num@PYbf[;]
+	pageId @PYbf[=] t.page_id@PYbf[;]
+	@PYaz[if](t.page_num @PYbf[==] @PYag[1]){ $(@PYaX["#prev"]).hide();$(@PYaX["#next"]).show(); }
+	@PYaz[else] @PYaz[if](t.page_num @PYbf[==] pages) { $(@PYaX["#prev"]).show();$(@PYaX["#next"]).hide(); }
+	@PYaz[else] { $(@PYaX["#prev"]).show();$(@PYaX["#next"]).show(); }
+}
+@PYbh[function] previousPage() { 	changePage(@PYbf[--]pageNum); }
+@PYbh[function] nextPage(){ 		changePage(@PYbf[++]pageNum); }
+@PYbh[function] changePage(num){
+	@PYaE[// Tell the server]
+	$.ajaxQueue({
+		type@PYbf[:] @PYaX["GET"]@PYbf[,]
+		data@PYbf[:] {page@PYbf[:] num}@PYbf[,]
+		url@PYbf[:] @PYaX["/document/change_page/"] @PYbf[+] docId@PYbf[,]
+		success@PYbf[:] @PYbh[function](ret){
+			@PYaz[if](ret @PYbf[==] @PYaX["0"]) $(@PYaX["#pages input"]).val(pageNum);
+			@PYaz[else] {
+				pageId @PYbf[=] ret@PYbf[;]	
+				consult(@PYbd[false]);
+				$(@PYaX["#pages input"]).val(num @PYbf[+] @PYaX[""]);
+			}
+		}
+	});
+	
+}
+\end{Verbatim}
+
+% subsubsection módulo_de_comunicación (end)
+
+% subsection librería_javascript (end)
+
+\subsection{Aplicación Rails} % (fold)
+\label{sub:aplicación_rails}
+
+\subsubsection{Document Model} % (fold)
+\label{ssub:document_model}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaf[# == Schema Information]
+@PYaf[# Schema version: 20081122123130]
+@PYaf[#]
+@PYaf[# Table name: documents]
+@PYaf[#]
+@PYaf[#  id           :integer(11)     not null, primary key]
+@PYaf[#  title        :string(255)     ]
+@PYaf[#  description  :text            ]
+@PYaf[#  current_page :integer(11)     default(1)]
+@PYaf[#  user_id      :integer(11)     not null]
+@PYaf[#  created_at   :datetime        ]
+@PYaf[#  updated_at   :datetime        ]
+@PYaf[#  height       :integer(11)     default(600)]
+@PYaf[#  width        :integer(11)     default(800)]
+@PYaf[#  has_file     :boolean(1)      ]
+@PYaf[#  public       :boolean(1)      ]
+@PYaf[#]
+
+@PYaz[class] @PYaO[Document] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+  has_many @PYau[:pages], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+  has_many @PYau[:elements], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:pages]
+  belongs_to @PYau[:owner], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[User]@PYaX["], @PYau[:foreign_key] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[user_id]@PYaX["]
+  
+  has_many @PYau[:document_permissions], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+  has_many @PYau[:users_with_access], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:document_permissions], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[User]@PYaX["], @PYau[:source] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[user]@PYaX["]
+  
+  has_many @PYau[:group_permissions], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+  has_many @PYau[:groups_with_access], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:group_permissions], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Group]@PYaX["], @PYau[:source] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[group]@PYaX["]
+  
+  has_many @PYau[:activities]
+  has_many @PYau[:recent_activities], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Activity]@PYaX["], @PYau[:conditions] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]]@PYaX["]@PYaX[activities.when > ?]@PYaX["], @PYag[30]@PYbf[.]seconds@PYbf[.]ago@PYbf[@PYZrb[]]
+  has_many @PYau[:anonymous_activities], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Activity]@PYaX["], @PYau[:conditions] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]]@PYaX["]@PYaX[activities.anonymous = ?]@PYaX["],@PYah[true]@PYbf[@PYZrb[]]
+  has_many @PYau[:recent_anonymous_activities], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Activity]@PYaX["], @PYau[:conditions] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]]@PYaX["]@PYaX[activities.anonymous = ? AND activities.when > ?]@PYaX["], @PYah[true], @PYag[30]@PYbf[.]seconds@PYbf[.]ago@PYbf[@PYZrb[]]
+  has_many @PYau[:visitors], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:activities], @PYau[:source] @PYbf[=]@PYbf[>] @PYau[:user]
+  has_many @PYau[:active_users], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:activities], @PYau[:source] @PYbf[=]@PYbf[>] @PYau[:user], @PYau[:conditions] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]]@PYaX["]@PYaX[activities.when > ?]@PYaX["], @PYag[30]@PYbf[.]seconds@PYbf[.]ago@PYbf[@PYZrb[]]
+  
+  has_many @PYau[:tasks]
+  
+  @PYaf[# Validations]
+  validates_presence_of @PYau[:title]
+  
+  @PYaz[def] @PYaL[recent_anonymous_ips]
+    @PYaY[self]@PYbf[.]recent_anonymous_activities(@PYah[true])@PYbf[.]collect {@PYbf[|]a@PYbf[|] a@PYbf[.]ip}
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[recent_usernames]
+    @PYaY[self]@PYbf[.]active_users(@PYah[true])@PYbf[.]collect {@PYbf[|]a@PYbf[|] a@PYbf[.]login}
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[ping](user,ip) @PYaf[# user has just loaded info, we must update activity]
+    @PYaz[if] user @PYbf[!=] @PYau[:false]
+      activity @PYbf[=] @PYar[Activity]@PYbf[.]find_or_create_by_user_id_and_document_id user@PYbf[.]id,@PYaY[self]@PYbf[.]id
+      activity@PYbf[.]when @PYbf[=] @PYar[Time]@PYbf[.]now
+      activity@PYbf[.]save
+    @PYaz[else]
+      activity @PYbf[=] @PYar[Activity]@PYbf[.]find_or_create_by_ip_and_document_id_and_anonymous ip,@PYaY[self]@PYbf[.]id,@PYah[true]
+      activity@PYbf[.]when @PYbf[=] @PYar[Time]@PYbf[.]now
+      activity@PYbf[.]save
+    @PYaz[end]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[get_current_page]
+    @PYaY[p] @PYbf[=] @PYar[Page]@PYbf[.]find_by_number_and_document_id @PYaY[self]@PYbf[.]current_page, @PYaY[self]@PYbf[.]id
+    @PYaz[if] @PYbf[!]@PYaY[p]
+      @PYaY[p] @PYbf[=] @PYaY[self]@PYbf[.]pages@PYbf[.]find(@PYau[:first])
+      @PYaY[self]@PYbf[.]current_page @PYbf[=] @PYaY[p]@PYbf[.]number
+      @PYaY[self]@PYbf[.]save
+    @PYaz[end]
+    @PYaY[p]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[needed_area]
+    width  @PYbf[=] @PYag[0]
+    height @PYbf[=] @PYag[0]
+    @PYaY[self]@PYbf[.]pages(@PYah[true])@PYbf[.]each @PYaz[do] @PYbf[|]@PYaY[p]@PYbf[|]
+      image @PYbf[=] @PYaY[p]@PYbf[.]image
+      @PYaz[if] image
+        width  @PYbf[=] width  @PYbf[>] image@PYbf[.]width ? width : image@PYbf[.]width
+        height @PYbf[=] height @PYbf[>] image@PYbf[.]height ? height : image@PYbf[.]height
+      @PYaz[end]
+    @PYaz[end]
+    {@PYau[:width] @PYbf[=]@PYbf[>] width @PYbf[+] @PYag[200],@PYau[:height] @PYbf[=]@PYbf[>] height @PYbf[+] @PYag[200]}
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[update_needed_area]
+    @PYaY[self]@PYbf[.]update_attributes @PYaY[self]@PYbf[.]needed_area
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[is_user_admin?](user)
+    dp @PYbf[=] @PYar[DocumentPermission]@PYbf[.]find_by_user_id_and_document_id user, @PYaY[self]
+    dp@PYbf[.]permission @PYbf[!=] @PYag[0] @PYaz[unless] dp@PYbf[.]nil?
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[is_group_admin?](group)
+    gp @PYbf[=] @PYar[GroupPermission]@PYbf[.]find_by_group_id_and_document_id group,@PYaY[self]
+    gp@PYbf[.]permission @PYbf[!=] @PYag[0]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[toggle_user_perms](user)
+    dp @PYbf[=] @PYar[DocumentPermission]@PYbf[.]find_by_user_id_and_document_id user, @PYaY[self]
+    dp@PYbf[.]permission @PYbf[=] (dp@PYbf[.]permission @PYbf[==] @PYag[0] @PYbf[?] @PYag[1] : @PYag[0])
+    dp@PYbf[.]save
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[toggle_group_perms](group)
+    gp @PYbf[=] @PYar[GroupPermission]@PYbf[.]find_by_group_id_and_document_id group, @PYaY[self]
+    gp@PYbf[.]permission @PYbf[=] (gp@PYbf[.]permission @PYbf[==] @PYag[0] @PYbf[?] @PYag[1] : @PYag[0])
+    gp@PYbf[.]save
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[can_be_seen_by](user)
+    can_he @PYbf[=] @PYah[false]
+    can_he @PYbf[=] @PYah[true] @PYaz[if] @PYaY[self]@PYbf[.]public
+    @PYaz[if] user @PYbf[!=] @PYau[:false]
+      can_he @PYbf[=] @PYah[true] @PYaz[if] @PYaY[self]@PYbf[.]owner @PYbf[==] user
+      can_he @PYbf[=] @PYah[true] @PYaz[if] (@PYaY[self]@PYbf[.]groups_with_access @PYbf[&] user@PYbf[.]groups)@PYbf[.]size @PYbf[>] @PYag[0]
+      can_he @PYbf[=] @PYah[true] @PYaz[if] user@PYbf[.]accessible_documents@PYbf[.]include? @PYaY[self]
+    @PYaz[end]
+    can_he
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[can_be_edited_by](user)
+    can_he @PYbf[=] @PYah[false]
+    @PYaz[if] user @PYbf[!=] @PYau[:false]
+    @PYaf[# To be able to edit he must either be the owner, have a group permission, or have direct permission]
+      can_he @PYbf[=] @PYah[true] @PYaz[if] @PYaY[self]@PYbf[.]owner @PYbf[==] user @PYaf[#owner]
+      @PYaf[# group permission]
+      groups @PYbf[=]  (@PYaY[self]@PYbf[.]groups_with_access @PYbf[&] user@PYbf[.]groups)
+      @PYaz[for] group @PYaz[in] groups
+        can_he @PYbf[=] @PYah[true] @PYaz[if] @PYaY[self]@PYbf[.]is_group_admin? group
+      @PYaz[end]
+      @PYaf[# user permission]
+      can_he @PYbf[=] @PYah[true] @PYaz[if] @PYaY[self]@PYbf[.]is_user_admin? user
+    @PYaz[end]
+    can_he
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[can_be_deleted_by](user)
+    @PYaY[self]@PYbf[.]owner @PYbf[==] user
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[stats]
+   @PYaX["]@PYbg[#{]@PYaY[self]@PYbf[.]pages@PYbf[.]size@PYbg[}]@PYaX[ pages, ]@PYbg[#{]@PYaY[self]@PYbf[.]elements@PYbf[.]size@PYbg[}]@PYaX[ drawings, ]@PYbg[#{]@PYaY[self]@PYbf[.]users_with_access@PYbf[.]size@PYbg[}]@PYaX[ users, ]@PYbg[#{]@PYaY[self]@PYbf[.]groups_with_access@PYbf[.]size@PYbg[}]@PYaX[ groups]@PYaX["] 
+  @PYaz[end]
+@PYaz[end]
+\end{Verbatim}
+
+% subsubsection document_model (end)
+
+\subsubsection{Task model} % (fold)
+\label{ssub:page_model}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaf[# Fake model to perform delayed actions]
+
+@PYaz[class] @PYaO[Task] @PYbf[<] @PYar[Struct]@PYbf[.]new(@PYau[:filename],@PYau[:dir],@PYau[:document_id])
+  
+  @PYaz[def] @PYaL[perform]
+    @PYaY[require] @PYbe['action_controller']
+    @PYaY[require] @PYbe['action_controller/test_process.rb']
+    @PYaY[require] @PYbe['mime/types']
+    @PYaY[require] @PYbe['find']
+    
+    ext @PYbf[=] @PYar[File]@PYbf[.]extname(filename)
+    directory @PYbf[=] @PYaX["]@PYbg[#{]@PYar[ENV]@PYbf[@PYZlb[]]@PYaX["]@PYaX[PWD]@PYaX["]@PYbf[@PYZrb[]]@PYbg[}]@PYaX[/]@PYbg[#{]dir@PYbg[}]@PYaX["]
+
+    file @PYbf[=] @PYaX["]@PYbg[#{]directory@PYbg[}]@PYaX[/]@PYbg[#{]filename@PYbg[}]@PYaX["]
+    @PYaz[case] ext
+    @PYaz[when] @PYaX["]@PYaX[.zip]@PYaX["]
+      @PYaY[puts] @PYaK[`]@PYaK[unzip ]@PYbg[#{]file@PYbg[}]@PYaK[ -d ]@PYbg[#{]directory@PYbg[}]@PYaK[`]
+    @PYaz[when] @PYaX["]@PYaX[.gz]@PYaX["]
+      @PYaY[puts] @PYaK[`]@PYaK[tar xzf ]@PYbg[#{]file@PYbg[}]@PYaK[ -C ]@PYbg[#{]directory@PYbg[}]@PYaK[`]
+    @PYaz[when] @PYaX["]@PYaX[.rar]@PYaX["]
+      @PYaY[puts] @PYaK[`]@PYaK[unrar-free ]@PYbg[#{]file@PYbg[}]@PYaK[ ]@PYbg[#{]directory@PYbg[}]@PYaK[`]
+    @PYaz[when] @PYaX["]@PYaX[.pdf]@PYaX["]
+      @PYaK[`]@PYaK[convert -density 100 ]@PYbg[#{]file@PYbg[}]@PYaK[ ]@PYbg[#{]directory@PYbg[}]@PYaK[/im.jpg]@PYaK[`]
+    @PYaz[end]
+       
+    @PYaK[`]@PYaK[rm ]@PYbg[#{]file@PYbg[}]@PYaK[`]
+       
+    @PYaf[# Now we have to create the Page's with them. For that, we]
+    @PYaf[# explore the directory recursivelly.      ]
+    files @PYbf[=] @PYaY[Array]@PYbf[.]new
+    @PYar[Find]@PYbf[.]find(directory) @PYaz[do] @PYbf[|]path@PYbf[|]
+      @PYaz[if] @PYar[FileTest]@PYbf[.]directory?(path)
+        @PYaz[if] @PYar[File]@PYbf[.]basename(path)@PYbf[@PYZlb[]]@PYag[0]@PYbf[@PYZrb[]] @PYbf[==] @PYac[?.]
+          @PYar[Find]@PYbf[.]prune
+        @PYaz[else]
+          @PYaz[next]
+        @PYaz[end]
+      @PYaz[else]
+        files @PYbf[<<] path
+      @PYaz[end]
+    @PYaz[end]
+    @PYaf[# This is a smart piece of code to sort files even when we have a full path, and not ]
+    @PYaz[if] ext @PYbf[==] @PYaX["]@PYaX[.pdf]@PYaX["]
+      files@PYbf[.]sort! {@PYbf[|]aa,bb@PYbf[|] a @PYbf[=] @PYar[File]@PYbf[.]basename(aa); b @PYbf[=] @PYar[File]@PYbf[.]basename(bb); (a@PYbf[@PYZlb[]]@PYag[3]@PYbf[.].(a@PYbf[.]size@PYbf[-]@PYag[5])@PYbf[@PYZrb[]]@PYbf[.]to_i) @PYbf[<]@PYbf[=]@PYbf[>] (b@PYbf[@PYZlb[]]@PYag[3]@PYbf[.].(b@PYbf[.]size@PYbf[-]@PYag[5])@PYbf[@PYZrb[]]@PYbf[.]to_i); }
+    @PYaz[else]
+      files@PYbf[.]sort! {@PYbf[|]aa,bb@PYbf[|] @PYar[File]@PYbf[.]basename(aa) @PYbf[<]@PYbf[=]@PYbf[>] @PYar[File]@PYbf[.]basename(bb)}
+    @PYaz[end]
+    
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(document_id)
+    current_pages @PYbf[=] @PYaS[@PYZat[]doc]@PYbf[.]pages@PYbf[.]size
+    files@PYbf[.]each_with_index @PYaz[do] @PYbf[|]f,i@PYbf[|]
+      @PYaz[if] @PYbf[@PYZlb[]]@PYaX["]@PYaX[.jpg]@PYaX["],@PYaX["]@PYaX[.jpeg]@PYaX["],@PYaX["]@PYaX[.gif]@PYaX["],@PYaX["]@PYaX[.png]@PYaX["]@PYbf[@PYZrb[]]@PYbf[.]include? @PYar[File]@PYbf[.]extname(f)
+        @PYaY[p] @PYbf[=] @PYar[Page]@PYbf[.]create @PYau[:number] @PYbf[=]@PYbf[>] (current_pages@PYbf[+]i@PYbf[+]@PYag[1]), @PYau[:document_id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+        @PYar[Image]@PYbf[.]create @PYau[:uploaded_data] @PYbf[=]@PYbf[>] @PYar[ActionController]@PYbf[::]@PYar[TestUploadedFile]@PYbf[.]new(@PYaX["]@PYbg[#{]f@PYbg[}]@PYaX["], @PYar[MIME]@PYbf[::]@PYar[Types]@PYbf[.]type_for(f)), @PYau[:page_id] @PYbf[=]@PYbf[>] @PYaY[p]@PYbf[.]id
+      @PYaz[end]
+    @PYaz[end]
+    
+    @PYaf[# Set the document's size automatically]
+    @PYaS[@PYZat[]doc]@PYbf[.]update_needed_area
+
+    @PYaf[# Now just remove the temporary files :)]
+    @PYaf[# FileUtils.rm_rf directory  ]
+  @PYaz[end]
+  
+@PYaz[end]
+\end{Verbatim}
+
+
+% subsubsection page_model (end)
+
+\subsubsection{User model} % (fold)
+\label{ssub:user_model}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaf[# == Schema Information]
+@PYaf[# Schema version: 20081122123130]
+@PYaf[#]
+@PYaf[# Table name: users]
+@PYaf[#]
+@PYaf[#  id                        :integer(11)     not null, primary key]
+@PYaf[#  login                     :string(255)     ]
+@PYaf[#  email                     :string(255)     ]
+@PYaf[#  crypted_password          :string(40)      ]
+@PYaf[#  salt                      :string(40)      ]
+@PYaf[#  created_at                :datetime        ]
+@PYaf[#  updated_at                :datetime        ]
+@PYaf[#  remember_token            :string(255)     ]
+@PYaf[#  remember_token_expires_at :datetime        ]
+@PYaf[#]
+
+@PYaY[require] @PYbe['digest/sha1']
+@PYaz[class] @PYaO[User] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+  @PYaf[# Mis cosas]
+  has_many @PYau[:documents], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+  has_many @PYau[:memberships]
+  has_many @PYau[:groups], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:memberships]
+  
+  has_many @PYau[:document_permissions], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+  has_many @PYau[:accessible_documents], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:document_permissions], @PYau[:source] @PYbf[=]@PYbf[>] @PYau[:document]
+  
+  has_many @PYau[:invitations], @PYau[:foreign_key] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[target_id]@PYaX["]
+  
+  has_many @PYau[:activities]
+  
+  @PYaf[# Cosas del plugin]
+  @PYaf[# Virtual attribute for the unencrypted password]
+  @PYah[attr_accessor] @PYau[:password]
+
+  validates_presence_of     @PYau[:login], @PYau[:email]
+  validates_presence_of     @PYau[:password],                   @PYau[:if] @PYbf[=]@PYbf[>] @PYau[:password_required?]
+  validates_presence_of     @PYau[:password_confirmation],      @PYau[:if] @PYbf[=]@PYbf[>] @PYau[:password_required?]
+  validates_length_of       @PYau[:password], @PYau[:within] @PYbf[=]@PYbf[>] @PYag[4]@PYbf[.].@PYag[40], @PYau[:if] @PYbf[=]@PYbf[>] @PYau[:password_required?]
+  validates_confirmation_of @PYau[:password],                   @PYau[:if] @PYbf[=]@PYbf[>] @PYau[:password_required?]
+  validates_length_of       @PYau[:login],    @PYau[:within] @PYbf[=]@PYbf[>] @PYag[3]@PYbf[.].@PYag[40]
+  validates_length_of       @PYau[:email],    @PYau[:within] @PYbf[=]@PYbf[>] @PYag[3]@PYbf[.].@PYag[100]
+  validates_uniqueness_of   @PYau[:login], @PYau[:email], @PYau[:case_sensitive] @PYbf[=]@PYbf[>] @PYah[false]
+  before_save @PYau[:encrypt_password]
+  
+  @PYaz[def] @PYaL[admin?](group)
+    membership @PYbf[=] @PYar[Membership]@PYbf[.]find_by_user_id_and_group_id @PYaY[self]@PYbf[.]id, group
+    membership@PYbf[.]admin
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[all_accessible_documents]
+    docs @PYbf[=] @PYaY[Array]@PYbf[.]new
+    docs @PYbf[=] docs @PYbf[+] @PYaY[self]@PYbf[.]accessible_documents
+    @PYaz[for] group @PYaz[in] @PYaY[self]@PYbf[.]groups
+      docs @PYbf[=] docs @PYbf[+] group@PYbf[.]documents
+    @PYaz[end]
+    docs@PYbf[.]uniq!
+    docs
+  @PYaz[end]
+  
+  @PYaf[# Authenticates a user by their login name and unencrypted password.  Returns the user or nil.]
+  @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[authenticate](login, password)
+    u @PYbf[=] find_by_login(login) @PYaf[# need to get the salt]
+    u @PYbf[&&] u@PYbf[.]authenticated?(password) ? u : @PYah[nil]
+  @PYaz[end]
+
+  @PYaf[# Encrypts some data with the salt.]
+  @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[encrypt](password, salt)
+    @PYar[Digest]@PYbf[::]@PYar[SHA1]@PYbf[.]hexdigest(@PYaX["]@PYaX[--]@PYbg[#{]salt@PYbg[}]@PYaX[--]@PYbg[#{]password@PYbg[}]@PYaX[--]@PYaX["])
+  @PYaz[end]
+
+  @PYaf[# Encrypts the password with the user salt]
+  @PYaz[def] @PYaL[encrypt](password)
+    @PYaY[self]@PYbf[.]class@PYbf[.]encrypt(password, salt)
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[authenticated?](password)
+    crypted_password @PYbf[==] encrypt(password)
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[remember_token?]
+    remember_token_expires_at @PYbf[&&] @PYar[Time]@PYbf[.]now@PYbf[.]utc @PYbf[<] remember_token_expires_at 
+  @PYaz[end]
+
+  @PYaf[# These create and unset the fields required for remembering users between browser closes]
+  @PYaz[def] @PYaL[remember_me]
+    @PYaY[self]@PYbf[.]remember_token_expires_at @PYbf[=] @PYag[2]@PYbf[.]weeks@PYbf[.]from_now@PYbf[.]utc
+    @PYaY[self]@PYbf[.]remember_token            @PYbf[=] encrypt(@PYaX["]@PYbg[#{]email@PYbg[}]@PYaX[--]@PYbg[#{]remember_token_expires_at@PYbg[}]@PYaX["])
+    save(@PYah[false])
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[forget_me]
+    @PYaY[self]@PYbf[.]remember_token_expires_at @PYbf[=] @PYah[nil]
+    @PYaY[self]@PYbf[.]remember_token            @PYbf[=] @PYah[nil]
+    save(@PYah[false])
+  @PYaz[end]
+
+  @PYah[protected]
+    @PYaf[# before filter ]
+    @PYaz[def] @PYaL[encrypt_password]
+      @PYaz[return] @PYaz[if] password@PYbf[.]blank?
+      @PYaY[self]@PYbf[.]salt @PYbf[=] @PYar[Digest]@PYbf[::]@PYar[SHA1]@PYbf[.]hexdigest(@PYaX["]@PYaX[--]@PYbg[#{]@PYar[Time]@PYbf[.]now@PYbf[.]to_s@PYbg[}]@PYaX[--]@PYbg[#{]login@PYbg[}]@PYaX[--]@PYaX["]) @PYaz[if] new_record?
+      @PYaY[self]@PYbf[.]crypted_password @PYbf[=] encrypt(password)
+    @PYaz[end]
+    
+    @PYaz[def] @PYaL[password_required?]
+      crypted_password@PYbf[.]blank? @PYbf[||] @PYbf[!]password@PYbf[.]blank?
+    @PYaz[end]
+@PYaz[end]
+\end{Verbatim}
+
+
+% subsubsection user_model (end)
+
+\subsubsection{Group model} % (fold)
+\label{ssub:group_model}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaf[# == Schema Information]
+@PYaf[# Schema version: 20081122123130]
+@PYaf[#]
+@PYaf[# Table name: groups]
+@PYaf[#]
+@PYaf[#  id          :integer(11)     not null, primary key]
+@PYaf[#  name        :string(255)     default(""), not null]
+@PYaf[#  description :text            ]
+@PYaf[#  owner_id    :integer(11)     not null]
+@PYaf[#  created_at  :datetime        ]
+@PYaf[#  updated_at  :datetime        ]
+@PYaf[#]
+
+@PYaz[class] @PYaO[Group] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+  has_many @PYau[:memberships]
+  has_many @PYau[:members], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:memberships], @PYau[:source] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[user]@PYaX["]  
+  
+  has_many @PYau[:admin_memberships], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Membership]@PYaX["], @PYau[:conditions] @PYbf[=]@PYbf[>] {@PYau[:admin] @PYbf[=]@PYbf[>] @PYah[true]}
+  has_many @PYau[:user_memberships],  @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Membership]@PYaX["], @PYau[:conditions] @PYbf[=]@PYbf[>] {@PYau[:admin] @PYbf[=]@PYbf[>] @PYah[false]}
+  
+  has_many @PYau[:admins], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:admin_memberships], @PYau[:source] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[user]@PYaX["]
+  has_many @PYau[:users],  @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:user_memberships],  @PYau[:source] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[user]@PYaX["]
+  
+  belongs_to @PYau[:owner], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[User]@PYaX["]  
+  
+  has_many @PYau[:group_permissions]
+  has_many @PYau[:documents], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:group_permissions], @PYau[:class_name] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[Document]@PYaX["]
+  
+  @PYaf[# Validations]
+  validates_presence_of @PYau[:name]
+  
+  acts_as_textiled @PYau[:description]
+  
+  @PYaz[def] @PYaL[membership](user)
+    @PYar[Membership]@PYbf[.]find_by_user_id_and_group_id(user,@PYaY[self])
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[is_member?](user)
+    @PYaY[self]@PYbf[.]members@PYbf[.]include? user
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[is_admin?](user)
+    @PYaY[self]@PYbf[.]admins@PYbf[.]include? user
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[is_owner?](user)
+    @PYaY[self]@PYbf[.]owner @PYbf[==] user
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[stats]
+    @PYaX["]@PYbg[#{]@PYaY[self]@PYbf[.]documents@PYbf[.]size@PYbg[}]@PYaX[ documents available]@PYaX["]
+  @PYaz[end]
+  
+@PYaz[end]
+\end{Verbatim}
+
+
+% subsubsection group_model (end)
+
+\subsubsection{Documents Controller} % (fold)
+\label{ssub:documents_controller}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaz[class] @PYaO[DocumentController] @PYbf[<] @PYar[ApplicationController]
+
+  before_filter @PYau[:login_required], @PYau[:except] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]] @PYau[:image], @PYau[:export], @PYau[:draw], @PYau[:list_elements] @PYbf[@PYZrb[]]
+  before_filter @PYau[:authorized?], @PYau[:only] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]] @PYau[:image], @PYau[:export] @PYbf[@PYZrb[]]
+  
+  @PYaz[def] @PYaL[new]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]new
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[create]
+    doc @PYbf[=] @PYar[Document]@PYbf[.]new params@PYbf[@PYZlb[]]@PYau[:document]@PYbf[@PYZrb[]]
+    doc@PYbf[.]user_id @PYbf[=] current_user@PYbf[.]id
+    @PYaz[if] doc@PYbf[.]save
+      redirect_to @PYau[:controller] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[document]@PYaX["], @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] doc@PYbf[.]id
+    @PYaz[else]
+      flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[There was some problem creating the document]@PYaX["]
+      redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[new]@PYaX["]
+    @PYaz[end]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[edit]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    get_out @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]can_be_edited_by current_user
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[update]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    get_out @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]can_be_edited_by current_user
+    @PYaS[@PYZat[]doc]@PYbf[.]update_attributes params@PYbf[@PYZlb[]]@PYau[:document]@PYbf[@PYZrb[]]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[delete]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    get_out @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]can_be_deleted_by current_user
+    @PYaS[@PYZat[]doc]@PYbf[.]destroy
+    redirect_to @PYau[:controller] @PYbf[=]@PYbf[>] @PYbe['website'], @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[panel]@PYaX["], @PYau[:reload] @PYbf[=]@PYbf[>] (@PYaY[rand]@PYbf[*]@PYag[1000])@PYbf[.]to_i
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[invite_user]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+    @PYaS[@PYZat[]user] @PYbf[=] @PYar[User]@PYbf[.]find @PYau[:first], @PYau[:conditions] @PYbf[=]@PYbf[>] @PYbf[@PYZlb[]]@PYaX["]@PYaX[login = upper(?)]@PYaX["],params@PYbf[@PYZlb[]]@PYau[:user]@PYbf[@PYZrb[]]@PYbf[.]upcase@PYbf[@PYZrb[]]
+    @PYaz[if] @PYaS[@PYZat[]user]
+      @PYaS[@PYZat[]doc]@PYbf[.]users_with_access @PYbf[<<] @PYaS[@PYZat[]user] @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]users_with_access@PYbf[.]include? @PYaS[@PYZat[]user]
+    @PYaz[else]
+      @PYaS[@PYZat[]error] @PYbf[=]  @PYaX["]@PYaX[User not found :(]@PYaX["]
+    @PYaz[end]
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[users]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[invite_group]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find params@PYbf[@PYZlb[]]@PYau[:group]@PYbf[@PYZrb[]]
+    @PYaS[@PYZat[]doc]@PYbf[.]groups_with_access @PYbf[<<] @PYaS[@PYZat[]group] @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]groups_with_access@PYbf[.]include? @PYaS[@PYZat[]group]
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[groups]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[uninvite_user]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]users_with_access@PYbf[.]delete @PYar[User]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:user]@PYbf[@PYZrb[]])    
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[users]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[uninvite_group]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]groups_with_access@PYbf[.]delete @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:group]@PYbf[@PYZrb[]])
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[groups]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[toggle_user_perms]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]toggle_user_perms(params@PYbf[@PYZlb[]]@PYau[:user]@PYbf[@PYZrb[]])
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[users]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[toggle_group_perms]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]toggle_group_perms(params@PYbf[@PYZlb[]]@PYau[:group]@PYbf[@PYZrb[]])
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[groups]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[draw]
+    @PYaS[@PYZat[]document] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaz[if] @PYaS[@PYZat[]document]@PYbf[.]pages@PYbf[.]size @PYbf[>] @PYag[0] @PYao[and] @PYaS[@PYZat[]document]@PYbf[.]can_be_seen_by current_user
+      render @PYau[:layout] @PYbf[=]@PYbf[>] @PYah[false]
+    @PYaz[elsif] @PYaS[@PYZat[]document]@PYbf[.]can_be_edited_by current_user
+      redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYbe['edit'], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]document]
+    @PYaz[else]
+      redirect_to @PYau[:controller] @PYbf[=]@PYbf[>] @PYbe['website']
+    @PYaz[end]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[add_element]
+    doc @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    element @PYbf[=] @PYar[Element]@PYbf[.]create(@PYau[:attr] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:attr]@PYbf[@PYZrb[]], @PYau[:page_id] @PYbf[=]@PYbf[>] doc@PYbf[.]get_current_page@PYbf[.]id)
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYaX["]@PYbg[#{]element@PYbf[.]id@PYbg[}]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[remove_element]
+    @PYar[Element]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])@PYbf[.]destroy
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[OK]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[save_cursor]
+    doc @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaY[p] @PYbf[=] doc@PYbf[.]get_current_page
+    @PYaY[p]@PYbf[.]cursorx @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:x]@PYbf[@PYZrb[]]
+    @PYaY[p]@PYbf[.]cursory @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:y]@PYbf[@PYZrb[]]
+    @PYaY[p]@PYbf[.]cursorr @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:r]@PYbf[@PYZrb[]]
+    @PYaY[p]@PYbf[.]save
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[ok]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[list_elements]
+    doc @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]current_page] @PYbf[=] doc@PYbf[.]get_current_page
+    @PYaS[@PYZat[]elements] @PYbf[=] @PYaS[@PYZat[]current_page]@PYbf[.]elements
+    doc@PYbf[.]ping current_user, request@PYbf[.]remote_ip
+    @PYaS[@PYZat[]object] @PYbf[=] @PYar[Hash]@PYbf[.]new
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[page_num]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] @PYaS[@PYZat[]current_page]@PYbf[.]number
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[page_id]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] @PYaS[@PYZat[]current_page]@PYbf[.]id
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[elements]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] @PYaS[@PYZat[]elements]
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[users]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] doc@PYbf[.]recent_usernames
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[anonymous]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] doc@PYbf[.]recent_anonymous_ips
+    @PYaS[@PYZat[]object]@PYbf[@PYZlb[]]@PYaX["]@PYaX[cursor]@PYaX["]@PYbf[@PYZrb[]] @PYbf[=] @PYaS[@PYZat[]current_page]@PYbf[.]cursor
+    render @PYau[:layout] @PYbf[=]@PYbf[>] @PYah[false]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[change_page]
+    doc @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaz[if] params@PYbf[@PYZlb[]]@PYau[:page]@PYbf[@PYZrb[]]@PYbf[.]to_i @PYbf[>] doc@PYbf[.]pages@PYbf[.]size
+      @PYaY[id] @PYbf[=] @PYag[0]
+    @PYaz[else]
+      doc@PYbf[.]current_page @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:page]@PYbf[@PYZrb[]]
+      doc@PYbf[.]save
+      @PYaY[id] @PYbf[=] doc@PYbf[.]get_current_page@PYbf[.]id
+    @PYaz[end]
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYaX["]@PYbg[#{]@PYaY[id]@PYbg[}]@PYaX["]
+  @PYaz[end]
+  
+  @PYaf[# Safe way to have only the adequate people access images. Images are in an unaccessible path]
+  @PYaf[# and they are read and transmited from that file directly.]
+  @PYaz[def] @PYaL[image]
+    @PYaS[@PYZat[]p] @PYbf[=] @PYar[Page]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:page]@PYbf[@PYZrb[]])
+    send_file @PYaS[@PYZat[]p]@PYbf[.]image@PYbf[.]public_filename(params@PYbf[@PYZlb[]]@PYau[:thumb]@PYbf[@PYZrb[]]) @PYaz[if] @PYbf[!]@PYaS[@PYZat[]p]@PYbf[.]image@PYbf[.]nil? @PYao[and] @PYbf[!]@PYaS[@PYZat[]p]@PYbf[.]image@PYbf[.]filename@PYbf[.]nil? @PYao[and] params@PYbf[@PYZlb[]]@PYau[:page]@PYbf[@PYZrb[]] @PYbf[!=] @PYaX["]@PYaX[undefined]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[remove_all_pages]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:doc]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]pages@PYbf[.]each {@PYbf[|]@PYaY[p]@PYbf[|] @PYaY[p]@PYbf[.]destroy}
+    flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[Pages removed.]@PYaX["]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYbe['edit'], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[add_1_page]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:doc]@PYbf[@PYZrb[]])
+    @PYaY[p] @PYbf[=] @PYar[Page]@PYbf[.]new @PYau[:number] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]pages@PYbf[.]size @PYbf[+] @PYag[1]
+    @PYaY[p]@PYbf[.]document @PYbf[=] @PYaS[@PYZat[]doc]
+    @PYaY[p]@PYbf[.]save
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:doc]@PYbf[@PYZrb[]])
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYbe['pages']
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[add_blank_pages]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:doc]@PYbf[@PYZrb[]])
+    current_page @PYbf[=] @PYaS[@PYZat[]doc]@PYbf[.]pages@PYbf[.]size
+    (@PYag[1]@PYbf[.].params@PYbf[@PYZlb[]]@PYau[:number]@PYbf[@PYZrb[]]@PYbf[.]to_i)@PYbf[.]each @PYaz[do] @PYbf[|]page_num@PYbf[|]
+      @PYar[Page]@PYbf[.]create @PYau[:number] @PYbf[=]@PYbf[>] (page_num @PYbf[+] current_page), @PYau[:document_id] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:doc]@PYbf[@PYZrb[]]
+    @PYaz[end]
+
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYbe['pages']
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[add_page_from_file]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+    @PYaY[p] @PYbf[=] @PYar[Page]@PYbf[.]create @PYau[:number] @PYbf[=]@PYbf[>] (@PYaS[@PYZat[]doc]@PYbf[.]pages@PYbf[.]size@PYbf[+]@PYag[1]), @PYau[:document_id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+    @PYar[Image]@PYbf[.]create @PYau[:uploaded_data] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:file]@PYbf[@PYZrb[]], @PYau[:page_id] @PYbf[=]@PYbf[>] @PYaY[p]@PYbf[.]id
+    @PYaS[@PYZat[]doc]@PYbf[.]update_needed_area
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYbe['edit'], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+    @PYaz[return]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[add_pages_from_file]
+    @PYaY[require] @PYbe['mime/types']
+    @PYaf[# We have a file that we have to work with]
+    @PYaf[# First we extract it to a temporal directory ]
+    extract_dir @PYbf[=] @PYaX["]@PYaX[document_temp/]@PYbg[#{]@PYar[Time]@PYbf[.]now@PYbf[.]to_i@PYbf[.]to_s@PYbg[}]@PYaX["]
+    @PYar[Dir]@PYbf[.]mkdir extract_dir
+    file @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:file]@PYbf[@PYZrb[]]
+    ext @PYbf[=] @PYar[File]@PYbf[.]extname(file@PYbf[.]original_filename)
+    @PYaf[# but we have to do it differently depending on the format :)]
+    @PYaz[if] @PYbf[@PYZlb[]]@PYaX["]@PYaX[.jpg]@PYaX["],@PYaX["]@PYaX[.jpeg]@PYaX["],@PYaX["]@PYaX[.gif]@PYaX["],@PYaX["]@PYaX[.png]@PYaX["]@PYbf[@PYZrb[]]@PYbf[.]include? ext
+      add_page_from_file
+      @PYaz[return]
+    @PYaz[elsif] @PYbf[@PYZlb[]]@PYaX["]@PYaX[.zip]@PYaX["],@PYaX["]@PYaX[.gz]@PYaX["],@PYaX["]@PYaX[.rar]@PYaX["],@PYaX["]@PYaX[.pdf]@PYaX["]@PYbf[@PYZrb[]]@PYbf[.]include? ext
+      f @PYbf[=] @PYar[File]@PYbf[.]new(@PYaX["]@PYbg[#{]extract_dir@PYbg[}]@PYaX[/file]@PYbg[#{]ext@PYbg[}]@PYaX["],@PYaX["]@PYaX[w]@PYaX["])
+      f@PYbf[.]write file@PYbf[.]read
+      f@PYbf[.]close
+      @PYaf[# Struct.new(:file,:dir,:document_id)]
+      @PYar[Delayed]@PYbf[::]@PYar[Job]@PYbf[.]enqueue(@PYar[Task]@PYbf[.]new(@PYaX["]@PYaX[file]@PYbg[#{]ext@PYbg[}]@PYaX["], extract_dir, params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]))
+      flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[The file has been queued for process. In a few moments it will be ready]@PYaX["]
+      redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+    @PYaz[else]
+      flash@PYbf[@PYZlb[]]@PYau[:bad]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[We don't accept that type of file, sorry :(]@PYaX["]
+      redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+      @PYaz[return]
+    @PYaz[end]
+  @PYaz[end]
+@PYaz[end]
+\end{Verbatim}
+
+% subsubsection documents_controller (end)
+
+\subsubsection{Groups Controller} % (fold)
+\label{ssub:groups_controller}
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaz[class] @PYaO[GroupsController] @PYbf[<] @PYar[ApplicationController]
+  before_filter @PYau[:login_required]
+  
+  in_place_edit_for @PYau[:group], @PYau[:description]
+  
+  @PYaz[def] @PYaL[new]
+    @PYaS[@PYZat[]group] @PYbf[=]  @PYar[Group]@PYbf[.]new
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[create]
+    group @PYbf[=] @PYar[Group]@PYbf[.]new(params@PYbf[@PYZlb[]]@PYau[:group]@PYbf[@PYZrb[]])
+    group@PYbf[.]owner_id @PYbf[=] current_user@PYbf[.]id
+    flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[Group created correctly]@PYaX["] @PYaz[if] group@PYbf[.]save
+    
+    mem @PYbf[=] @PYar[Membership]@PYbf[.]new @PYau[:user_id] @PYbf[=]@PYbf[>] current_user@PYbf[.]id, @PYau[:group_id] @PYbf[=]@PYbf[>] group@PYbf[.]id, @PYau[:admin] @PYbf[=]@PYbf[>] @PYah[true]
+    mem@PYbf[.]save
+    redirect_to @PYau[:controller] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[website]@PYaX["], @PYau[:action]  @PYbf[=]@PYbf[>] @PYaX["]@PYaX[panel]@PYaX["]
+  @PYaz[end]
+
+  @PYaz[def] @PYaL[view]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[edit]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[update]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[Grupo actualizado correctamente]@PYaX["] @PYaz[if] @PYaS[@PYZat[]group]@PYbf[.]update_attributes(params@PYbf[@PYZlb[]]@PYau[:group]@PYbf[@PYZrb[]])
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYbe['view'], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]group]@PYbf[.]id
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[delete]
+    @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])@PYbf[.]destroy
+    @PYaS[@PYZat[]groups] @PYbf[=] @PYar[Group]@PYbf[.]find @PYau[:all]
+    redirect_to @PYau[:controller] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[website]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[get_description]
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])@PYbf[.]description(@PYau[:source])
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[update_description]
+    g @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    g@PYbf[.]update_attribute(@PYau[:description], params@PYbf[@PYZlb[]]@PYau[:value]@PYbf[@PYZrb[]])
+    g@PYbf[.]reload
+    render @PYau[:text] @PYbf[=]@PYbf[>] @PYar[RedCloth]@PYbf[.]new(g@PYbf[.]description)@PYbf[.]to_html
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[invite]
+    emails @PYbf[=] params@PYbf[@PYZlb[]]@PYau[:users]@PYbf[@PYZrb[]]@PYbf[.]split(@PYaX["]@PYap[\n]@PYaX["])
+    @PYaS[@PYZat[]log] @PYbf[=] @PYaY[Array]@PYbf[.]new
+    @PYaz[if] emails
+      @PYaz[for] email @PYaz[in] emails
+        user @PYbf[=] @PYar[User]@PYbf[.]find_by_email(email)
+        @PYaz[if] user
+          @PYaf[# Possible problems, the user is already a member, or has another invitation]
+          @PYaz[if] @PYar[Invitation]@PYbf[.]find_by_target_id(user@PYbf[.]id)
+            @PYaS[@PYZat[]log] @PYbf[<<] @PYaX["]@PYbg[#{]email@PYbg[}]@PYaX[ already has an invitation for this group. He just has to accept it!]@PYaX["]
+          @PYaz[elsif] @PYar[Membership]@PYbf[.]find_by_user_id_and_group_id(user@PYbf[.]id,params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+            @PYaS[@PYZat[]log] @PYbf[<<] @PYaX["]@PYbg[#{]email@PYbg[}]@PYaX[ is already a member of this group :)]@PYaX["]
+          @PYaz[else]
+            inv @PYbf[=] @PYar[Invitation]@PYbf[.]new @PYau[:target_id] @PYbf[=]@PYbf[>] user@PYbf[.]id, @PYau[:source_id] @PYbf[=]@PYbf[>] current_user@PYbf[.]id, @PYau[:group_id] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+            @PYaS[@PYZat[]log] @PYbf[<<] @PYaX["]@PYbg[#{]email@PYbg[}]@PYaX[ has received an invitation]@PYaX["] @PYaz[if] inv@PYbf[.]save
+          @PYaz[end]
+        @PYaz[else]
+        @PYaS[@PYZat[]log] @PYbf[<<] @PYaX["]@PYbg[#{]email@PYbg[}]@PYaX[ isn't a member of drawme yet. He should signup.]@PYaX["]
+        @PYaz[end]
+      @PYaz[end]
+    @PYaz[end]
+    flash@PYbf[@PYZlb[]]@PYau[:log]@PYbf[@PYZrb[]] @PYbf[=] @PYaS[@PYZat[]log]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[view]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[accept] @PYaf[# an invite]
+    i @PYbf[=] @PYar[Invitation]@PYbf[.]find params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]]
+    m @PYbf[=] @PYar[Membership]@PYbf[.]new @PYau[:user_id] @PYbf[=]@PYbf[>] i@PYbf[.]target_id, @PYau[:group_id] @PYbf[=]@PYbf[>] i@PYbf[.]group_id
+    flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[Invitation accepted]@PYaX["] @PYaz[if] m@PYbf[.]save
+    i@PYbf[.]destroy
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[panel]@PYaX["], @PYau[:controller] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[website]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[reject] @PYaf[# an invite]
+    @PYar[Invitation]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])@PYbf[.]destroy
+    flash@PYbf[@PYZlb[]]@PYau[:notice]@PYbf[@PYZrb[]] @PYbf[=] @PYaX["]@PYaX[Invitation rejected]@PYaX["]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[panel]@PYaX["], @PYau[:controller] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[website]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[promote]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    params@PYbf[@PYZlb[]]@PYau[:users]@PYbf[@PYZrb[]]@PYbf[.]each @PYaz[do] @PYbf[|]key,val@PYbf[|]
+      membership @PYbf[=] @PYaS[@PYZat[]group]@PYbf[.]membership(key)@PYbf[.]update_attribute(@PYau[:admin], @PYah[true])
+    @PYaz[end] @PYaz[if] @PYaS[@PYZat[]group]@PYbf[.]is_admin? current_user
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[members]@PYaX["]
+  @PYaz[end]
+  
+  @PYaz[def] @PYaL[unpromote]
+    @PYaS[@PYZat[]group] @PYbf[=] @PYar[Group]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    params@PYbf[@PYZlb[]]@PYau[:admins]@PYbf[@PYZrb[]]@PYbf[.]each @PYaz[do] @PYbf[|]key,val@PYbf[|]
+      membership @PYbf[=] @PYaS[@PYZat[]group]@PYbf[.]membership(key)@PYbf[.]update_attribute(@PYau[:admin], @PYah[false]) @PYaz[unless] @PYaS[@PYZat[]group]@PYbf[.]is_owner? @PYar[User]@PYbf[.]find(key)
+    @PYaz[end] @PYaz[if] @PYaS[@PYZat[]group]@PYbf[.]is_owner? current_user
+    render @PYau[:partial] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[members]@PYaX["]
+  @PYaz[end]
+@PYaz[end]
+\end{Verbatim}
+
+% subsubsection groups_controller (end)
+
+% subsection aplicación_rails (end)
+
+% section código_fuente (end)

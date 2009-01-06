@@ -1,0 +1,156 @@
+%!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
+\section{Especificación de la librería gráfica} % (fold)
+\label{sec:especificación_de_la_librería_gráfica}
+
+La librería gráfica contiene una serie de funciones que permiten generar y editar gráficos vectoriales independientemente del navegador en que se esté.
+
+\subsection{Prerequisitos} % (fold)
+\label{sub:prerrequisitos}
+
+Debido a las características particulares de VML y SVG, una serie de requisitos son necesarios dependiendo del navegador que acceda. Es de gran prioridad que en versiones futuras ninguno de los siguientes pasos sea necesario más que los imprescindibles, y que todo pueda ser automáticamente añadido directamente por la librería. En esta versión, estos son los requisitos:
+
+\begin{itemize}
+  \item \textbf{Internet Explorer}
+  \begin{itemize}
+    \item Se necesita empezar la estructura HTML con las siguientes líneas
+      \begin{Verbatim}[commandchars=@\[\]]
+      @PYba[<html] @PYaQ[xmlns=]@PYad["http://www.w3.org/1999/xhtml"] 
+         @PYaQ[xmlns:v=]@PYad["urn:schemas-microsoft-com:vml"]@PYba[>]
+
+      @PYba[<style]@PYba[>]@PYba[v\]@PYbf[:]@PYbf[*] { behavior@PYbf[:] @PYaq[url(#default#VML)];}@PYba[</style>]
+      \end{Verbatim}
+    \item El div que deba contener los gráficos vectoriales deberá ser posteriormente recuperado mediante javascript, por lo cual se recomienda añadirle un \texttt{id}, por ejemplo, \texttt{mainElement}
+  \end{itemize}
+  \item \textbf{Demás navegadores}
+  \begin{itemize}
+    \item El documento debe llegar al navegador como un objeto de tipo \texttt{application/xhtml+xml}
+    \item Se debe incluir el siguiente código allá donde se quieran insertar los gráficos vectoriales, cambiando el \texttt{id} por cualquier id deseado, puesto que será posteriormente recuperado mediante javascript.
+    \begin{Verbatim}[commandchars=@\[\]]
+    @PYba[<svg] @PYaQ[id=]@PYad["mainElement"] @PYaQ[xmlns=]@PYad["http://www.w3.org/2000/svg"]
+    @PYaQ[xmlns:xlink=]@PYad["http://www.w3.org/1999/xlink"]
+    @PYaQ[preserveAspectRatio=]@PYad["none"] @PYaQ[height=]@PYad["600px"] @PYaQ[width=]@PYad["800px"]@PYba[>]
+    @PYba[</svg>]
+    \end{Verbatim}
+  \end{itemize}
+\end{itemize}
+
+\newpage
+\subsection{Funciones} % (fold)
+\label{sub:funciones}
+
+En todas las funciones existen unos parámetros comunes, los cuales quieren decir lo siguiente:
+
+\begin{itemize}
+  \item \textbf{here} es el elemento al cual se anidarán los gráficos. En el caso de SVG debe ser un elemento \texttt{<svg>}. Por ello en los prerequisitos se recomienda dar un id común a ambos \texttt{mainElement}, para que posteriormente solo sea necesaria la siguiente línea:
+  \begin{verbatim}
+    here = document.getElementById("mainElement");
+  \end{verbatim}
+  \item \textbf{color} será el color del elemento, y se espera una cadena de texto compatible con los colores utilizados en CSS\footnote{Wikipedia, Web colors - \url{http://en.wikipedia.org/wiki/Web_colors}}.
+  \item \textbf{thick} será el grosor del trazo, y espera un valor numérico o en coma flotante.
+  \item \textbf{fill} será el porcentaje de transparencia de los elementos, y espera un valor numérico entre 0 y 100.
+\end{itemize}
+
+En todo momento las posiciones de los elementos son referidas con respecto al contenedor \texttt{here}.
+
+\subsubsection{Line} % (fold)
+\label{ssub:line}
+
+Es posible crear un objeto representativo de una línea recta, y editar posteriormente su posición.
+
+\begin{verbatim}
+  line = new Line(here,x1, y1, x2, y2, color, thick, fill);
+  line.edit(x1, y2, x2, y2);
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{\texttt{x1,y1}} Coordenadas de inicio del trazo de la línea.
+  \item \textbf{\texttt{x2,y2}} Coordenadas de fin del trazo de la línea.
+  \item \textbf{\texttt{color}} refiere al color del trazo.
+  \item \textbf{\texttt{thick}} refiere al grosor del trazo.
+  \item \textbf{\texttt{fill}} refiere a la transparencia del trazo. 100 será completamente sólido, 0 completamente transparente.
+\end{itemize}
+
+% subsubsection line (end)
+
+\subsubsection{Pencil} % (fold)
+\label{ssub:pencil}
+
+Se creará un trazo aleatorio pasando por ciertos puntos, semejando un trazo a mano alzada. Es posible añadir puntos extra una vez creado el trazo inicial.
+
+\begin{verbatim}
+  pencil = new Pencil(here, points, color, thick, fill);
+  pencil.addPoint(x,y);
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{\texttt{points}} Cadena de texto representativa de las coordenadas (en pixels) por donde pasará el trazo. Por ejemplo: \texttt{"0,0 10,10 20,20"}
+  \item \textbf{\texttt{color}} refiere al color del trazo.
+  \item \textbf{\texttt{thick}} refiere al grosor del trazo.
+  \item \textbf{\texttt{fill}} refiere a la transparencia del trazo. 100 será completamente sólido, 0 completamente transparente.
+\end{itemize}
+
+% subsubsection pencil (end)
+
+\subsubsection{Square} % (fold)
+\label{ssub:square}
+
+Se creará un rectángulo, cuya posición y tamaño se puede editar posteriormente. Siempre se rellena de color blanco con un 40\% de relleno (60\% de transparencia).
+
+\begin{verbatim}
+  square = new Square(here,x, y, w, h, color, thick, fill)
+  square.edit(x,y,w,h)
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{\texttt{x,y}} Coordenadas de inicio del paralepípedo.
+  \item \textbf{\texttt{w}} Ancho del elemento.
+  \item \textbf{\texttt{h}} Alto del elemento.
+  \item \textbf{\texttt{color}} refiere al color del trazo (no del relleno).
+  \item \textbf{\texttt{thick}} refiere al grosor del trazo (no del relleno).
+  \item \textbf{\texttt{fill}} refiere a la transparencia del trazo. 100 será completamente sólido, 0 completamente transparente.
+\end{itemize}
+
+% subsubsection square (end)
+
+\subsubsection{Circle} % (fold)
+\label{ssub:circle}
+
+Se creará una elipse, cuya posición y tamaño se puede editar posteriormente. Siempre se rellena de color blanco con un 40\% de relleno (60\% de transparencia).
+
+\begin{verbatim}
+  circle = new Circle(here,cx,cy,rx,ry,color,thick,fill)
+  circle.edit(cx,cy,rx,ry)
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{\texttt{cx,cy}} Coordenadas del centro del elemento.
+  \item \textbf{\texttt{rx,ry}} Radio horizontal y vertical del elemento.
+  \item \textbf{\texttt{color}} refiere al color del trazo (no del relleno).
+  \item \textbf{\texttt{thick}} refiere al grosor del trazo (no del relleno).
+  \item \textbf{\texttt{fill}} refiere a la transparencia del trazo. 100 será completamente sólido, 0 completamente transparente.
+\end{itemize}
+
+% subsubsection circle (end)
+
+\subsubsection{Text} % (fold)
+\label{ssub:text}
+
+Se creará un cuadro de texto con fuente \textbf{Verdana} y \textbf{1.3em} de tamaño.
+
+\begin{verbatim}
+  text = new Text(here,x,y,text)
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{\texttt{x,y}} Coordenadas de la parte superior izquierda del cuadro contenedor del texto.
+  \item \textbf{\texttt{text}} Cadena de texto con el texto a mostrar.
+  \item \textbf{\texttt{color}} refiere al color del texto.
+\end{itemize}
+
+% subsubsection text (end)
+
+% subsection funciones (end)
+
+% subsection prerrequisitos (end)
+
+% section especificación_de_la_librería_gráfica (end)

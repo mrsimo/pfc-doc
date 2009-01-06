@@ -79,7 +79,7 @@ PHP se describe a si mismo como\footnote{\url{http://www.php.net}}:
 
 PHP se ha convertido en el lenguaje de scripting más popular en la actualidad, utilizado en más de 20 millones de sitios web\footnote{PHP Usage Stats - \url{http://www.php.net/usage.php}}. Ésto, añadido a su licencia libre, hace que exista una comunidad enorme, con todos los beneficios que ello conlleva.
 
-PHP permite generar contenido dinámicamente en el servidor, dependiendo de las numerosas variables existentes. Se pueden ``incrustar'' trozos de código PHP en el html de forma que PHP genere ese contenido haciendo las operaciones necesarias, como por ejemplo, consultando una base de datos.
+PHP permite generar contenido dinámicamente en el servidor, dependiendo de las numerosas variables existentes. Se pueden \emph{incrustar} trozos de código PHP en el html de forma que PHP genere ese contenido haciendo las operaciones necesarias, como por ejemplo, consultando una base de datos.
 
 \begin{description}
 	\item[Facilidad de implementación] PHP se considera un lenguaje simple que permite desarrollar sitios de tamaño pequeño o medio con relativa simplicidad. Existen múltiples scripts ya programados que incluso podrían llegar a ayudar en el proceso de implementación del sistema.
@@ -186,14 +186,14 @@ A pesar de no ser la solución ideal, todos los Internet Explorer con versión 5
 \textbf{Canvas}
 Estas dos no son las únicas formas de tratar con gráficos vectoriales en páginas web. En la nueva especificación HTML (versión 5\footnote{W3C, HTML5 - \url{http://www.w3.org/html/wg/html5/}}, actualmente aún en formato borrador aún), se especifica un nuevo elemento, denominado \texttt{<canvas>}, y cuyo objetivo es la representación gráficos vectoriales directamente en la web. Es independiente de VML o SVG, y ya está implementado en los navegadores mayoritarios, excepto Internet Explorer. Existe, sin embargo, una librería en javascript\footnote{Explorer Canvas - \url{http://excanvas.sourceforge.net/}}, que automáticamente transforma cualquier elemento \texttt{<canvas>} en su equivalente en VML, por lo cual se puede considerar que es soportado en todos los navegadores mayoritarios actuales.
 
-El funcionamiento de canvas es completamente distinto al de SVG y VML. Se basa en considerar que hay un puntero que puede ir haciendo diversos tipos de trazos. Se puede mover a cualquier punto dentro de un área definida, y moverse hacia otro haciendo el dibujo. Existen funciones para hacer todo tipo de ``trazos'', permitiendo dibujar líneas, círculos, y todo lo necesario.
+El funcionamiento de canvas es completamente distinto al de SVG y VML. Se basa en considerar que hay un puntero que puede ir haciendo diversos tipos de trazos. Se puede mover a cualquier punto dentro de un área definida, y moverse hacia otro haciendo el dibujo. Existen funciones para hacer todo tipo de \emph{trazos}, permitiendo dibujar líneas, círculos, y todo lo necesario.
 
 Este tipo de planteamiento, sin embargo, no es adecuado para el tipo de aplicación que se pretende desarrollar. En el caso de la pizarra, existirán diferentes elementos que se irán añadiendo, quitando y modificando. El formato SVG o VML es ideal, puesto que está formado por dichos elementos, y para por ejemplo, crear un círculo, simplemente se añade una nueva etiqueta correspondiente a un círculo. En el caso de Canvas, sin embargo, habría que redibujar todo desde el principio, incluyendo el trazo final de un círculo. Básicamente, cada vez que se modifique algo en canvas, hay que redibujar todo de nuevo.
 
 Por lo tanto, canvas es ideal para realiar dibujos estáticos, pero poco adecuado para realizar aplicaciones interactivas como será ésta.
 
 \subsubsection{Ruby}
-Ruby es un lenguaje inspirado en Perl, Smalltalk, Eiffel, Ada y Lisp, creado por Yukihiro ``matz'' Matsumoto\footnote{Acerca de Ruby - \url{http://www.ruby-lang.org/es/about/}}. Ruby en si es solo el lenguaje, y existen diferentes implementaciones. De ellas, la oficial está implementada en \texttt{C} y es \textbf{interpretado en una sola pasada}\footnote{Ruby, Wikipedia - \url{http://es.wikipedia.org/wiki/Ruby}}. Típicamente se puede ejecutar un archivo ruby desde la línea de comandos, con una linea parecida a la siguiente:
+Ruby es un lenguaje inspirado en Perl, Smalltalk, Eiffel, Ada y Lisp, creado por Yukihiro \emph{matz} Matsumoto\footnote{Acerca de Ruby - \url{http://www.ruby-lang.org/es/about/}}. Ruby en si es solo el lenguaje, y existen diferentes implementaciones. De ellas, la oficial está implementada en \texttt{C} y es \textbf{interpretado en una sola pasada}\footnote{Ruby, Wikipedia - \url{http://es.wikipedia.org/wiki/Ruby}}. Típicamente se puede ejecutar un archivo ruby desde la línea de comandos, con una linea parecida a la siguiente:
 
 \begin{verbatim}
 $ ruby archivo.rb
