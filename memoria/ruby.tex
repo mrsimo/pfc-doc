@@ -7,15 +7,21 @@ Antes de nada, para entender como funciona Ruby on Rails, hay que aclarar cierto
 
 Ruby es un lenguaje de alto nivel, con una sintaxis que hace que sea muy fácil de entender para gente que no la conoce. Por ejemplo:
 
-\begin{verbatim}
-100.times do 
-  print "No hablaré en clase".upcase
-end  
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+@PYag[100]@PYbf[.]times @PYaz[do] 
+  @PYaY[print] @PYaX["]@PYaX[No hablaré en clase]@PYaX["]@PYbf[.]upcase
+@PYaz[end]  
+\end{Verbatim}
 
-La popularidad de Ruby se ha incrementado con el éxito de Ruby on Rails, y ha hecho que se puedan encontrar librerías para prácticamente cualquier cosa. La sencillez del código lo hacen muy adecuado para el mundo del desarrollo web, donde se prioriza la agilidad de desarrollo, antes que una gran eficiencia. Existen múltiples técnicas de cacheo que hacen que el procesado necesario por el lenguaje de scripting sea mínimo, relegando todo el trabajo al servidor web (Apache, por ejemplo), y a unas consultas a la base de datos bien eficientes. Por tanto, lenguajes de más bajo nivel que podrían aportar una mayor eficiencia del código no se consideran adecuados por requerir de un proceso de desarrollo más largo y costoso, para unas ganancias relativamente mínimas. El uso de este tipo de lenguajes se relega a partes muy pequeñas y precisas, normalmente en los culos de botella donde puedan ser útiles. Se considera más beneficioso poder desarrollar más, de forma más sencilla para así evitar bugs indeseables, y utilizar dichas técnicas de cacheo y de gestión de base de datos para lograr la eficiencia.
+%\begin{verbatim}
+%100.times do 
+%  print "No hablaré en clase".upcase
+%end  
+%\end{verbatim}
 
-Rails es un Framework escrito en ruby que permite un desarrollo web ágil y sencillo. Se basa en hacer fácil el trabajo del programador, y en su famoso \emph{Convention over configuration} (convención antes que configuración). Debido a que la mayoría del tiempo, el desarrollo de webs es un proceso repetitivo, es posible establecer una serie de patrones que asumir, y solo modificar en los casos especiales en que \emph{lo normal} no es suficiente.
+La popularidad de Ruby se ha incrementado con el éxito de Ruby on Rails, y ha hecho que se puedan encontrar librerías para prácticamente cualquier cosa. La sencillez del código lo hacen muy adecuado para el mundo del desarrollo web, donde se prioriza la agilidad de desarrollo, antes que una gran eficiencia. Existen múltiples técnicas de cacheo que hacen que el procesado necesario por el lenguaje de scripting sea mínimo, relegando todo el trabajo al servidor web (Apache, por ejemplo), y a unas consultas a la base de datos eficientes. Por tanto, lenguajes de más bajo nivel que podrían aportar una mayor eficiencia del código no se consideran adecuados por requerir de un proceso de desarrollo más largo y costoso, para unas ganancias relativamente mínimas. El uso de este tipo de lenguajes se relega a partes muy pequeñas y precisas, normalmente en los culos de botella donde puedan ser útiles. Se considera más beneficioso poder desarrollar más, de forma más sencilla para así evitar bugs indeseables, y utilizar dichas técnicas de cacheo y de gestión de base de datos para lograr la eficiencia.
+
+Rails es un Framework escrito en ruby que permite un desarrollo web ágil y sencillo. Se basa en hacer fácil el trabajo del programador, y en su famoso \emph{Convention over configuration} (convención antes que configuración). Debido a que la mayoría del tiempo, el desarrollo de webs es un proceso repetitivo, es posible establecer una serie de patrones que asumir, y solo modificar en los casos especiales en que \emph{lo normal} no es adecuado.
 
 Está basado en una arquitectura MVC (Modelo Vista Controlador), permitiendo aplicar el patrón en 3 capas estudiado las diversas asignaturas de Ingeniería del Software, así como la mayoría de buenas prácticas, hasta ahora mayoritariamente difíciles de aplicar en el mundo del desarrollo web.
 

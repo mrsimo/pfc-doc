@@ -89,30 +89,56 @@ No hay que olvidar tampoco el proceso que se encarga de tratar los archivos comp
 
 Una aplicación Ruby on Rails no difiere de cualquier otra en cuanto a su soporte para SSL. Dado que, en los ejemplos contemplados, se presupone una configuración con Apache recibiendo las peticiones (tanto con FastCGI, \texttt{mod\_rails} o Mongrels), es posible implementar el soporte para conexiones seguras directamente en la configuración del site de Apache. El procedimiento más sencillo es duplicando la configuración incluyendo el puerto de SSL y los parámetros adecuados.
 
-\begin{verbatim}
-  <VirtualHost *:443>
-    SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/cert.pem
+%\begin{verbatim}
+%  <VirtualHost *:443>
+%    SSLEngine on
+%    SSLCertificateFile /etc/ssl/certs/cert.pem
+%
+%    DocumentRoot /path/to/application/public
+%
+%    RewriteEngine On
+%
+%    <Proxy balancer://app>
+%      BalancerMember http://127.0.0.1:3000
+%      BalancerMember http://127.0.0.1:3001
+%    </Proxy>
+%    
+%    # Redirect all non-static requests
+%    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+%    RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+%
+%    ProxyPass / balancer://app/
+%    ProxyPassReverse / balancer://app/
+%    ProxyPreserveHost on
+%
+%  </VirtualHost>
+%\end{verbatim}
 
-    DocumentRoot /path/to/application/public
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYba[<VirtualHost] @PYad[*:443]@PYba[>]
+    @PYaY[SSLEngine] @PYaz[on]
+    @PYaY[SSLCertificateFile] @PYaq[/etc/ssl/certs/cert.pem]
 
-    RewriteEngine On
+    @PYaY[DocumentRoot] @PYaq[/path/to/application/public]
 
-    <Proxy balancer://app>
-      BalancerMember http://127.0.0.1:3000
-      BalancerMember http://127.0.0.1:3001
-    </Proxy>
+    @PYaY[RewriteEngine] @PYaz[On]
+
+    @PYba[<Proxy] @PYad[balancer://app]@PYba[>]
+      @PYaY[BalancerMember] http://127.0.0.1:3000
+      @PYaY[BalancerMember] http://127.0.0.1:3001
+    @PYba[</Proxy]@PYba[>]
     
-    # Redirect all non-static requests
-    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
-    RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+    @PYaE[# Redirect all non-static requests]
+    @PYaY[RewriteCond] %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+    @PYaY[RewriteRule] ^/(.*)$ balancer://app%{REQUEST_URI} @PYZlb[]P,QSA,L@PYZrb[]
 
-    ProxyPass / balancer://app/
-    ProxyPassReverse / balancer://app/
-    ProxyPreserveHost on
+    @PYaY[ProxyPass] / balancer://app/
+    @PYaY[ProxyPassReverse] / balancer://app/
+    @PYaY[ProxyPreserveHost] @PYaz[on]
 
-  </VirtualHost>
-\end{verbatim}
+  @PYba[</VirtualHost]@PYba[>]
+\end{Verbatim}
+
 
 De este modo se tendría soporte en toda la aplicación para SSL. Puesto que se ha establecido que el soporte SSL sería opcional, no se requieren más pasos. En caso de querer añadir SSL como un requisito para usar alguna funcionalidad de la web, o que esté disponible solo en algunas acciones, se podría realizar mediante el plugin \texttt{ssl\_requirement} \footnote{\url{http://dev.rubyonrails.org/svn/rails/plugins/ssl\_requirement/}}, soportado oficialmente por Ruby on Rails, pero no incluido en el núcleo de funcionalidades de Rails.
 

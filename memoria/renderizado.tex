@@ -42,9 +42,13 @@ Es imposible dar un porcentaje exacto de uso de los diferentes navegadores, pues
 
 El objetivo de este módulo es que sea capaz de realizar los dibujos de las figuras independientemente del navegador que se esté utilizando. Para ello deberán ejecutarse comandos distintos se esté en Internet Explorer (\texttt{IE} a partir de ahora) o en otro. Se pretende, por lo tanto, proveer una serie de funciones como la siguiente:
 
-\begin{verbatim}
-function createLine(here, x1, y1, x2, y2, color, thick, fill)
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+line @PYbf[=] @PYaz[new] Line(here@PYbf[,] x1@PYbf[,] y1@PYbf[,] x2@PYbf[,] y2@PYbf[,] color@PYbf[,] thick@PYbf[,] fill);
+\end{Verbatim}
+
+%\begin{verbatim}
+%line = new Line(here, x1, y1, x2, y2, color, thick, fill);
+%\end{verbatim}
 
 Dicha función creará una línea que vaya de las coordenadas \texttt{x1,y1} a \texttt{x2,y2}, de color \texttt{color}, con un grueso \texttt{thick}, y con una transparencia del \texttt{fill}\%. Dicho elemento se anidará al elemento padre \texttt{here}.
 
@@ -54,12 +58,19 @@ Los elementos implementados son: línea, polilínea (trazo que pasa por una seri
 Para que dicho módulo funcione existen una serie de requisitos. Primero, es necesario que el \texttt{HTML} sea el adecuado.
 
 \texttt{VML} necesita dos líneas para que el navegador sepa cómo tiene que representar las directrices.
-\begin{verbatim}
-<html xmlns="http://www.w3.org/1999/xhtml" 
-   xmlns:v="urn:schemas-microsoft-com:vml">
+\begin{Verbatim}[commandchars=@\[\]]
+@PYba[<html] @PYaQ[xmlns=]@PYad["http://www.w3.org/1999/xhtml"] 
+   @PYaQ[xmlns:v=]@PYad["urn:schemas-microsoft-com:vml"]@PYba[>]
 
-<style>v\:* { behavior: url(#default#VML);}</style>
-\end{verbatim}
+@PYba[<style]@PYba[>]@PYba[v\]@PYbf[:]@PYbf[*] { behavior@PYbf[:] @PYaq[url(#default#VML)];}@PYba[</style>]
+\end{Verbatim}
+
+%\begin{verbatim}
+%<html xmlns="http://www.w3.org/1999/xhtml" 
+%   xmlns:v="urn:schemas-microsoft-com:vml">
+%
+%<style>v\:* { behavior: url(#default#VML);}</style>
+%\end{verbatim}
 
 La primera línea tiene el formato típico de un documento \texttt{XML} formal. Se definen dos espacios de nombres, el principal siendo el de xhtml definido por el \texttt{W3C}, y el segundo el de la especificación de \texttt{VML} por parte de microsoft, al cual se le añade el prefijo \texttt{v:} . Gracias a esta línea se consigue que se puedan incluir los elementos directamente en el documento, siempre y cuando empiecen por el prefijo \texttt{v:} .
 
@@ -69,12 +80,19 @@ En cuanto a \texttt{SVG}, en cualquiera de los navegadores, es necesario que el 
 
 A diferencia de VML, SVG necesita de una etiqueta principal dentro de la cual colgarán los elementos. Debería tener una estructura como la siguiente:
 
-\begin{verbatim}
-<svg id="mainElement" xmlns="http://www.w3.org/2000/svg" 
-   xmlns:xlink="http://www.w3.org/1999/xlink" 
-   preserveAspectRatio="none" height="600px" width="800px">
-</svg>
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+@PYba[<svg] @PYaQ[id=]@PYad["mainElement"] @PYaQ[xmlns=]@PYad["http://www.w3.org/2000/svg"] 
+   @PYaQ[xmlns:xlink=]@PYad["http://www.w3.org/1999/xlink"] 
+   @PYaQ[preserveAspectRatio=]@PYad["none"] @PYaQ[height=]@PYad["600px"] @PYaQ[width=]@PYad["800px"]@PYba[>]
+@PYba[</svg>]
+\end{Verbatim}
+
+%\begin{verbatim}
+%<svg id="mainElement" xmlns="http://www.w3.org/2000/svg" 
+%   xmlns:xlink="http://www.w3.org/1999/xlink" 
+%   preserveAspectRatio="none" height="600px" width="800px">
+%</svg>
+%\end{verbatim}
 
 El atributo id permitirá acceder fácilmente a este elemento mediante javascript. Los dos atributos xmlns son también típicos de un documento \texttt{XML}, y añaden las definiciones correspondientes a los elementos \texttt{SVG} y de \texttt{xlink}. Xlink se utiliza para referenciar elementos exteriores al documento, como podrían ser imágenes, y se explicará con más detalle en secciones posteriores. El atributo \texttt{preserveAspectRatio} ayuda a que no se deforme la imagen con posibles redimensionamientos de la ventana, y \texttt{height/width} simplemente indican el tamaño de la imagen SVG (no hay que olvidar, que al fin y al cabo estamos generando una imagen de tipo SVG).
 
@@ -86,7 +104,7 @@ En el caso de VML esto no es necesario puesto que es posible añadir elementos V
 
 \begin{figure}[h!]
 \centering
-\includegraphics{divsvg.png}
+\includegraphics{divsvg.jpg}
 \caption{Esquema del concepto de SVG dentro de un DIV}\label{fig:divsvg}
 \end{figure}
 
@@ -94,19 +112,34 @@ Las dos variables a definir son \texttt{mainElem} y \texttt{container}.
 
 \subsection{Implementando}
 Todas las funciones de renderizado funcionan de la misma manera. Si se añadiera al código la línea siguiente:
-\begin{verbatim}
-  <div id="container">
-    <v:line from="0,0" to="200,200">
-      <v:stroke color="#000000" weight="1" opacity="0.8"/>
-    </v:line>
-  </div>
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYba[<div] @PYaQ[id=]@PYad["container"]@PYba[>]
+    @PYba[<v:line] @PYaQ[from=]@PYad["0,0"] @PYaQ[to=]@PYad["200,200"]@PYba[>]
+      @PYba[<v:stroke] @PYaQ[color=]@PYad["#000000"] @PYaQ[weight=]@PYad["1"] @PYaQ[opacity=]@PYad["0.8"]@PYba[/>]
+    @PYba[</v:line>]
+  @PYba[</div>]
+\end{Verbatim}
+
+%\begin{verbatim}
+%  <div id="container">
+%    <v:line from="0,0" to="200,200">
+%      <v:stroke color="#000000" weight="1" opacity="0.8"/>
+%    </v:line>
+%  </div>
+%\end{verbatim}
+
 se obtendría una línea que iría del punto 0,0 al 200,200 dentro del div contenedor, de color negro (\texttt{\#000000}), de 1 pixel de grosor y una opacidad del 80\%.
 
-Lo que se pretende lograr con el módulo en javascript, es que se pueda ejecutar la línea siguiente:
-\begin{verbatim}
-  line = new Line(document.getElementById("mainElement"),0,0,200,200,"#000000",1,0.8);
-\end{verbatim}
+Recordando la función que se había especificado originalmente, se debe poder ejecutar la línea
+
+\begin{Verbatim}[commandchars=@\[\]]
+line @PYbf[=] @PYaz[new] Line(@PYaY[document].getElementById(@PYaX["mainElement"])@PYbf[,]@PYag[0]@PYbf[,]@PYag[0]@PYbf[,]@PYag[200]@PYbf[,]@PYag[200]@PYbf[,]@PYaX["#000000"]@PYbf[,]@PYag[1]@PYbf[,]@PYax[0.8]);
+\end{Verbatim}
+
+%\begin{verbatim}
+%  line = new Line(document.getElementById("mainElement"),0,0,200,200,"#000000",1,0.8);
+%\end{verbatim}
+
 en cualquier momento mediante Javascript, y que automáticamente se cree ese nodo \texttt{<v:line>}. Gracias a que es posible ejecutar código javascript en cualquier evento, es posible crear una línea cuando se pulsa el ratón, e ir modificando sus coordenadas mientras se mueve. No solo eso, sino que si se recibe alguna información, por ejemplo, mediante Ajax, es posible dibujar dinámicamente elementos a la vez que el servidor los va mandando, sin tener que recargar la página. Es posible usar, por tanto, estas funciones del motor de renderizado tanto para simular el hecho de estar dibujando (motor de dibujo), como para recibir los dibujos que realizan el resto de participantes de una pizarra (módulo de comunicaciones).
 
 Javascript tiene todas las funciones necesarias para modificar el DOM tanto como se desee. Se ha visto que es posible obtener un elemento del código mediante el \texttt{document.getElementById}, y una vez se tiene ese objeto, existen funciones como \texttt{appendChild} para ir modificándolo.

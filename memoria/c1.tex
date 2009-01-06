@@ -1,7 +1,7 @@
 %!TEX root = /Users/simo/Documents/PFC/memoria/memoria.tex
 \section{Primer ciclo} % (fold)
 \label{sec:primer_ciclo}
-La metodología de desarrollo ágil defiende un desarrollo iterativo, por ciclos pequeños que generen de forma rápida ciertas funcionalidades. Cada ciclo amplia funcionalidades hasta que al final estén todas incluidas. Cada ciclo debe ser completo, con sus fases de análisis de requisitos, diseño, implementación y revisión. La fase de documentación tiene como resultado este capítulo.
+La metodología de desarrollo ágil defiende un desarrollo iterativo, por ciclos pequeños que generen de forma rápida ciertas funcionalidades. Cada ciclo amplia funcionalidades hasta que al final estén todas incluidas. Cada ciclo debe ser completo, con sus fases de análisis de requisitos, diseño, implementación y documentación. La fase de documentación tiene como resultado este capítulo.
 
 En este primer ciclo, se pretende obtener todas las funcionalidades necesarias para poder crear y editar documentos.
 
@@ -50,11 +50,18 @@ En estos momentos se considera suficiente agrupar todas las funcionalidades que 
 \subsection{Implementación} % (fold)
 \label{sub:implementacion}
 
-Para inicializar una aplicación en rails, hay que crear dicha aplicación, y configurar la conexión con la base de datos. Desde el principio, se le ha dado el nombre \texttt{drawme}. 
+Para inicializar una aplicación en rails, hay que crear dicha aplicación, y configurar la conexión con la base de datos. Esta aplicación ha tenido desde el principio el nombre en clave de \texttt{drawme}. 
 
 \begin{verbatim}
-rails drawme
+$ rails drawme
+$ cd drawme
 \end{verbatim}
+
+En todas las situaciones en las que se muestren líneas de comandos que ejecutar por consola, se establecerá la nomenclatura siguiente:
+\begin{itemize}
+  \item Las líneas que se puedan ejecutar con permisos de usuario, se iniciarán con el caracter \texttt{\$}
+  \item Las líneas que requieran de permisos de root, se iniciarán con el caracter \texttt{\#}
+\end{itemize}
 
 \subsubsection{Modelos} % (fold)
 \label{ssub:modelos}
@@ -71,68 +78,123 @@ Estos comandos generarán los archivos dentro de la carpeta \texttt{/app/models}
 
 A forma de ejemplo, la migración para la tabla del modelo \texttt{Document} será así:
 
-\begin{verbatim}
-  class CreateDocuments < ActiveRecord::Migration
-    def self.up
-      create_table :documents do |t|
-        t.string :title
-        t.text :description
-        t.integer :current_page, :default => 1
-        t.integer :height, :default => 600
-        t.integer :width, :default => 800
-        t.timestamps
-      end
-    end
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[class] @PYaO[CreateDocuments] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Migration]
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[up]
+      create_table @PYau[:documents] @PYaz[do] @PYbf[|]t@PYbf[|]
+        t@PYbf[.]string @PYau[:title]
+        t@PYbf[.]text @PYau[:description]
+        t@PYbf[.]integer @PYau[:current_page], @PYau[:default] @PYbf[=]@PYbf[>] @PYag[1]
+        t@PYbf[.]integer @PYau[:height], @PYau[:default] @PYbf[=]@PYbf[>] @PYag[600]
+        t@PYbf[.]integer @PYau[:width], @PYau[:default] @PYbf[=]@PYbf[>] @PYag[800]
+        t@PYbf[.]timestamps
+      @PYaz[end]
+    @PYaz[end]
 
-    def self.down
-      drop_table :documents
-    end
-  end
-\end{verbatim}
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[down]
+      drop_table @PYau[:documents]
+    @PYaz[end]
+  @PYaz[end]
+\end{Verbatim}
+
+%\begin{verbatim}
+%  class CreateDocuments < ActiveRecord::Migration
+%    def self.up
+%      create_table :documents do |t|
+%        t.string :title
+%        t.text :description
+%        t.integer :current_page, :default => 1
+%        t.integer :height, :default => 600
+%        t.integer :width, :default => 800
+%        t.timestamps
+%      end
+%    end
+%
+%    def self.down
+%      drop_table :documents
+%    end
+%  end
+%\end{verbatim}
 
 Ya en este punto se pone en práctica el concepto de \emph{convention over configuration}, en que se ha creado el modelo \texttt{Document}, y la migración generada llama a la tabla de la base de datos \texttt{documents}. Esto siempre es así, un modelo es un nombre en singular, y su tabla es el equivalente en plural. Sabiendo esto, no habrá en ningún momento problemas de nomenclatura, y en caso de que sea necesario llamar a una tabla con un nombre distinto al de su modelo, será necesario añadir una línea en su modelo correspondiente (en este caso \texttt{/app/models/document.rb}).
 
 Un documento puede tener múltiples páginas, y según las prácticas habituales para implementar este tipo de relaciones en bases de datos relacionales, hay que añadir una clave externa en la tabla de las páginas. Para hacer esto, en Ruby on Rails se haría lo siguiente:
 
-\begin{verbatim}
-  class CreatePages < ActiveRecord::Migration
-    def self.up
-      create_table :pages do |t|
-        t.integer :number, :null => false
-        t.references :document
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[class] @PYaO[CreatePages] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Migration]
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[up]
+      create_table @PYau[:pages] @PYaz[do] @PYbf[|]t@PYbf[|]
+        t@PYbf[.]integer @PYau[:number], @PYau[:null] @PYbf[=]@PYbf[>] @PYah[false]
+        t@PYbf[.]references @PYau[:document]
         
-        t.timestamps
-      end
-      add_index :pages, :document_id
-    end
+        t@PYbf[.]timestamps
+      @PYaz[end]
+      add_index @PYau[:pages], @PYau[:document_id]
+    @PYaz[end]
 
-    def self.down
-      drop_table :pages
-    end
-  end
-\end{verbatim}
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[down]
+      drop_table @PYau[:pages]
+    @PYaz[end]
+  @PYaz[end]
+\end{Verbatim}
+
+%\begin{verbatim}
+%  class CreatePages < ActiveRecord::Migration
+%    def self.up
+%      create_table :pages do |t|
+%        t.integer :number, :null => false
+%        t.references :document
+%        
+%        t.timestamps
+%      end
+%      add_index :pages, :document_id
+%    end
+%
+%    def self.down
+%      drop_table :pages
+%    end
+%  end
+%\end{verbatim}
 
 Por convención, los campos que referencian otra tabla, tienen la nomenclatura del tipo \texttt{modelo\_id}, y se aprovecha en este caso para añadir un índice sobre este campo, para que cuando sea necesario consultar las páginas de un documento, no sea necesario recorrer la tabla de páginas entera.
 
 La migración para \texttt{Element} es igual a la de \texttt{Page}.
 
-\begin{verbatim}
-  class CreateElements < ActiveRecord::Migration
-    def self.up
-      create_table :elements do |t|
-        t.text :attr, :null => false 
-        t.references :page
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[class] @PYaO[CreateElements] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Migration]
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[up]
+      create_table @PYau[:elements] @PYaz[do] @PYbf[|]t@PYbf[|]
+        t@PYbf[.]text @PYau[:attr], @PYau[:null] @PYbf[=]@PYbf[>] @PYah[false] 
+        t@PYbf[.]references @PYau[:page]
 
-        t.timestamps
-      end
-      add_index :elements, :page_id
-    end
+        t@PYbf[.]timestamps
+      @PYaz[end]
+      add_index @PYau[:elements], @PYau[:page_id]
+    @PYaz[end]
 
-    def self.down
-      drop_table :elements
-    end
-  end
-\end{verbatim}
+    @PYaz[def] @PYaO[self]@PYbf[.]@PYaL[down]
+      drop_table @PYau[:elements]
+    @PYaz[end]
+  @PYaz[end]
+\end{Verbatim}
+
+%\begin{verbatim}
+%  class CreateElements < ActiveRecord::Migration
+%    def self.up
+%      create_table :elements do |t|
+%        t.text :attr, :null => false 
+%        t.references :page
+%
+%        t.timestamps
+%      end
+%      add_index :elements, :page_id
+%    end
+%
+%    def self.down
+%      drop_table :elements
+%    end
+%  end
+%\end{verbatim}
 
 Para trasladar estas migraciones a la base de datos es necesario ejecutar la línea siguiente en la línea de comandos:
 
@@ -142,40 +204,68 @@ Para trasladar estas migraciones a la base de datos es necesario ejecutar la lí
 
 Estas migraciones, no obstante, solamente sirven para tratar con la base de datos. Para que la aplicación sepa que un \texttt{Document} tiene múltiples \texttt{Pages}, es necesario dejar constancia en los modelos:
 
-\begin{verbatim}
-  class Document < ActiveRecord::Base
-    has_many :pages, :dependent => :destroy
-    has_many :elements, :through => :pages
-  end
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[class] @PYaO[Document] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+    has_many @PYau[:pages], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+    has_many @PYau[:elements], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:pages]
+  @PYaz[end]
 
-\begin{verbatim}
-  class Page < ActiveRecord::Base
-    has_many :elements, :dependent => :destroy
-    belongs_to :document
-  end
-\end{verbatim}
+  @PYaz[class] @PYaO[Page] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+    has_many @PYau[:elements], @PYau[:dependent] @PYbf[=]@PYbf[>] @PYau[:destroy]
+    belongs_to @PYau[:document]
+  @PYaz[end]
+  
+  @PYaz[class] @PYaO[Element] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+    belongs_to @PYau[:page]
+    belongs_to @PYau[:document], @PYau[:through] @PYbf[=]@PYbf[>] @PYau[:page]
+  @PYaz[end]
+\end{Verbatim}
 
-\begin{verbatim}
-  class Element < ActiveRecord::Base
-    belongs_to :page
-    belongs_to :document, :through => :page
-  end
-\end{verbatim}
+%\begin{verbatim}
+%  class Document < ActiveRecord::Base
+%    has_many :pages, :dependent => :destroy
+%    has_many :elements, :through => :pages
+%  end
+%\end{verbatim}
+%
+%\begin{verbatim}
+%  class Page < ActiveRecord::Base
+%    has_many :elements, :dependent => :destroy
+%    belongs_to :document
+%  end
+%\end{verbatim}
+%
+%\begin{verbatim}
+%  class Element < ActiveRecord::Base
+%    belongs_to :page
+%    belongs_to :document, :through => :page
+%  end
+%\end{verbatim}
 
 
 Con estas líneas, será posible en un futuro, ejecutar instrucciones como las siguientes:
 
-\begin{verbatim}
-  # Añadir una página a un documento
-  document.pages << Page.new  
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaf[# Añadir una página a un documento]
+  document@PYbf[.]pages @PYbf[<<] @PYar[Page]@PYbf[.]new  
   
-  # Añadir un elemento a una página
-  page.elements << Element.create(:attr => "...") 
+  @PYaf[# Añadir un elemento a una página]
+  page@PYbf[.]elements @PYbf[<<] @PYar[Element]@PYbf[.]create(@PYau[:attr] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[...]@PYaX["]) 
   
-  # Borrar todas las páginas de un documento
-  document.pages.clear
-\end{verbatim}
+  @PYaf[# Borrar todas las páginas de un documento]
+  document@PYbf[.]pages@PYbf[.]clear
+\end{Verbatim}
+
+%\begin{verbatim}
+%  # Añadir una página a un documento
+%  document.pages << Page.new  
+%  
+%  # Añadir un elemento a una página
+%  page.elements << Element.create(:attr => "...") 
+%  
+%  # Borrar todas las páginas de un documento
+%  document.pages.clear
+%\end{verbatim}
 
 Cualquier operación que trate las relaciones entre estos elementos será posible de forma más sencilla, siempre tratando con la base de datos de forma transparente. 
 
@@ -194,13 +284,20 @@ El archivo generado, utilizando las convenciones, será \texttt{/app/controllers
 
 Debido a que es el primer ciclo, y que de momento aún no se tiene muy claro cómo acabará estructurándose la web, se optará por tener lo que en Rails se llama un \emph{Scaffold} con unas pocas modificaciones, para poder editar los documentos. Un Scaffold es una envoltura para un modelo, con las cuatro operaciones básicas que se pueden querer realizar: crear, mostrar, modificar y borrar (\texttt{create}, \texttt{show}, \texttt{update} y \texttt{destroy}). Debido a la naturaleza de la web, es necesario otras acciones, previas a estas cuatro. Por ejemplo, antes de crear un documento, es necesario mostrar un formulario en el que rellenar los datos necesarios. Dicha acción se llamaría \texttt{new}. Para poder mostrar un elemento en concreto, primero hay que listar los que hay, y dicha acción se llama \texttt{index}. Para poder modificar un elemento primero hay que mostrar como está en este instante, además de proporcionar un formulario con el que poder especificar los cambios. Ésta acción se llamaría \texttt{edit}. Para eliminar un elemento solo es necesario saber qué elemento eliminar, por lo tanto es posible ejecutar tanto desde \texttt{show} como desde \texttt{index}.
 
-Éstas cuatro acciones forman el llamado \texttt{CRUD} (Create, Retrieve, Update y Delete), y equivalen a las cuatro comentadas, que junto con las otras tres, forman las siete acciones básicas de un controlador de Scaffold.
+Éstas cuatro acciones forman el llamado \texttt{CRUD} (Create, Retrieve, Update y Delete), y equivalen a las cuatro comentadas, que junto con las otras tres, forman las siete acciones básicas de un controlador de Scaffold, representadas en el diagrama \ref{fig:documentscaffold}
 
 Puesto que estas acciones son tan comunes, Rails proporciona una forma de generar un Scaffold sencillo de forma automática, para utilizar como punto de partida.
 
 \begin{verbatim}
   script/generate scaffold Document
 \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[totalheight=9cm]{documentscaffold.jpg}
+\caption{Diagrama de un scaffold de document}\label{fig:documentscaffold}
+\end{figure}
+
 
 Gracias a las convenciones de Rails, este Scaffold buscará el modelo \texttt{Document} y creará el controlador \texttt{documents\_controller} con el código adecuado, y las vistas correspondientes.
 
@@ -222,11 +319,18 @@ Con estos pasos se puede considerar la primera funcionalidad objetivo cumplida. 
 
 Cabe destacar de la implementación de estas funciones, la facilidad que da Rails para tratar con peticiones en Ajax. En el caso de la función \texttt{list\_elements}, por ejemplo, lo lógico sería realizar una búsqueda en la base de datos, teniendo luego un vector de elementos, que luego se deberían traducir a JSON, y mostrarse en la vista.
 
-\begin{verbatim}
-  def list_elements
-    render :json => Page.find(params[:page_id]).elements
-  end
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[def] @PYaL[list_elements]
+    render @PYau[:json] @PYbf[=]@PYbf[>] @PYar[Page]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:page_id]@PYbf[@PYZrb[]])@PYbf[.]elements
+  @PYaz[end]
+\end{Verbatim}
+
+
+%\begin{verbatim}
+%  def list_elements
+%    render :json => Page.find(params[:page_id]).elements
+%  end
+%\end{verbatim}
 
 Debido a que JSON se ha convertido en un formato standard en este tipo de acciones, Rails usa las librerías de Ruby para la conversión de objetos a sus equivalentes en JSON, y mediante una sola línea es posible devolver un objeto exactamente equivalente al que se tiene en ese momento en Ruby, pero que javascript podrá entender.
 

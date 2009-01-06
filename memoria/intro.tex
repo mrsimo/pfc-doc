@@ -170,13 +170,22 @@ Mediante CGI es posible ejecutar cualquier tipo de proceso desde un servidor web
 
 CGI se ha utilizado desde el principio para servir código en Ruby, y toda aplicación en Ruby on Rails viene iniciada con soporte para CGI y FastCGI. Generalmente, realizar un deploy que pretenda servir la aplicación mediante FastCGI solo necesita que la configuración del site en apache, el atributo \texttt{DocumentRoot} apunte a la carpeta \texttt{/public} de la aplicación, y no a la raíz, además de tener activadas las opciones \texttt{ExecCGI} y \texttt{RewriteEngine}. Por ejemplo, una configuración mínima sería:
 
-\begin{verbatim}
-  <VirtualHost *:80>
-      DocumentRoot /var/www/ejemplo/public
-      Options Indexes ExecCGI FollowSymLinks
-      RewriteEngine On
-  </VirtualHost>
-\end{verbatim}
+%\begin{verbatim}
+%  <VirtualHost *:80>
+%      DocumentRoot /var/www/ejemplo/public
+%      Options Indexes ExecCGI FollowSymLinks
+%      RewriteEngine On
+%  </VirtualHost>
+%\end{verbatim}
+
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYba[<VirtualHost] @PYad[*:80]@PYba[>]
+      @PYaY[DocumentRoot] @PYaq[/var/www/ejemplo/public]
+      @PYaY[Options] Indexes ExecCGI FollowSymLinks
+      @PYaY[RewriteEngine] @PYaz[On]
+  @PYba[</VirtualHost]@PYba[>]
+\end{Verbatim}
+
 
 Esta técnica se considera actualmente desfasada, puesto que la eficiencia y escalabilidad son mínimas. Ante cada petición se carga el entorno rails con las partes necesarias, se genera la página, y se manda. No se beneficia en absoluto de las características comentadas de una aplicación funcionando en producción en cuanto a eficiencia se refiere.
 
@@ -252,27 +261,50 @@ En ambos casos se pretenden levantar dos instancias, empezando en el puerto 3000
 
 Una vez se tienen varias instancias funcionando, se necesita un balanceador de carga de modo que se vayan distribuyendo las peticiones entre todas las instancias. El proceso tradicional para esto es, mediante apache, configurar el site de la siguiente manera:
 
-\begin{verbatim}
-  <VirtualHost *:80>
-      DocumentRoot /path/to/application/public
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYba[<VirtualHost] @PYad[*:80]@PYba[>]
+      @PYaY[DocumentRoot] @PYaq[/path/to/application/public]
       
-      RewriteEngine On
+      @PYaY[RewriteEngine] @PYaz[On]
       
-      <Proxy balancer://app>
-        BalancerMember http://127.0.0.1:3000
-        BalancerMember http://127.0.0.1:3001
-      </Proxy>
+      @PYba[<Proxy] @PYad[balancer://app]@PYba[>]
+        @PYaY[BalancerMember] http://127.0.0.1:3000
+        @PYaY[BalancerMember] http://127.0.0.1:3001
+      @PYba[</Proxy]@PYba[>]
       
-      # Redirect all non-static requests
-      RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
-      RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+      @PYaE[# Redirect all non-static requests]
+      @PYaY[RewriteCond] %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+      @PYaY[RewriteRule] ^/(.*)$ balancer://app%{REQUEST_URI} @PYZlb[]P,QSA,L@PYZrb[]
 
-      ProxyPass / balancer://app/
-      ProxyPassReverse / balancer://app/
-      ProxyPreserveHost on
+      @PYaY[ProxyPass] / balancer://app/
+      @PYaY[ProxyPassReverse] / balancer://app/
+      @PYaY[ProxyPreserveHost] @PYaz[on]
       
-  </VirtualHost>
-\end{verbatim}
+  @PYba[</VirtualHost]@PYba[>]
+\end{Verbatim}
+
+
+%\begin{verbatim}
+%  <VirtualHost *:80>
+%      DocumentRoot /path/to/application/public
+%      
+%      RewriteEngine On
+%      
+%      <Proxy balancer://app>
+%        BalancerMember http://127.0.0.1:3000
+%        BalancerMember http://127.0.0.1:3001
+%      </Proxy>
+%      
+%      # Redirect all non-static requests
+%      RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+%      RewriteRule ^/(.*)$ balancer://app%{REQUEST_URI} [P,QSA,L]
+%
+%      ProxyPass / balancer://app/
+%      ProxyPassReverse / balancer://app/
+%      ProxyPreserveHost on
+%      
+%  </VirtualHost>
+%\end{verbatim}
 
 Un par de puntos a destacar:
 

@@ -21,7 +21,7 @@ Estos parámetros resultarán en una configuración diferente a otra, pero los �
 \subsection{Integración Continua} % (fold)
 \label{sub:ic}
 
-La integración continua es un tema importante dentro del mundo de las metodologías ágiles. El concepto se entender y aceptar la importancia de la integración del código escrito para una aplicación de forma continua, de la forma más automatizada posible, y en pequeñas cantidades de código. Se considera que hacer esto es importante por varias razones, especialmente cuando varios desarrolladores trabajan en el mismo código.
+La integración continua es un tema importante dentro del mundo de las metodologías ágiles. El concepto es entender y aceptar la importancia de la \textbf{integración} del código escrito para una aplicación de forma \textbf{continua}, de la forma más \textbf{automatizada} posible, y en \textbf{pequeñas cantidades} de código. Se considera que hacer esto es importante por varias razones, especialmente cuando varios desarrolladores trabajan en el mismo código.
 
 \begin{itemize}
 	\item Si se realizan incorporaciones de código de forma continua es posible reducir la cantiad de conflictos en gran medida. Al tener que tratar en todo caso con una cantidad pequeña de código nuevo, que puede tanto sufrir conflictos con código anterior, como introducir nuevos problemas, siempre es más fácil de aislar y solucionar dichos problemas.
@@ -47,18 +47,32 @@ Inicialmente el concepto de tests se ha usado para que código ya escrito sea po
 
 Tomando como ejemplo el framework \texttt{Test::Unit} junto con la \texttt{gem Shoulda}\footnote{\url{http://www.thoughtbot.com/projects/shoulda/}}, un test de una acción de una aplicación web puede quedar así:
 
-\begin{verbatim}
-	context "on GET to :show for first record" do
-	  setup do
-	    get :show, :id => 1
-	  end
+%\begin{verbatim}
+%	context "on GET to :show for first record" do
+%	  setup do
+%	    get :show, :id => 1
+%	  end
+%
+%	  should_assign_to :user
+%	  should_respond_with :success
+%	  should_render_template :show
+%	  should_not_set_the_flash
+%	end
+%\end{verbatim}
 
-	  should_assign_to :user
-	  should_respond_with :success
-	  should_render_template :show
+\begin{Verbatim}[commandchars=@\[\]]
+	context @PYaX["]@PYaX[on GET to :show for first record]@PYaX["] @PYaz[do]
+	  setup @PYaz[do]
+	    get @PYau[:show], @PYau[:id] @PYbf[=]@PYbf[>] @PYag[1]
+	  @PYaz[end]
+
+	  should_assign_to @PYau[:user]
+	  should_respond_with @PYau[:success]
+	  should_render_template @PYau[:show]
 	  should_not_set_the_flash
-	end
-\end{verbatim}
+	@PYaz[end]
+\end{Verbatim}
+
 
 La sencillez de la sintaxis hace que pueda quedar claro lo que debe hacer dicha acción (quedando, por tanto, especificada), y puesto que al fin y al cabo se deberán realizar los tests en algún momento, se considera útil y beneficioso realizar una fase de especificación mediante tests, de forma que no sea necesaria una posterior creación de los mismos, y pudiendo constatar en todo momento que se están realizando las acciones que la persona que redactó la especificación quería. No es difícil entender que un lenguaje formal que no solo permite especificar como funciona una aplicación, sino que además es capaz de comprobarlo empíricamente, es algo beneficioso en cualquier tipo de desarrollo de software.
 
@@ -82,28 +96,52 @@ Estos pasos serán siempre iguales, y por lo tanto, fácil de automatizar. En el
 
 Capistrano permite redactar una \emph{receta} para una aplicación, especificando el servidor al que acceder, el método (ssh o ftp), el lugar desde donde obtener el código actualizado (copia local o algún sistema de control de versiones), y permitiendo especificar una serie de acciones a realizar en cualquier momento, como reiniciar procesos paralelos a la vez que se reinicia la aplicación. Un ejemplo de receta podría ser la siguiente:
 
-\begin{verbatim}
-  set :repository,  "git@github.com:albertllop/pfc.git"
-  set :scm, "git"
-	set :branch, "master"
+%\begin{verbatim}
+%  set :repository,  "git@github.com:albertllop/pfc.git"
+%  set :scm, "git"
+%	set :branch, "master"
+%	
+%	set :application, "somewhere.net"
+%	set :user, "john"
+%	
+%	set :deploy_to, "/path/to/application"
+%	
+%	namespace :deploy do
+%	desc "Restart Application"
+%  task :restart, :roles => :app do
+%    run "cd #{current_path} && rake servers:restart"
+%  end
+%  
+%  desc "Other actions to do after restarting"
+%  task :after_update_code, :roles => :app do
+%    run "cd #{current_path} && rake jobs:stop  RAILS_ENV=production"
+%    run "cd #{current_path} && rake jobs:start RAILS_ENV=production"
+%  end
+%\end{verbatim}
+
+\begin{Verbatim}[commandchars=@\[\]]
+  set @PYau[:repository],  @PYaX["]@PYaX[git@PYZat[]github.com:albertllop/pfc.git]@PYaX["]
+  set @PYau[:scm], @PYaX["]@PYaX[git]@PYaX["]
+	set @PYau[:branch], @PYaX["]@PYaX[master]@PYaX["]
 	
-	set :application, "somewhere.net"
-	set :user, "john"
+	set @PYau[:application], @PYaX["]@PYaX[somewhere.net]@PYaX["]
+	set @PYau[:user], @PYaX["]@PYaX[john]@PYaX["]
 	
-	set :deploy_to, "/path/to/application"
+	set @PYau[:deploy_to], @PYaX["]@PYaX[/path/to/application]@PYaX["]
 	
-	namespace :deploy do
-	desc "Restart Application"
-  task :restart, :roles => :app do
-    run "cd #{current_path} && rake servers:restart"
-  end
+	namespace @PYau[:deploy] @PYaz[do]
+	desc @PYaX["]@PYaX[Restart Application]@PYaX["]
+  task @PYau[:restart], @PYau[:roles] @PYbf[=]@PYbf[>] @PYau[:app] @PYaz[do]
+    run @PYaX["]@PYaX[cd ]@PYbg[#{]current_path@PYbg[}]@PYaX[ && rake servers:restart]@PYaX["]
+  @PYaz[end]
   
-  desc "Other actions to do after restarting"
-  task :after_update_code, :roles => :app do
-    run "cd #{current_path} && rake jobs:stop  RAILS_ENV=production"
-    run "cd #{current_path} && rake jobs:start RAILS_ENV=production"
-  end
-\end{verbatim}
+  desc @PYaX["]@PYaX[Other actions to do after restarting]@PYaX["]
+  task @PYau[:after_update_code], @PYau[:roles] @PYbf[=]@PYbf[>] @PYau[:app] @PYaz[do]
+    run @PYaX["]@PYaX[cd ]@PYbg[#{]current_path@PYbg[}]@PYaX[ && rake jobs:stop  RAILS_ENV=production]@PYaX["]
+    run @PYaX["]@PYaX[cd ]@PYbg[#{]current_path@PYbg[}]@PYaX[ && rake jobs:start RAILS_ENV=production]@PYaX["]
+  @PYaz[end]
+\end{Verbatim}
+
 
 Mediante este archivo de configuración sería posible actualizar el código en el host \texttt{somewhere.net} desde el repositorio git especificado, reiniciando la aplicación con un comando personalizado, y realizando el reinicio del proceso paralelo después de actualizar el código.
 

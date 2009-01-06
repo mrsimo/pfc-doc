@@ -48,25 +48,39 @@ Esta es la opción más sencilla, y no necesita más que una acción que cree un
 
 Esta opción es el ejemplo clásico de uso de un plugin para subir archivos. El plugin utilizado en este caso es \texttt{attachment-fu} \footnote{\url{http://github.com/technoweenie/attachment\_fu}} , el cual, añadiendo unas líneas como las siguientes, hace que se relacione directamente con los archivos subidos mediante la interfaz web.
 
-\begin{verbatim}
-class Image < ActiveRecord::Base
-  belongs_to :page
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaz[class] @PYaO[Image] @PYbf[<] @PYar[ActiveRecord]@PYbf[::]@PYar[Base]
+  belongs_to @PYau[:page]
   
-  has_attachment  :content_type => :image,
-                  :processor => 'MiniMagick',
-                  :thumbnails => {:small => '85x>',
-                                  :medium => '360x360>',
-                                  :big => '800x800>'},
-                  :storage => :file_system,
-                  :path_prefix => "/document_images/"
-end
-\end{verbatim}
+  has_attachment  @PYau[:content_type] @PYbf[=]@PYbf[>] @PYau[:image],
+                  @PYau[:processor] @PYbf[=]@PYbf[>] @PYbe['MiniMagick'],
+                  @PYau[:thumbnails] @PYbf[=]@PYbf[>] {@PYau[:small] @PYbf[=]@PYbf[>] @PYbe['85x>'],
+                                  @PYau[:medium] @PYbf[=]@PYbf[>] @PYbe['360x360>'],
+                                  @PYau[:big] @PYbf[=]@PYbf[>] @PYbe['800x800>']},
+                  @PYau[:storage] @PYbf[=]@PYbf[>] @PYau[:file_system],
+                  @PYau[:path_prefix] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[/document_images/]@PYaX["]
+@PYaz[end]
+\end{Verbatim}
+
+%\begin{verbatim}
+%class Image < ActiveRecord::Base
+%  belongs_to :page
+%  
+%  has_attachment  :content_type => :image,
+%                  :processor => 'MiniMagick',
+%                  :thumbnails => {:small => '85x>',
+%                                  :medium => '360x360>',
+%                                  :big => '800x800>'},
+%                  :storage => :file_system,
+%                  :path_prefix => "/document_images/"
+%end
+%\end{verbatim}
 
 Introduciendo esto en \texttt{/app/models/image.rb}, y al crear un objeto de tipo Image, pasándole como parámetro el input en el que se el usuario añade el archivo, hará las siguientes acciones:
 
 \begin{itemize}
   \item Comprobará que es una imagen, porque se le ha pasado el parámetro \texttt{:content\_type => :image}. En caso de no ser un archivo de tipo imagen válido, fallará el momento de crear el objeto, es decir, al realizar un \texttt{save} o un \texttt{create} sobre \texttt{Image}.
-  \item Generará tres thumbnails, con los tamaños especificados usando el formato clásico de \texttt{ImageMagick} \footnote{\url{http://imagemagick.org/script/command-line-options.php\#resize}}, mediante \texttt{MiniMagick} \footnote{http://rubyforge.org/projects/mini-magick/}.
+  \item Generará tres thumbnails, con los tamaños especificados usando el formato clásico de \texttt{ImageMagick} \footnote{\url{http://imagemagick.org/script/command-line-options.php\#resize}}, mediante \texttt{MiniMagick} \footnote{\url{http://rubyforge.org/projects/mini-magick/}}.
   \item Guardará las imágenes en la carpeta \texttt{/document\_images}. Puesto que se le ha especificado claramente que está en la raíz de la aplicación, las guardará ahí, y no en \texttt{public}, que es lo normal. \texttt{public} es la carpeta que está abierta al público, y si se guardara en \texttt{/public/document\_images} en vez de en \texttt{/document\_images}, cualquier persona podría acceder a las imágenes mediante la dirección pública como \texttt{http://dominio.com/document\_images/..}
   
   De esta forma las imágenes están fuera del alcance, y se deberán servir mediante un método que lea este archivo y lo transmita, que al ser programado especialmente, puede controlar que el usuario que está reclamando una imagen tenga permisos para ver el documento, y no esté intentando ver documentos del resto.
@@ -74,9 +88,14 @@ Introduciendo esto en \texttt{/app/models/image.rb}, y al crear un objeto de tip
 
 Con la siguiente instrucción:
 
-\begin{verbatim}
-  send_file :file => image.public_filename(params[:thumb])
-\end{verbatim}
+%\begin{verbatim}
+%  send_file :file => image.public_filename(params[:thumb])
+%\end{verbatim}
+
+\begin{Verbatim}[commandchars=@\[\]]
+  send_file @PYau[:file] @PYbf[=]@PYbf[>] image@PYbf[.]public_filename(params@PYbf[@PYZlb[]]@PYau[:thumb]@PYbf[@PYZrb[]])
+\end{Verbatim}
+
 
 es posible renderizar dicha imagen, de la misma forma que si accediera desde la dirección pública, pero estando dicha imagen fuera del alcance de todo el mundo, y pudiendo realizar las comprobaciones pertinentes.
 
@@ -97,9 +116,13 @@ Una vez descomprimidas las imágenes, existe el problema de la organización int
 
 Para hacer esto, de nuevo, aparentemente complejo, no hay más que usar uno de los módulos de la librería básica de Ruby, \texttt{Find} \footnote{\url{http://corelib.rubyonrails.org/classes/Find.html}}, el cual permite recorrer recursivamente una estructura de directorios, a partir de la cual generar un vector de archivos, referenciables posteriormente. Mediante este vector, y la función \texttt{File.basename}, es posible ordenar los archivos, guardados en el vector \texttt{files}, con la siguiente línea:
 
-\begin{verbatim}
-  files.sort! {|a,b| File.basename(a) <=> File.basename(b)}
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+files@PYbf[.]sort! {@PYbf[|]a,b@PYbf[|] @PYar[File]@PYbf[.]basename(a) @PYbf[<]@PYbf[=]@PYbf[>] @PYar[File]@PYbf[.]basename(b)}
+\end{Verbatim}
+
+%\begin{verbatim}
+%  files.sort! {|a,b| File.basename(a) <=> File.basename(b)}
+%\end{verbatim}
 
 Ruby, de nuevo, ya tiene un algoritmo de ordenación implementado, al cual se le puede explicar por qué parámetro ordenar un vector, en este caso, por los nombres de archivo.
 
@@ -117,6 +140,13 @@ Teniendo, pues, un vector con referencias a las imágenes, ya comprimidas y orde
 \end{verbatim}
 
 Generando una imagen por página con los nombres \texttt{image0.jpg}, \texttt{image1.jpg}, etc. Teniendo, pues, estas imágenes descomprimidas en un directorio, no hay más que seguir el mismo proceso que con las imágenes descomprimidas para crear las páginas necesarias.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[totalheight=5cm]{converter.jpg}
+\caption{Diagrama de la generación de Images a partir de PDF's o archivos comprimidos}\label{fig:converter}
+\end{figure}
+
 
 % subsubsection subiendo_archivos_pdf (end)
 

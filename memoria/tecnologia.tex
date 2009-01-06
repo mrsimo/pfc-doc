@@ -2,14 +2,14 @@
 \section{Tecnolog\'ia} % (fold)
 \label{sec:tecnologia}
 
-Se ha decidido realizar una web con una serie de funcionalidades, pero incluso en ese entorno existen múltiples lenguajes y plataformas para todo tipo de desarrollos. Este documento pretende considerar las posibilidades existentes, y escoger la más adecuada para este proyecto a partir de una serie de criterios.
+Se ha decidido realizar una web con una serie de funcionalidades, pero incluso en ese entorno existen múltiples lenguajes y plataformas para todo tipo de desarrollos. Esta sección pretende considerar las posibilidades existentes, y escoger la más adecuada para este proyecto a partir de una serie de criterios.
 
 En un primer acercamiento se pueden diferenciar dos partes claras que forman este proyecto. Primero, el desarrollo de la pizarra, implementando el máximo de funcionalidades establecidas en la especificación, y segundo, el desarrollo del sistema, con su gestión de usuarios, grupos y pizarras.
 
 \subsection{Pizarra}
-A la hora de considerar las posibles tecnologías que permitan implementar una pizarra de este tipo, aparecen múltiples opciones que, en mayor o menor medida, podrían funcionar. Sin embargo, en la especificación se ha definido que la solución debe ser accesible desde una página web, a través de firewalls rigurosos, y con el mínimo de \emph{software extra} posible. Ésto nos deja básicamente con tres posibles opciones, descartando muchos de los lenguajes más clásicos de programación, como podría ser C++.
+A la hora de considerar las posibles tecnologías que permitan implementar una pizarra de este tipo, aparecen múltiples opciones que, en mayor o menor medida, podrían funcionar. Sin embargo, en la especificación se ha definido que la solución debe ser accesible desde una página web, a través de firewalls rigurosos, y con el mínimo de \emph{software extra} posible. Ésto nos deja básicamente con tres posibles opciones.
 
-Dichas opciones son \texttt{JavaScript}, \texttt{Flash} o \texttt{Java}. Otro tipo de aplicaciones como podría ser \texttt{ActiveX} queda descartado desde el principio por su dificultad de ejecutar en exploradores que no sean Internet Explorer, y por estar aún más limitados en entornos restrictivos como son los ordenadores de las empresas. Los tres considerados son suficientemente conocidos, y están soportados por la gran mayoría de los ordenadores de hoy día.
+Dichas opciones son \texttt{JavaScript}, \texttt{Flash} o \texttt{Java}. Otro tipo de aplicaciones como podría ser \texttt{ActiveX} queda descartado desde el principio por su dificultad de ejecutar en navegadores que no sean Internet Explorer, y por estar aún más limitados en entornos restrictivos como son los ordenadores de las empresas. Los tres considerados son suficientemente conocidos, y están soportados por la gran mayoría de los ordenadores de hoy día.
 
 Para poder hacer una comparativa objetiva entre ellos, los criterios a seguir serán los siguientes:
 
@@ -26,7 +26,7 @@ Para poder hacer una comparativa objetiva entre ellos, los criterios a seguir se
 Adobe Flash (anteriormente Macromedia Flash) era originariamente un entorno enfocado al desarrollo de animaciones vectoriales, pero su gran popularidad ha hecho que se haya ido expandiendo hasta convertirse en una plataforma multimedia mucho más interactiva, gracias a \texttt{ActionScript}, el lenguaje mediante el cual se puede programar todo tipo de aplicaciones en flash.
 
 \begin{description}
-	\item[Facilidad de implementación] Es muy posible que de las tres tecnologías esta fuera la que permita una implementación más sencilla de la pizarra en si, pues Flash proporciona todas las herramientas necesarias para tratar los dibujos que se necesitan hacer. Un magnífico ejemplo de pizarra interactiva puede encontrarse en \url{www.imaginationcubed.com}. En cuanto a las funcionalidades de pizarra compartida, Flash ofrece \emph{Flash Media Server}\footnote{Adobe, Flash Media Server Products - \url{http://www.adobe.com/products/flashmediaserver/}}, que soluciona todas las necesidades de aplicaciones en tiempo real y compartición de objetos.
+	\item[Facilidad de implementación] Es muy posible que de las tres tecnologías esta fuera la que permita una implementación más sencilla de la pizarra en si, pues Flash proporciona todas las herramientas necesarias para tratar los dibujos que se necesitan hacer. Un magnífico ejemplo de pizarra interactiva puede encontrarse en Imagination Cubed\footnote{\url{http://www.imaginationcubed.com}}. En cuanto a las funcionalidades de pizarra compartida, Flash ofrece \emph{Flash Media Server}\footnote{Adobe, Flash Media Server Products - \url{http://www.adobe.com/products/flashmediaserver/}}, que soluciona todas las necesidades de aplicaciones en tiempo real y compartición de objetos.
 	\item[Calidad del resultado] Los resultados que se pueden obtener con flash en una aplicación interactiva de este tipo pueden ser más que satisfactorios. La calidad gráfica, así como la interactividad serán tan buenas como el programador/diseñador sea capaz.
 	\item[¿Accesible por todo el mundo?] Flash es una tecnología muy extendida por todo el mundo, pero por desgracia suele utilizarse para aplicaciones que muchas empresas podrían considerar como inadecuadas en un espacio de trabajo (juegos en flash o youtube, por ejemplo). Si bien es cierto que la posibilidad de que un ordenador moderno no disponga de flash es muy reducida, no es algo imposible, y mucho menos en el contexto de las empresas.
 	\item[Otras motivaciones] Flash es una tecnología que lleva muchos años en el mercado y que ha madurado considerablemente. Sin embargo suele requerir de capacidades de diseñador/animador más que de programador, por tanto no se considera muy adecuada para el perfil del autor.
@@ -48,9 +48,9 @@ Java es un lenguaje de programación en toda regla, que ofrece la posibilidad de
 JavaScript, a diferencia de las otras opciones, es un lenguaje interpretado por los navegadores que permite la ejecución de, en principio, pequeñas acciones dentro de la página web. Dichas acciones pueden ser desde hacer pequeñas operaciones con datos introducidos en un campo de texto, habilitar o desabilitar elementos web, hasta otras cosas mucho más complejas. Javascript es en realidad un lenguaje muy completo que permite hacer una gran variedad de cosas, y esto se ha ido demostrando conforme han ido pasando los años. Ejemplos de webs con un gran uso de javascript podrían ser, por ejemplo, google docs\footnote{Google Docs - \url{http://docs.google.com}} o google mail\footnote{Google Mail - \url{http://mail.google.com}}.
 
 \begin{description}
-	\item[Facilidad de implementación] Por desgracia, Javascript se ha utilizado mayoritariamente para pequeñas operaciones como las descritas anteriormente, lo cual ha hecho que haya, en general, poca experiencia a la hora de desarrollar aplicaciones más complejas con él, y lo que ello conlleva (falta de documentación, ejemplos, librerías, etc). Otro problema bastante grande, es el hecho de que sea un lenguaje interpretado por el explorador, y que no todos los exploradores tengan una implementación similar de Javascript. A pesar de los esfuerzos del W3C\footnote{World Wide Web Consortium - \url{http://www.w3c.org}} aún hay diferencias entre implementaciones. Ésto hace que se tengan que tener en cuenta más factores a la hora de programar, haciendo el proceso más complicado.	
+	\item[Facilidad de implementación] Por desgracia, Javascript se ha utilizado mayoritariamente para pequeñas operaciones como las descritas anteriormente, lo cual ha hecho que haya, en general, poca experiencia a la hora de desarrollar aplicaciones más complejas con él, y lo que ello conlleva (falta de documentación, ejemplos, librerías, etc). Otro problema bastante grande, es el hecho de que sea un lenguaje interpretado por el navegador, y que no todos los navegadores tengan una implementación similar de Javascript. A pesar de los esfuerzos del W3C\footnote{World Wide Web Consortium - \url{http://www.w3c.org}} aún hay diferencias. Ésto hace que se tengan que tener en cuenta más factores a la hora de programar, haciendo el proceso más complicado.	
 	\item[Calidad del resultado] Javascript permite crear aplicaciones muy ágiles para el usuario, utilizando técnicas ya extendidas como Ajax (Asynchronous JavaScript And XML), creando una experiencia de usuario muy positiva. Si bien no está pensado para realizar aplicaciones gráficas, existen ejemplos funcionales de una pizarra similar a la que se quiere implementar, usando Javascript. Existen librerías que permiten trabajar con formas sencillas, como podría ser jsgraphics\footnote{High Performance JavaScript Vector Graphics Library - \url{http://www.walterzorn.com/jsgraphics/jsgraphics_e.htm}}, aunque se intentará encontrar alguna solución mejor.
-	\item[¿Accesible por todo el mundo?] Ésta es la tecnología que más personas podrán disfrutar. Solamente hace falta tener un navegador relativamente moderno (Internet Explorer 6+, Mozilla Firefox, Safari, y muchos otros), sin ningún tipo de añadido. El problema reside en el programador, por crear código que sea entendible por todos, no en el usuario.
+	\item[¿Accesible por todo el mundo?] Esta es la tecnología que más personas podrán disfrutar. Solamente hace falta tener un navegador relativamente moderno (Internet Explorer 6+, Mozilla Firefox, Safari, y muchos otros), sin ningún tipo de añadido. El problema reside en la capacidad del programador de crear crear código compatible con todos los navegadores.
 	\item[Otras motivaciones] Javascript está en auge en estos momentos, se está por fin dando un uso completo a todo su potencial por numerosas compañías, y los resultados son más que sorprendentes. La agilidad de las aplicaciones hace que se empiece a utilizar la web para múltiples tareas que antes estaban relegadas solamente a programas individuales. Existen implementaciones de todo tipo de aplicaciones con javascript, desde clientes de mensajería instantánea, a videojuegos, pasando por clientes de correo, procesadores de texto u hojas de cálculo. El autor aún no ha trabajado con este lenguaje más que en contadas ocasiones y de forma mínima, haciéndolo muy atractivo a la hora de desarrollar un proyecto como este.
 	\item[Viabilidad] No hay ninguna razón que haga el uso de javascript inviable, existen pizarras compartidas online ya implementadas con gran éxito, pero no cumplen los requisitos que este proyecto se ha planteado, o son cerradas/de pago.
 \end{description}
@@ -83,9 +83,9 @@ PHP permite generar contenido dinámicamente en el servidor, dependiendo de las 
 
 \begin{description}
 	\item[Facilidad de implementación] PHP se considera un lenguaje simple que permite desarrollar sitios de tamaño pequeño o medio con relativa simplicidad. Existen múltiples scripts ya programados que incluso podrían llegar a ayudar en el proceso de implementación del sistema.
-	\item[Calidad del resultado] El amplio uso de PHP en sitios web hace que sea un sistema completamente depurado con mínimos agujeros de seguridad, lo cual ayudado por la gran cantidad de documentación de que se dispone, hace que las webs resultantes no tengan nada que envidiar a las producidas por otros lenguajes. Realmente el límite está en manos del programador, no del lenguaje.
+	\item[Calidad del resultado] El amplio uso de PHP en sitios web hace que sea un sistema completamente depurado con mínimos agujeros de seguridad, lo cual ayudado por la gran cantidad de documentación de que se dispone, hace que las webs resultantes no tengan nada que envidiar a las producidas por otros lenguajes.
 	\item[Disponibilidad en servidores comunes] PHP viene con cualquier distribución de linux hoy día, y se puede instalar en prácticamente cualquier sistema operativo.
-	\item[Otras motivaciones] El autor de este proyecto ya tiene amplia experiencia en la programación de webs con PHP. No aportaría ningún conocimiento nuevo, más que incrementar la experiencia ya existente.
+	\item[Otras motivaciones] El autor de este proyecto ya tiene experiencia en la programación de webs con PHP. No aportaría ningún conocimiento nuevo, más que incrementar la experiencia ya existente.
 	\item[Viabilidad] Este proyecto en PHP sería totalmente viable.
 \end{description}
 
@@ -95,10 +95,10 @@ JSP (JavaServer Pages) se puede considerar como una abstración de los Servlets,
 Simplificando, JSP funciona de forma muy similar a PHP, pero con todo el soporte de Java, y lo que ello conlleva. Hace que sea posible utilizar cualquier clase Java para generar contenidos dinámicos, de la misma forma que PHP usa sus librerías.
 
 \begin{description}
-	\item[Facilidad de implementación] JSP es tan simple como Java, y tiene todas las características necesarias para hacer cualquier sitio web. Sin embargo, Java no está tan enfocado a páginas webs como podría ser PHP. Se tiene una gran ventaja en el hecho de que se puede usar cualquier código Java, por tanto, cualquier librería ya hecha, pero también es cierto que al no ser enfocado principalmente a páginas web, pueda hacer tareas comunes (contactar con la base de datos), mucho más engorrosas.
+	\item[Facilidad de implementación] JSP es tan simple como Java, y tiene todas las características necesarias para hacer cualquier sitio web. Sin embargo, Java no está tan enfocado a páginas webs como podría ser PHP. Se tiene una gran ventaja en el hecho de que se puede usar cualquier código Java, por tanto, cualquier librería ya hecha, pero también es cierto que al no ser enfocado principalmente a páginas web, pueda hacer tareas comunes más engorrosas.
 	\item[Calidad del resultado] JSP tiene todo lo necesario para realizar una web de calidad.
 	\item[Disponibilidad en servidores comunes] La instalación y configuración de un servidor típico apache para funcionar con JSP's suele requerir más trabajo que con PHP, pues no suele instalarse de forma automática, y requiere de trabajo extra por parte del administrador. Apache Tomcat\footnote{Apache Tomcat - \url{http://tomcat.apache.org}} es implementación oficial de JSP y Java Servlets, y suele ser bastante fácil de encontrar para las respectivas distribuciones. 
-	\item[Otras motivaciones] El autor ya ha realizado un proyecto utilizando JSP y Java Servlet, si bien no en profundidad, ya conoce las características principales. Sería interesante (o casi imprescindible) si se hubiera decidido usar un Applet Java para el desarrollo de la Pizarra.
+	\item[Otras motivaciones] El autor ya ha realizado un proyecto utilizando JSP y Java Servlet, si bien no en profundidad, ya conoce las características principales.
 	\item[Viabilidad] Este proyecto sería totalmente viable utilizando JSP y Servlets Java, incluso si se utiliza Javascript o Flash para la implementación de las Pizarras.
 \end{description}
 
@@ -106,10 +106,10 @@ Simplificando, JSP funciona de forma muy similar a PHP, pero con todo el soporte
 Ruby es un lenguaje que está en auge desde hace relatiamente poco, por numerosas razones. La más importante de ellas sea probablemente la plataforma Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} (de ahí el conocido Ruby on Rails), que simplifica el proceso de generación de código de forma drástica. Existen numerosos ejemplos en forma de screencasts demostrando la implementación de aplicaciones simples en tiempos menores a 15 minutos\footnote{Screencasts of Ruby on Rails, Creating a weblog in 15 minutes - \url{http://www.rubyonrails.org/screencasts}}.
 
 \begin{description}
-	\item[Facilidad de implementación] Ésta es la característica estrella de Ruby on Rails. Simplifica todas las tareas repetitivas a la hora de desarrollar aplicaciones web con un fondo de base de datos, es decir, la mayoría. Lo único que puede dificultar la implementación es la falta de experiencia del autor con esta plataforma.
-	\item[Calidad del resultado] El resultado tendrá la misma calidad que el realizado por cualquier otro lenguaje de scripting. Hay argumentos que defienden la mayor calidad de las webs realizadas en ruby por su grandísima simplicidad, lo cual ayuda a una futura expansión mucho más sencilla.
-	\item[Disponibilidad en servidores comunes] Ruby on Rails se puede considerar hoy día como uno de los standards del desarrollo web, y por tanto cada vez más y más hostings ofrecen soporte para el mismo. Existen múltiples formas de tener una aplicación Ruby on Rails funcionando en un servidor, apareciendo cada vez opciones más sencillas y completas. Por ejemplo, \footnote{Phusion Passenger - \url{http://www.modrails.com/}}, también llamado \texttt{mod\_rails} es un módulo para Apache que promete simplificar el proceso puesta online de aplicaciones a algo tan sencillo como el de cualquier aplicación en \texttt{PHP}.
-	\item[Otras motivaciones] Hoy por hoy existe una gran expectación en cuanto a Ruby on Rails. Cada vez más webs se desarrollan con esta tecnología, y eso se demuestra en que cada vez más se pueden encontrar empresas de hosting con soporte para Rails. No hay ninguna razón objetiva para apoyar todas estas consideraciones, es posible que Rails no deje de ser una plataforma minoritaria, pero a día de hoy, tiene un crecimiento muy marcado que lo convierte en una plataforma muy atractiva a la hora de profundizar los conocimientos del autor en temas de desarrollo web.
+	\item[Facilidad de implementación] Esta es la característica estrella de Ruby on Rails. Simplifica todas las tareas repetitivas a la hora de desarrollar aplicaciones web con un fondo de base de datos. Lo único que puede dificultar la implementación es la falta de experiencia del autor con esta plataforma.
+	\item[Calidad del resultado] El resultado tendrá la misma calidad que el realizado por cualquier otro lenguaje de scripting. Hay argumentos que defienden la mayor calidad de las webs realizadas en ruby por su simplicidad, lo cual ayuda a una futura expansión mucho más sencilla.
+	\item[Disponibilidad en servidores comunes] Ruby on Rails se puede considerar hoy día como uno de los standards del desarrollo web, y por tanto cada vez más y más hostings ofrecen soporte para el mismo. Existen múltiples formas de tener una aplicación Ruby on Rails funcionando en un servidor, apareciendo cada vez opciones más sencillas y completas. Por ejemplo, Phusion Passenger\footnote{Phusion Passenger - \url{http://www.modrails.com/}}, también llamado \texttt{mod\_rails} es un módulo para Apache que promete simplificar el proceso puesta online de aplicaciones a algo tan sencillo como el de cualquier aplicación en \texttt{PHP}.
+	\item[Otras motivaciones] Hoy por hoy existe una gran expectación en cuanto a Ruby on Rails se refiere. Cada vez más webs se desarrollan con esta tecnología, y eso se demuestra en que cada vez más se pueden encontrar empresas de hosting con soporte para Rails. No hay ninguna razón objetiva para apoyar todas estas consideraciones, es posible que Rails no deje de ser una plataforma minoritaria, pero a día de hoy, tiene un crecimiento muy marcado que lo convierte en una plataforma muy atractiva a la hora de profundizar los conocimientos del autor en temas de desarrollo web.
 	\item[Viabilidad] No hay ninguna razón para que este proyecto no sea viable bajo Ruby.
 \end{description}
 
@@ -135,27 +135,41 @@ o DOM, como es conocido más habitualmente, son una serie de objetos que ofrecen
 Con dichos objetos se puede acceder a todos los aspectos del navegador y de la web que se está mostrando, tanto para consultarlos como para modificarlos. Así, por ejemplo, el objeto \texttt{document} permite cambiar el código web que se está mostrando, para por ejemplo, mostrar u ocultar partes, consultar el texto escrito en un formulario, etc; o el objeto \texttt{window} permite consultar las cosas referentes con el navegador, de forma que podemos cambiar el comportamiento de distintos eventos relacionados con el ratón o el teclado, o mostrar avisos en forma de ventanas de confirmación.
 
 \textbf{Librería gráfica}
-Es importante recordar que Javascript es un lenguaje de scripting sin ningún tipo de soporte para gráficos incorporados. Todo lo que se puede hacer es, por ejemplo, modificar el código fuente de la web mediante javascript y diferentes eventos (de ratón o teclado). Se tiene que buscar, por tanto, una forma de mostrar gráficos modificando código que pueda estar dentro de una web.
+Es importante recordar que Javascript es un lenguaje de scripting sin ningún tipo de soporte para gráficos incorporado. Todo lo que se puede hacer es, por ejemplo, modificar el código fuente de la web mediante javascript y diferentes eventos (de ratón o teclado). Se tiene que buscar, por tanto, una forma de mostrar gráficos modificando código que pueda estar dentro de una web.
 
 Los elementos que se quieren dibujar para este proyecto son perfectamente implementables por lo que se conoce como gráficos vectoriales. Círculos, líneas, cuadrados, texto, todo esto se puede hacer de forma sencilla con cualquier programa que permita editar este tipo de gráficos. Existe un formato abierto llamado SVG\footnote{Scalable Vector Graphics - \url{http://www.w3.org/Graphics/SVG/}}, cuyo formato no es binario como suelen ser los propietarios, sino especificado en XML. Gracias a esto, es posible crear y modificar gráficos vectoriales mediante Javascript. Un ejemplo de archivo SVG podría ser el de la figura \ref{fig:svg_example} (ejemplo extraido de Wikipedia)
 
 \begin{figure}[ht]
 \centering
 \includegraphics{svg_example.png}
-\begin{verbatim}
-<?xml version="1.0"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-                     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="467" height="462">
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaN[<?xml version="1.0"?>]
+@PYaN[<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"]
+@PYaN[                     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">]
+@PYba[<svg] @PYaQ[xmlns=]@PYad["http://www.w3.org/2000/svg"] @PYaQ[version=]@PYad["1.1"] @PYaQ[width=]@PYad["467"] @PYaQ[height=]@PYad["462"]@PYba[>]
  
-  <!-- This is for the red square -->
-  <rect x="80" y="60" width="250" height="250" rx="20" fill="red"
-         stroke="black" stroke-width="2px" />
-  <!-- This is for the blue square -->
-  <rect x="140" y="120" width="250" height="250" rx="40" fill="blue"
-        fill-opacity="0.7" stroke="black" stroke-width="2px" />
-</svg>
-\end{verbatim}
+  @PYaE[<!--]@PYaE[ This is for the red square ]@PYaE[-->]
+  @PYba[<rect] @PYaQ[x=]@PYad["80"] @PYaQ[y=]@PYad["60"] @PYaQ[width=]@PYad["250"] @PYaQ[height=]@PYad["250"] @PYaQ[rx=]@PYad["20"] @PYaQ[fill=]@PYad["red"]
+         @PYaQ[stroke=]@PYad["black"] @PYaQ[stroke-width=]@PYad["2px"] @PYba[/>]
+  @PYaE[<!--]@PYaE[ This is for the blue square ]@PYaE[-->]
+  @PYba[<rect] @PYaQ[x=]@PYad["140"] @PYaQ[y=]@PYad["120"] @PYaQ[width=]@PYad["250"] @PYaQ[height=]@PYad["250"] @PYaQ[rx=]@PYad["40"] @PYaQ[fill=]@PYad["blue"]
+        @PYaQ[fill-opacity=]@PYad["0.7"] @PYaQ[stroke=]@PYad["black"] @PYaQ[stroke-width=]@PYad["2px"] @PYba[/>]
+@PYba[</svg>]
+\end{Verbatim}
+%\begin{verbatim}
+%<?xml version="1.0"?>
+%<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+%                     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+%<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="467" height="462">
+% 
+%  <!-- This is for the red square -->
+%  <rect x="80" y="60" width="250" height="250" rx="20" fill="red"
+%         stroke="black" stroke-width="2px" />
+%  <!-- This is for the blue square -->
+%  <rect x="140" y="120" width="250" height="250" rx="40" fill="blue"
+%        fill-opacity="0.7" stroke="black" stroke-width="2px" />
+%</svg>
+%\end{verbatim}
 \caption{Ejemplo simple de archivo svg}\label{fig:svg_example}
 \end{figure}
 
@@ -170,7 +184,7 @@ Even though rejected as a standard by the W3C, and largely ignored by developers
 A pesar de no ser la solución ideal, todos los Internet Explorer con versión 5.5 o superior implementan este lenguaje, con un formato similar al SVG. Es posible, por tanto, tratar con gráficos vectoriales en los navegadores mayoritarios (los que interesa en este proyecto), gracias a estos dos formatos. 
 
 \textbf{Canvas}
-Estas dos no son las únicas formas de tratar con gráficos vectoriales en páginas web. En la nueva especificación HTML (versión 5\footnote{W3C, HTML5 - \url{http://www.w3.org/html/wg/html5/}}, actualmente aún en formato borrador aún), se especifica un nuevo elemento, denominado \texttt{<canvas>}, y cuyo objetivo es la representación gráficos vectoriales directamente en la web. Es independiente de VML o SVG, y ya está implementado en los navegadores mayoritarios, excepto Internet Explorer. Existe, sin embargo, una librería en javascript\footnote{Explorer Canvas - \url{http://excanvas.sourceforge.net/}}, que automáticamente transforma cualquier elemento \texttt{<canvas>} en su equivalente en VML, por lo cual se puede considerar que es soportado en todos los exploradores mayoritarios actuales.
+Estas dos no son las únicas formas de tratar con gráficos vectoriales en páginas web. En la nueva especificación HTML (versión 5\footnote{W3C, HTML5 - \url{http://www.w3.org/html/wg/html5/}}, actualmente aún en formato borrador aún), se especifica un nuevo elemento, denominado \texttt{<canvas>}, y cuyo objetivo es la representación gráficos vectoriales directamente en la web. Es independiente de VML o SVG, y ya está implementado en los navegadores mayoritarios, excepto Internet Explorer. Existe, sin embargo, una librería en javascript\footnote{Explorer Canvas - \url{http://excanvas.sourceforge.net/}}, que automáticamente transforma cualquier elemento \texttt{<canvas>} en su equivalente en VML, por lo cual se puede considerar que es soportado en todos los navegadores mayoritarios actuales.
 
 El funcionamiento de canvas es completamente distinto al de SVG y VML. Se basa en considerar que hay un puntero que puede ir haciendo diversos tipos de trazos. Se puede mover a cualquier punto dentro de un área definida, y moverse hacia otro haciendo el dibujo. Existen funciones para hacer todo tipo de ``trazos'', permitiendo dibujar líneas, círculos, y todo lo necesario.
 
@@ -188,12 +202,14 @@ $ ruby archivo.rb
 \textbf{Desarrollando la web, Ruby on Rails}
 Rails\footnote{Ruby on Rails - \url{http://www.rubyonrails.org/}} es una plataforma de desarrollo (framework) web basada en Ruby, que ayuda a desarrollar aplicaciones web, y que sigue el paradigma Modelo Vista Controlador. Dicho patrón es muy semejante al conocido patrón en 3 capas, separando la capa que trata con los datos, la que realiza operaciones, y la del interfaz. Gracias a este enfoque es posible por fin enfocar el desarrollo de una aplicación web de forma muy similar al desarrollo de cualquier otra aplicación tradicional como la que se está acostumbrado. Se tendrán las clases del dominio, que representarán objetos bien definidos, que serán usados por los distintos controladores, cada uno de los cuales agrupará una serie de funcionalidades comunes y afines, y todo esto manejado desde las diferentes vistas.
 
-Hasta ahora el proceso de desarrollo de una web era una tarea bastante ``artesanal'', por el hecho de que estaba todo agrupado en una sola capa. Programar de forma tradicional en \texttt{PHP} es como trabajar con solo la capa de Vistas de Ruby on Rails. 
+Hasta ahora el proceso de desarrollo de una web era una tarea bastante \emph{artesanal}, por el hecho de que estaba todo agrupado en una sola capa. Programar de forma tradicional en \texttt{PHP} es como trabajar con solo la capa de Vistas de Ruby on Rails. 
 
 \textbf{Instalando Ruby}
 Uno de los requisitos establecidos es que fuera relativamente sencillo de instalar en un servidor típico web con Apache y MySQL. Para poder realizar pruebas a lo largo de todo el proceso de desarrollo en un entorno lo más realista posible, se ha contratado un servicio de hosting de tipo VPS, en slicehost\footnote{\url{http://www.slicehost.com/}}. Este tipo de servicio de hosting ofrece un entorno virtual privado (Virtual Private Server) que a efectos prácticos significa tener un entorno Linux con la distribución de tu elección, con unos recursos asgurados. La diferencia con los sistemas de hosting compartidos es que, aunque estés compartiendo la máquina con otras personas, al estar todos en entornos virtualizados con unos recursos reservados, no hay posibilidad de unos usuarios acaparando los recursos.
 
 Esto también significa un entorno de pruebas excelente para los propósitos de este proyecto. Este servicio de hosting ofrece una serie de artículos para ayudar a la instalación de todo tipo de configuraciones para Ruby on Rails. Tomando como partida la distribución \textbf{Ubuntu Hardy}, y siguiendo los pasos iniciales básicos de configuración \footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-setup-page-1}} \footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-setup-page-2}}, solo queda instalar Ruby\footnote{\url{http://articles.slicehost.com/2008/4/30/ubuntu-hardy-ruby-on-rails}}, Apache\footnote{\url{http://articles.slicehost.com/2008/4/25/ubuntu-hardy-installing-apache-and-php5}}, MySQL\footnote{\url{http://articles.slicehost.com/2008/7/8/ubuntu-hardy-installing-mysql-with-rails-and-php-options}}, y finalmente Phusion Passenger\footnote{\url{http://articles.slicehost.com/2008/5/1/ubuntu-hardy-mod_rails-installation}} (aunque podría ser cualquier de las otras opciones, como Mongrels o Thin). A pesar de parecer una instalación bastante larga, si se tomara como base un servidor con Apache y MySQL funcionando, solo se tendría que añadir el soporte para \texttt{ruby}, \texttt{rubygems}, \texttt{rails} y phusion passenger (\texttt{mod\_rails}).
 
+En el capítulo \ref{ch:deployment} se explica extensamente como realizar dichas instalaciones.
+
 \subsection{Otras consideraciones}
-A lo largo de este documento no se ha tratado el tema de base de datos. Ante todas las opciones disponibles, se pueden descartar todas las que no sean libres, por un coste de licencias generalmente inalcanzable en el ámbito de este proyecto (no hay ningún tipo de subvención). De entre las opciones libres la base de datos por excelencia es MySQL\footnote{MySQL - \url{http://www.mysql.com/}}, que es considerada el compañero ideal para Ruby. A simple vista no existen requisitos extras que puedan hacer considerar alguna otra opción, por tanto se da por hecho que MySQL será el Sistema Gestor de Base de Datos de este proyecto.
+A lo largo de este documento no se ha tratado el tema de base de datos. Ante todas las opciones disponibles, se pueden descartar todas las que no sean libres, por un coste de licencias generalmente inalcanzable en el ámbito de este proyecto. De entre las opciones libres la base de datos por excelencia es MySQL\footnote{MySQL - \url{http://www.mysql.com/}}, que es considerada el compañero ideal para Ruby. A simple vista no existen requisitos extras que puedan hacer considerar alguna otra opción, por tanto se da por hecho que MySQL será el Sistema Gestor de Base de Datos de este proyecto.

@@ -44,19 +44,34 @@ Finalmente el diagrama de clases se ha convertido en algo más grande, e incluso
 
 Así pues, lo más fácil es implementar funciones como las siguientes:
 
-\begin{verbatim}
-  document.can_be_seen_by?(user)
-  document.can_be_edited_by?(user)
-  document.can_be_deleted_by?(user)
-  user.all_accessible_documents
-  user.invite(user,group)
-  group.is_member?(user)
-  group.is_admin?(user)
-  group.is_owner?(user)
-  group.add_user(user)
-  group.promote(user)
-  group.unpromote(user)
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  document@PYbf[.]can_be_seen_by?(user)
+  document@PYbf[.]can_be_edited_by?(user)
+  document@PYbf[.]can_be_deleted_by?(user)
+  user@PYbf[.]all_accessible_documents
+  user@PYbf[.]invite(user,group)
+  group@PYbf[.]is_member?(user)
+  group@PYbf[.]is_admin?(user)
+  group@PYbf[.]is_owner?(user)
+  group@PYbf[.]add_user(user)
+  group@PYbf[.]promote(user)
+  group@PYbf[.]unpromote(user)
+\end{Verbatim}
+
+
+%\begin{verbatim}
+%  document.can_be_seen_by?(user)
+%  document.can_be_edited_by?(user)
+%  document.can_be_deleted_by?(user)
+%  user.all_accessible_documents
+%  user.invite(user,group)
+%  group.is_member?(user)
+%  group.is_admin?(user)
+%  group.is_owner?(user)
+%  group.add_user(user)
+%  group.promote(user)
+%  group.unpromote(user)
+%\end{verbatim}
 
 Todas son completamente autoexplicativas gracias a sus nombres, y contribuyen a que los controladores simplifiquen la mayoría de su código dejando solamente las líneas esenciales para que cualquier programador pueda saber de un vistazo qué hace este controlador.
 

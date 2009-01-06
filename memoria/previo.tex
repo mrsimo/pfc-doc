@@ -4,48 +4,73 @@ Según se ha establecido mediante el estudio previo, se han diferenciado dos par
 Simplificando, antes de que la interfaz en Javascript pueda interactuar con el servidor, es necesario que el sistema se haya preparado y sepa como responder a las consultas. Pero para entender totalmente qué tipo de consultas deberá ser capaz de atender, se debe comprender cuál será la implementación de la interfaz, qué elementos básicos se podrán utilizar (líneas, cuadrados, texto, etc.), para así implementar las respuestas adecuadas. Y a la inversa, la interfaz necesita saber cómo serán atendidas sus respuestas para poder tratarlas correctamente.
 
 \section{Consideraciones previas}
-Debido a las razones explicadas anteriormente, se deduce que Javascript es un lenguaje un tanto peculiar. Su sintaxis es la misma en todos los navegadores, pero no su DOM (Document Object Model), el cual suele cambiar sutilmente de uno a otro. Estas diferencias han hecho que tradicionalmente, saber programar en Javascript signifique conocer en profundidad dichas diferencias, y la forma en que evitarlas.
+Debido a las razones explicadas anteriormente, se deduce que Javascript es un lenguaje un tanto peculiar. Su sintaxis es la misma en todos los navegadores, pero no su DOM (Document Object Model), el cual suele cambiar sutilmente de uno a otro. Estas diferencias han hecho que tradicionalmente, saber programar en Javascript signifique conocer en profundidad dichas diferencias, y la forma de evitarlas.
 
 Los navegadores \emph{proveen} a Javascript con dicho DOM, que no es más que una serie de objetos, a modo de librería, con los que poder consultar o modificar cualquier cosa referente a la página que se está visualizando, al navegador, etc. Por ejemplo, en cualquier momento se puede acceder a los objetos \texttt{navigator, document, window, location, screen}, etc, los cuales contienen una serie de atributos y métodos que se pueden consultar, modificar y ejecutar. Por ejemplo, el atributo \texttt{appName} del objeto \texttt{navigator} devuelve una cadena de texto con el identificador del navegador. Así, una forma sencilla de diferenciar los navegadores IE del resto sería mediante una línea como la siguiente:
 
-\begin{verbatim}
-if (navigator.appName == "Microsoft Internet Explorer") 
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+@PYaz[if] (navigator.appName @PYbf[==] @PYaX["Microsoft Internet Explorer"]) 
+\end{Verbatim}
+
+%\begin{verbatim}
+%if (navigator.appName == "Microsoft Internet Explorer") 
+%\end{verbatim}
 
 Otro objeto muy importante es el \texttt{document}, a partir del cual se puede acceder y modificar todo el código html. Por ejemplo, mediante la línea siguiente se podría obtener un objeto que representaría la etiqueta \texttt{<svg id=`mainElement`>} :
 
-\begin{verbatim}
-var mainElem = document.getElementById("mainElement");
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+@PYbh[var] mainElem @PYbf[=] @PYaY[document].getElementById(@PYaX["mainElement"]);
+\end{Verbatim}
+
+%\begin{verbatim}
+%var mainElem = document.getElementById("mainElement");
+%\end{verbatim}
 
 La mayor parte del DOM es similar en todos los navegadores, haciendo las tareas típicas muy simples. Pero es en las pequeñas diferencias en las que Javascript se convierte en algo tedioso y problemático. Con el tiempo Javascript se ha ido popularizando y por lo tanto un mayor número de programadores han dedicado sus esfuerzos al lenguaje, incrementando la cantidad de documentación y librerías disponibles en proporción a dicha popularidad.
 
 La solución a dichas diferencias entre navegadores ha aparecido en forma de librerías que permiten hacer las acciones comunes de forma unificada, encargándose ella de distinguir entre navegadores y versiones, y hacer que siempre se ejecuten los comandos apropiados. Existen diferentes librerías para esto, y en este caso se ha decidido usar jQuery\footnote{\url{http://jquery.com}}. Tomando el ejemplo de querer añadir un evento a un elemento, este es el código típico que se debería ejecutar:
 
-\begin{verbatim}
-var elem = document.getElementById("body");
-if(naigator.appName == "Microsoft Internet Explorer") {
-   elem.attachEvent("onmousedown", doSomething);
-} else {
-   elem.addEvent("mousedown", false, doSomething);
+\begin{Verbatim}[commandchars=@\[\]]
+@PYbh[var] elem @PYbf[=] @PYaY[document].getElementById(@PYaX["body"]);
+@PYaz[if](navigator.appName @PYbf[==] @PYaX["Microsoft Internet Explorer"]) {
+   elem.attachEvent(@PYaX["onmousedown"]@PYbf[,] doSomething);
+} @PYaz[else] {
+   elem.addEvent(@PYaX["mousedown"]@PYbf[,] @PYbd[false]@PYbf[,] doSomething);
 }
-\end{verbatim}
+\end{Verbatim}
+
+%\begin{verbatim}
+%var elem = document.getElementById("body");
+%if(navigator.appName == "Microsoft Internet Explorer") {
+%   elem.attachEvent("onmousedown", doSomething);
+%} else {
+%   elem.addEvent("mousedown", false, doSomething);
+%}
+%\end{verbatim}
 
 No solo es diferente el nombre de la función para añadir un evento, sino que en IE no se permite definir la política de bubbling, y además los nombres de los eventos son diferentes (onmousedown y mousedown).
 
 El mismo código con jQuery incluida, quedaría así:
 
-\begin{verbatim}
-$("body").attach("mousedown",doSomething);
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+$(@PYaX["body"]).attach(@PYaX["mousedown"]@PYbf[,]doSomething);
+\end{Verbatim}
+
+%\begin{verbatim}
+%$("body").attach("mousedown",doSomething);
+%\end{verbatim}
 
 Aunque aparentemente se reduzca el número de líneas, a la hora de ejecutar se tienen que hacer el mismo número de comprobaciones, quedando por tanto en un rendimiento similar, sino peor. Sin embargo, dejando todo este número de comprobaciones \emph{rutinarias} de manos de una librería hace que se produzcan menos errores, pues al ser una librería pública usada por un gran número de personas, se puede asumir hayan tenido en cuenta un mayor número de factores de los que uno es capaz trabajando independientemente. Una vez más, debido a una mayor sencillez del código, es posible realizar un trabajo más limpio y libre de errores.
 
 No solo eso, sino que es posible añadir dicha librería directamente de la página de jquery, o de los repositorios públicos ofrecidos por google \footnote{\url{http://code.google.com/intl/es-ES/apis/ajaxlibs/}} de la siguiente forma:
 
-\begin{verbatim}
-<script src="http://jquery.com/jquery-latest.js"></script>
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+@PYba[<script ]@PYaQ[src=]@PYad["http://jquery.com/jquery-latest.js"]@PYba[>]@PYba[</script>]
+\end{Verbatim}
+
+%\begin{verbatim}
+%<script src="http://jquery.com/jquery-latest.js"></script>
+%\end{verbatim}
 
 Puesto que un gran número de páginas usan estas librerías hoy en día, la mayoría de la gente ya habrá cargado este archivo anteriormente, reduciendo el tiempo de carga de las páginas para una parte de los visitantes, puesto que el código usando jQuery es mucho más reducido, y el cliente ya tendrá en su disco duro dicha librería.
 

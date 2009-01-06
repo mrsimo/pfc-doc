@@ -53,24 +53,42 @@ Mediante el plugin de usuarios es cuestión de controlar si se está logueado o 
 
 Así, por ejemplo, las funciones del \texttt{documents\_controller} evolucionan de unas líneas como las siguientes:
 
-\begin{verbatim}
-  def update
-    @doc = Document.find(params[:id])
-    @doc.update_attributes params[:document]
-    redirect_to :action => "edit", :id => @doc.id
-  end
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[def] @PYaL[update]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    @PYaS[@PYZat[]doc]@PYbf[.]update_attributes params@PYbf[@PYZlb[]]@PYau[:document]@PYbf[@PYZrb[]]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+  @PYaz[end]
+\end{Verbatim}
+
+
+%\begin{verbatim}
+%  def update
+%    @doc = Document.find(params[:id])
+%    @doc.update_attributes params[:document]
+%    redirect_to :action => "edit", :id => @doc.id
+%  end
+%\end{verbatim}
 
 A algo como lo siguiente:
 
-\begin{verbatim}
-  def update
-    @doc = Document.find(params[:id])
-    redirect_to :action => :index unless @doc.user == current_user
-    @doc.update_attributes params[:document]
-    redirect_to :action => "edit", :id => @doc.id
-  end
-\end{verbatim}
+\begin{Verbatim}[commandchars=@\[\]]
+  @PYaz[def] @PYaL[update]
+    @PYaS[@PYZat[]doc] @PYbf[=] @PYar[Document]@PYbf[.]find(params@PYbf[@PYZlb[]]@PYau[:id]@PYbf[@PYZrb[]])
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYau[:index] @PYaz[unless] @PYaS[@PYZat[]doc]@PYbf[.]user @PYbf[==] current_user
+    @PYaS[@PYZat[]doc]@PYbf[.]update_attributes params@PYbf[@PYZlb[]]@PYau[:document]@PYbf[@PYZrb[]]
+    redirect_to @PYau[:action] @PYbf[=]@PYbf[>] @PYaX["]@PYaX[edit]@PYaX["], @PYau[:id] @PYbf[=]@PYbf[>] @PYaS[@PYZat[]doc]@PYbf[.]id
+  @PYaz[end]
+\end{Verbatim}
+
+%\begin{verbatim}
+%  def update
+%    @doc = Document.find(params[:id])
+%    redirect_to :action => :index unless @doc.user == current_user
+%    @doc.update_attributes params[:document]
+%    redirect_to :action => "edit", :id => @doc.id
+%  end
+%\end{verbatim}
 
 Dichos cambios son mínimos, por la simplicidad en que todos ellos están implementados. La parte de comunicación con Javascript, de momento, se dejará abierta hasta que se decida qué política se aplicará para permitir o no a los usuarios ver o editar sus contenidos.
 
